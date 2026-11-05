@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cossistant Architecture & Database Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --card-bg: #181b24;
+      --border: #282d3d;
+      --text: #f0f3f6;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #1f6feb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title-group h1 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .title-group p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover {
+      background: #212634;
+      color: var(--text);
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .controls {
+      display: flex;
+      gap: 6px;
+    }
+    .ctrl-btn {
+      background: #212634;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .ctrl-btn:hover { background: #2b3244; }
+    main {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #0d1117;
+    }
+    .diagram-pane {
+      width: 100%;
+      height: 100%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .diagram-pane.active {
+      display: flex;
+    }
+    .mermaid {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mermaid svg {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-group">
+      <h1>Cossistant — Visual System Blueprint</h1>
+      <p>High-resolution interactive architectural diagrams</p>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('arch')">1. Architecture Topology</button>
+      <button class="tab-btn" onclick="switchTab('erd')">2. Database Schema (ERD)</button>
+      <button class="tab-btn" onclick="switchTab('flows')">3. User Flows & AI RAG</button>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="zoomIn()">Zoom +</button>
+      <button class="ctrl-btn" onclick="zoomOut()">Zoom -</button>
+      <button class="ctrl-btn" onclick="resetZoom()">Reset</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- TAB 1: ARCHITECTURE -->
+    <div id="pane-arch" class="diagram-pane active">
+      <pre class="mermaid" id="mermaid-arch">
+flowchart TD
+    subgraph Clients ["Client Applications"]
+        WIDGET["React / Next.js Widget<br>(@cossistant/react & next)"]
+        BROWSER_EMBED["Vanilla JS Embed<br>(packages/browser)"]
+        DASHBOARD["Operations Dashboard<br>(apps/web: Next.js 16 + TanStack)"]
+    end
+
+    subgraph Edge ["Network Ingress & Security"]
+        CORS["Allowed Origins Guard (CORS)"]
+        AUTH_GATE["Better-Auth & API Key Validator"]
+        RATE_LIMIT["Redis Sliding-Window Rate Limiter"]
+    end
+
+    subgraph APIServer ["API Server (apps/api - Hono on Bun 1.3)"]
+        REST_API["REST / OpenAPI Endpoints<br>(/api/v1/support, /conversations)"]
+        TRPC_SERVER["tRPC v11 Procedures<br>(/trpc - 17 Routers)"]
+        WS_ENGINE["WebSocket Realtime Router<br>(hono/bun ServerWebSocket)"]
+        CONN_REG["In-Memory Connection Registry"]
+    end
+
+    subgraph Workers ["Background Processing (apps/workers - BullMQ)"]
+        Q_PRIMARY["Primary Queue: ai-agent<br>(FIFO Active Turn)"]
+        Q_BG["Background Queue: ai-agent-background<br>(30s Debounced Triage)"]
+        Q_NOTIF["Notification Queue: email-notifications"]
+        
+        W_PRIMARY["Primary AI Worker<br>(Vercel AI SDK 6)"]
+        W_BG["Background Triage Worker<br>(Sentiment / Title / Gaps)"]
+        W_NOTIF["Email Dispatch Worker<br>(Resend / SES)"]
+    end
+
+    subgraph DataTier ["Data & Persistence Layer"]
+        PG[("PostgreSQL 17<br>Multi-tenant Relational Tables")]
+        PGVEC[("pgvector Extension<br>HNSW Cosine Vector Index")]
+        REDIS[("Redis 7<br>Pub/Sub, Caching & BullMQ")]
+        S3[("AWS S3 / Cloudflare R2<br>Presigned Asset Uploads")]
+        TINYBIRD[("Tinybird ClickHouse<br>Real-time Presence Analytics")]
+        GEOIP["Python GeoIP Microservice<br>(MaxMind GeoLite2)"]
+    end
+
+    subgraph External ["External AI & Cloud Integrations"]
+        OPENROUTER["OpenRouter / OpenAI APIs<br>(LLM Inference & BYOK)"]
+        POLAR["Polar.sh<br>(Subscription & Token Metering)"]
+        RESEND["Resend / AWS SES<br>(Transactional Email)"]
+    end
+
+    WIDGET --> CORS
+    BROWSER_EMBED --> CORS
+    CORS --> AUTH_GATE
+    AUTH_GATE --> RATE_LIMIT
+    RATE_LIMIT --> REST_API
+    RATE_LIMIT --> WS_ENGINE
+
+    DASHBOARD --> AUTH_GATE
+    AUTH_GATE --> TRPC_SERVER
+    AUTH_GATE --> WS_ENGINE
+
+    REST_API --> PG
+    REST_API --> S3
+    TRPC_SERVER --> PG
+    TRPC_SERVER --> PGVEC
+    WS_ENGINE --> CONN_REG
+    WS_ENGINE --> REDIS
+
+    REST_API -. Enqueue Turn .-> Q_PRIMARY
+    TRPC_SERVER -. Enqueue Email .-> Q_NOTIF
+    Q_PRIMARY --> W_PRIMARY
+    Q_BG --> W_BG
+    Q_NOTIF --> W_NOTIF
+
+    W_PRIMARY --> PGVEC
+    W_PRIMARY --> OPENROUTER
+    W_PRIMARY --> POLAR
+    W_PRIMARY -. 30s Debounce Schedule .-> Q_BG
+    W_PRIMARY -. Token Stream Event .-> REDIS
+    REDIS -. Push to Sockets .-> WS_ENGINE
+    
+    W_BG --> PG
+    W_BG --> OPENROUTER
+    W_NOTIF --> RESEND
+    
+    WS_ENGINE --> GEOIP
+    WS_ENGINE -. Activity Telemetry .-> TINYBIRD
+      </pre>
+    </div>
+
+    <!-- TAB 2: DATABASE ERD -->
+    <div id="pane-erd" class="diagram-pane">
+      <pre class="mermaid" id="mermaid-erd">
+erDiagram
+    organization ||--o{ member : "has members"
+    organization ||--o{ website : "owns websites"
+    user ||--o{ member : "belongs to"
+    user ||--o{ session : "maintains sessions"
+    user ||--o{ account : "authenticates via"
+    member ||--o{ memberNotificationSetting : "configures"
+
+    website ||--o{ apiKey : "issues keys"
+    website ||--o{ websiteOpenRouterKey : "stores BYOK credentials"
+    website ||--o{ aiAgent : "configures"
+    website ||--o{ knowledge : "indexes docs"
+    website ||--o{ chunk : "stores vector embeddings"
+    website ||--o{ visitor : "tracks visitors"
+    website ||--o{ contact : "manages contacts"
+    website ||--o{ conversation : "hosts tickets"
+    website ||--o{ view : "saves custom filters"
+
+    conversation ||--o{ conversationTimelineItem : "contains messages & tools"
+    conversation ||--o{ conversationSeen : "tracks read state"
+    conversation ||--o{ conversationAssignee : "assigned to"
+    conversation ||--o{ conversationParticipant : "participated by"
+    conversation ||--o{ feedback : "receives ratings"
+    conversation ||--o{ knowledgeClarificationRequest : "triggers questions"
+
+    organization {
+        varchar_26 id PK
+        text name
+        text slug
+    }
+    website {
+        varchar_26 id PK
+        varchar_26 organization_id FK
+        text name
+        text slug
+    }
+    conversation {
+        varchar_21 id PK
+        varchar_26 website_id FK
+        text status
+        text priority
+        text sentiment
+        text title
+    }
+    conversationTimelineItem {
+        varchar_26 id PK
+        varchar_21 conversation_id FK
+        text visibility
+        text type
+        text text
+    }
+    chunk {
+        varchar_26 id PK
+        varchar_26 website_id FK
+        vector_1536 embedding
+        text content
+    }
+      </pre>
+    </div>
+
+    <!-- TAB 3: USER FLOWS -->
+    <div id="pane-flows" class="diagram-pane">
+      <pre class="mermaid" id="mermaid-flows">
+flowchart TD
+    subgraph Flow1 ["Customer Turn & AI Response"]
+        V1["Customer submits message in Widget"] --> W1["POST /api/v1/conversations/messages"]
+        W1 --> DB1["Insert conversationTimelineItem (public)"]
+        W1 --> REDIS1["Publish timelineItemCreated to Redis Pub/Sub"]
+        REDIS1 --> OP1["Render in Operator Dashboard"]
+        W1 --> Q1["Enqueue Job in BullMQ 'ai-agent'"]
+        
+        Q1 --> AI1["Primary AI Worker picks up turn"]
+        AI1 --> TYPING1["Emit conversationTyping: true over WS"]
+        AI1 --> RAG1["Cosine Similarity Query against pgvector"]
+        
+        RAG1 --> CHECK1{"Similarity Score >= 0.75?"}
+        CHECK1 -- Yes --> GEN1["LLM generates policy-grounded reply"]
+        GEN1 --> DB2["Insert AI Reply Timeline Item"]
+        DB2 --> STREAM1["Stream tokens to Widget over WebSocket"]
+        GEN1 --> DEBOUNCE1["Schedule Background Job (30s delay)"]
+        
+        CHECK1 -- No --> CLARIFY1["Invoke tool: requestKnowledgeClarification"]
+    end
+
+    subgraph Flow2 ["Self-Learning Knowledge Loop"]
+        CLARIFY1 --> DB3["Insert into knowledgeClarificationRequest"]
+        DB3 --> NOTIF1["Alert Operator: 'Missing Knowledge Detail'"]
+        CLARIFY1 --> FALLBACK1["AI responds: 'Connecting you with human specialist...'"]
+        
+        NOTIF1 --> OP_ANS["Operator enters verified answer in Dashboard"]
+        OP_ANS --> TRPC_ANS["trpc.knowledgeClarification.answer"]
+        TRPC_ANS --> CHUNK1["Split answer into 512-token text chunks"]
+        CHUNK1 --> EMBED1["Compute embeddings via text-embedding-3-small"]
+        EMBED1 --> PGVEC1["Store vector in chunk table (HNSW Index)"]
+        PGVEC1 --> RESOLVE_REQ["Mark Clarification as Resolved"]
+        RESOLVE_REQ --> FUTURE_QUERY["Future customer turns answered autonomously!"]
+    end
+      </pre>
+    </div>
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      flowchart: { curve: 'basis', htmlLabels: true },
+      er: { useMaxWidth: false }
+    });
+
+    let currentPanZoom = null;
+
+    function initPanZoom(svgElement) {
+      if (currentPanZoom) {
+        currentPanZoom.destroy();
+        currentPanZoom = null;
+      }
+      if (svgElement) {
+        currentPanZoom = svgPanZoom(svgElement, {
+          zoomEnabled: true,
+          controlIconsEnabled: false,
+          fit: true,
+          center: true,
+          minZoom: 0.2,
+          maxZoom: 10
+        });
+      }
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.diagram-pane').forEach(p => p.classList.remove('active'));
+
+      if (tab === 'arch') {
+        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('pane-arch').classList.add('active');
+        setupZoom('#pane-arch svg');
+      } else if (tab === 'erd') {
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        document.getElementById('pane-erd').classList.add('active');
+        setupZoom('#pane-erd svg');
+      } else if (tab === 'flows') {
+        document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
+        document.getElementById('pane-flows').classList.add('active');
+        setupZoom('#pane-flows svg');
+      }
+    }
+
+    function setupZoom(selector) {
+      setTimeout(() => {
+        const svg = document.querySelector(selector);
+        if (svg) initPanZoom(svg);
+      }, 50);
+    }
+
+    function zoomIn() { if (currentPanZoom) currentPanZoom.zoomIn(); }
+    function zoomOut() { if (currentPanZoom) currentPanZoom.zoomOut(); }
+    function resetZoom() { if (currentPanZoom) { currentPanZoom.resetZoom(); currentPanZoom.center(); } }
+
+    window.addEventListener('load', () => {
+      setTimeout(() => setupZoom('#pane-arch svg'), 300);
+    });
+  </script>
+</body>
+</html>
+

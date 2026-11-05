@@ -1,0 +1,169 @@
+erDiagram
+    organization ||--o{ member : "has members"
+    organization ||--o{ website : "owns websites"
+    user ||--o{ member : "belongs to"
+    user ||--o{ session : "maintains sessions"
+    user ||--o{ account : "authenticates via"
+    member ||--o{ memberNotificationSetting : "configures"
+
+    website ||--o{ apiKey : "issues keys"
+    website ||--o{ websiteOpenRouterKey : "stores BYOK credentials"
+    website ||--o{ aiAgent : "configures"
+    website ||--o{ knowledge : "indexes docs"
+    website ||--o{ chunk : "stores vector embeddings"
+    website ||--o{ visitor : "tracks visitors"
+    website ||--o{ contact : "manages contacts"
+    website ||--o{ conversation : "hosts tickets"
+    website ||--o{ view : "saves custom filters"
+
+    aiAgent ||--o{ aiAgentPromptDocument : "customizes"
+    knowledge ||--o{ chunk : "chunked into"
+    visitor ||--o{ contact : "identified as"
+    visitor ||--o{ chunk : "stores memory in"
+    contact ||--o{ chunk : "stores memory in"
+
+    conversation ||--o{ conversationTimelineItem : "contains messages & tools"
+    conversation ||--o{ conversationSeen : "tracks read state"
+    conversation ||--o{ conversationAssignee : "assigned to"
+    conversation ||--o{ conversationParticipant : "participated by"
+    conversation ||--o{ feedback : "receives ratings"
+    conversation ||--o{ knowledgeClarificationRequest : "triggers questions"
+
+    organization {
+        varchar_26 id PK "ULID"
+        text name
+        text slug "Unique"
+        text logo
+        timestamp created_at
+    }
+
+    user {
+        varchar_26 id PK "ULID"
+        text name
+        text email "Unique"
+        boolean email_verified
+        text image
+        timestamp created_at
+    }
+
+    website {
+        varchar_26 id PK "ULID"
+        varchar_26 organization_id FK
+        text name
+        text slug "Unique"
+        text domain
+        jsonb allowed_origins "CORS Whitelist"
+        jsonb theme_settings "Colors & Radius"
+        timestamp created_at
+    }
+
+    visitor {
+        varchar_26 id PK "ULID"
+        varchar_26 website_id FK
+        varchar_26 contact_id FK "Nullable"
+        text anonymous_id "LocalStorage Identifier"
+        text client_ip
+        text city
+        text country
+        text user_agent
+        timestamp created_at
+        timestamp last_seen_at
+    }
+
+    contact {
+        varchar_26 id PK "ULID"
+        varchar_26 website_id FK
+        text email "Unique per website"
+        text name
+        text avatar_url
+        jsonb custom_attributes
+        timestamp created_at
+    }
+
+    conversation {
+        varchar_21 id PK "NanoID"
+        varchar_26 organization_id FK
+        varchar_26 website_id FK
+        varchar_26 visitor_id FK
+        text status "open | resolved | spam | archived"
+        text priority "low | normal | high | urgent"
+        text sentiment "positive | neutral | negative | frustrated"
+        text channel "widget | email | slack"
+        text title
+        varchar_26 ai_agent_last_processed_message_id
+        timestamp ai_paused_until
+        timestamp started_at
+        timestamp resolved_at
+    }
+
+    conversationTimelineItem {
+        varchar_26 id PK "ULID"
+        varchar_21 conversation_id FK
+        varchar_26 organization_id FK
+        text visibility "public | private"
+        text type "message | tool | event"
+        text text "Markdown body"
+        jsonb parts "Tool trace & attachments"
+        varchar_26 user_id FK "Nullable"
+        varchar_26 visitor_id FK "Nullable"
+        varchar_26 ai_agent_id FK "Nullable"
+        timestamp created_at
+    }
+
+    aiAgent {
+        varchar_26 id PK "ULID"
+        varchar_26 website_id FK
+        text name
+        text model "gpt-4o | claude-3-7 | openrouter"
+        real temperature
+        integer thinking_budget "Reasoning tokens"
+        integer tool_invocation_budget "Max tool calls"
+        text instructions "System prompt"
+        jsonb tools_config "Enabled tools"
+        timestamp created_at
+    }
+
+    knowledge {
+        varchar_26 id PK "ULID"
+        varchar_26 website_id FK
+        text title
+        text source_type "faq | file | web_crawl"
+        text source_url
+        text content
+        text sync_status "pending | synced | failed"
+        timestamp created_at
+    }
+
+    chunk {
+        varchar_26 id PK "ULID"
+        varchar_26 website_id FK
+        varchar_26 knowledge_id FK "Nullable"
+        text source_type "knowledge | visitor_memory | contact_memory"
+        text content "Chunk text"
+        vector_1536 embedding "OpenAI text-embedding-3-small"
+        integer chunk_index
+        jsonb metadata
+    }
+
+    knowledgeClarificationRequest {
+        varchar_26 id PK "ULID"
+        varchar_21 conversation_id FK
+        varchar_26 website_id FK
+        text question "Unanswered query"
+        text summary
+        text status "pending | resolved | ignored"
+        varchar_26 resolved_knowledge_id FK
+        timestamp created_at
+    }
+
+    apiKey {
+        varchar_26 id PK "ULID"
+        varchar_26 website_id FK
+        varchar_64 key_hash "SHA-256"
+        varchar_16 prefix "pk_* or sk_*"
+        text type "publishable | secret"
+        text name
+        timestamp created_at
+        timestamp revoked_at
+    }
+

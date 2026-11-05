@@ -1,23 +1,8 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-.pytest_cache/
-
-# Environments & OS
-.venv/
-env/
-venv/
-.DS_Store
-*.log
-*.env
-
-# Docker & Downloads
-*.rpm
-*.deb
-*.AppImage
-
-# Node
 node_modules/
+dist/
+__pycache__/
+*.pyc
+.pytest_cache/
+.playwright-mcp/
+.env
+.DS_Store

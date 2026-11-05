@@ -1,0 +1,39 @@
+[
+  {
+    "customer_id": "CUS-501",
+    "name": "Alex Morgan",
+    "email": "alex.morgan@example.com",
+    "plan": "free",
+    "expected_plan": "pro",
+    "payment_status": "paid",
+    "payment_amount": 9.99,
+    "payment_date": "2026-11-04",
+    "transaction_id": "TXN-9001",
+    "card_last4": "4242"
+  },
+  {
+    "customer_id": "CUS-502",
+    "name": "Jamie Smith",
+    "email": "jamie.smith@example.com",
+    "plan": "pro",
+    "expected_plan": "pro",
+    "payment_status": "duplicate_charge_reported",
+    "payment_amount": 9.99,
+    "payment_date": "2026-11-04",
+    "transaction_id": "TXN-9002-A",
+    "duplicate_transaction_id": "TXN-9002-B",
+    "card_last4": "1122"
+  },
+  {
+    "customer_id": "CUS-503",
+    "name": "Taylor Lee",
+    "email": "taylor.lee@example.com",
+    "plan": "pro",
+    "expected_plan": "pro",
+    "payment_status": "paid",
+    "payment_amount": 9.99,
+    "payment_date": "2026-11-01",
+    "transaction_id": "TXN-9003",
+    "card_last4": "8899"
+  }
+]

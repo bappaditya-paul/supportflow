@@ -1,0 +1,93 @@
+flowchart TD
+    %% Client Tier
+    subgraph Clients ["Client Applications"]
+        WIDGET["React / Next.js Widget<br>(@cossistant/react & next)"]
+        BROWSER_EMBED["Vanilla JS Embed<br>(packages/browser)"]
+        DASHBOARD["Operations Dashboard<br>(apps/web: Next.js 16 + TanStack)"]
+    end
+
+    %% Network & Edge
+    subgraph Edge ["Network Ingress & Security"]
+        CORS["Allowed Origins Guard (CORS)"]
+        AUTH_GATE["Better-Auth & API Key Validator"]
+        RATE_LIMIT["Redis Sliding-Window Rate Limiter"]
+    end
+
+    %% Application Server Tier
+    subgraph APIServer ["API Server (apps/api - Hono on Bun 1.3)"]
+        REST_API["REST / OpenAPI Endpoints<br>(/api/v1/support, /conversations)"]
+        TRPC_SERVER["tRPC v11 Procedures<br>(/trpc - 17 Routers)"]
+        WS_ENGINE["WebSocket Realtime Router<br>(hono/bun ServerWebSocket)"]
+        CONN_REG["In-Memory Connection Registry"]
+    end
+
+    %% Asynchronous Worker Tier
+    subgraph Workers ["Background Processing (apps/workers - BullMQ)"]
+        Q_PRIMARY["Primary Queue: ai-agent<br>(FIFO Active Turn)"]
+        Q_BG["Background Queue: ai-agent-background<br>(30s Debounced Triage)"]
+        Q_NOTIF["Notification Queue: email-notifications"]
+        
+        W_PRIMARY["Primary AI Worker<br>(Vercel AI SDK 6)"]
+        W_BG["Background Triage Worker<br>(Sentiment / Title / Gaps)"]
+        W_NOTIF["Email Dispatch Worker<br>(Resend / SES)"]
+    end
+
+    %% Storage & Infrastructure Tier
+    subgraph DataTier ["Data & Persistence Layer"]
+        PG[("PostgreSQL 17<br>Multi-tenant Relational Tables")]
+        PGVEC[("pgvector Extension<br>HNSW Cosine Vector Index")]
+        REDIS[("Redis 7<br>Pub/Sub, Caching & BullMQ")]
+        S3[("AWS S3 / Cloudflare R2<br>Presigned Asset Uploads")]
+        TINYBIRD[("Tinybird ClickHouse<br>Real-time Presence Analytics")]
+        GEOIP["Python GeoIP Microservice<br>(MaxMind GeoLite2)"]
+    end
+
+    %% External Services
+    subgraph External ["External AI & Cloud Integrations"]
+        OPENROUTER["OpenRouter / OpenAI APIs<br>(LLM Inference & BYOK)"]
+        POLAR["Polar.sh<br>(Subscription & Token Metering)"]
+        RESEND["Resend / AWS SES<br>(Transactional Email)"]
+    end
+
+    %% Client Ingress Flows
+    WIDGET --> CORS
+    BROWSER_EMBED --> CORS
+    CORS --> AUTH_GATE
+    AUTH_GATE --> RATE_LIMIT
+    RATE_LIMIT --> REST_API
+    RATE_LIMIT --> WS_ENGINE
+
+    DASHBOARD --> AUTH_GATE
+    AUTH_GATE --> TRPC_SERVER
+    AUTH_GATE --> WS_ENGINE
+
+    %% API Server Operations
+    REST_API --> PG
+    REST_API --> S3
+    TRPC_SERVER --> PG
+    TRPC_SERVER --> PGVEC
+    WS_ENGINE --> CONN_REG
+    WS_ENGINE --> REDIS
+
+    %% Worker Queues
+    REST_API -. Enqueue Turn .-> Q_PRIMARY
+    TRPC_SERVER -. Enqueue Email .-> Q_NOTIF
+    Q_PRIMARY --> W_PRIMARY
+    Q_BG --> W_BG
+    Q_NOTIF --> W_NOTIF
+
+    %% Worker Operations
+    W_PRIMARY --> PGVEC
+    W_PRIMARY --> OPENROUTER
+    W_PRIMARY --> POLAR
+    W_PRIMARY -. 30s Debounce Schedule .-> Q_BG
+    W_PRIMARY -. Token Stream Event .-> REDIS
+    REDIS -. Push to Sockets .-> WS_ENGINE
+    
+    W_BG --> PG
+    W_BG --> OPENROUTER
+    W_NOTIF --> RESEND
+    
+    WS_ENGINE --> GEOIP
+    WS_ENGINE -. Activity Telemetry .-> TINYBIRD
+
