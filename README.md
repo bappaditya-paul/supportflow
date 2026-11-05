@@ -1,115 +1,120 @@
-# 🚨 AutoFix Room — Autonomous Incident Triage & Hotfix Swarm
+# 🎧 SupportFlow — Collaborative AI Customer Support Swarm
 > **Flip the Switch Hackathon 2026** | Powered by [Switch AI](https://github.com/sandbox-quantum/switch) & [WeMakeDevs](https://www.wemakedevs.org/hackathons/switch)  
-> *Track Submission: Best Business Workflow ($2,000) & Code with Wispr ($500)*
+> *Target Track: Best Business Workflow ($2,000 Cash) & Code with Wispr ($500)*
 
 ---
 
 ## 📌 Executive Summary
 
-Modern engineering teams spend hours each week manually triaging runtime crashes, digging through git blame logs, and drafting boilerplate hotfixes. 
+SupportFlow transforms reactive customer support into an autonomous, evidence-backed operations room inside team chat (**Mattermost**, Slack, or Discord) using **Switch AI**.
 
-**AutoFix Room** transforms reactive on-call chaos into an autonomous, collaborative war room inside your team chat (Mattermost, Slack, or Discord) using **Switch AI**. 
-
-When an incident alert or Sentry stack trace hits the channel:
-1. **`@Triager`** diagnoses the root cause, maps the error to the source file, and tags the coder.
-2. **`@Coder`** writes a reproduction test, applies the code patch, and verifies test execution with exit code 0.
-3. **The Human Engineer** reviews the diff and approves deployment directly in the chat thread.
-
----
-
-## 💡 Market Validation: Grounded in Trending YC Startups
-
-AutoFix Room replicates the high-growth business models of the fastest-scaling **Y Combinator (2024–2026)** developer tool startups:
-
-* **[StarSling](https://www.ycombinator.com/launches/starsling-ai-powered-internal-developer-portal) (YC 2024):** Automatically converts Sentry and GitHub issues into one-click pull requests in Slack.
-* **[Gini](https://ginicomputerai.com) ([YC Profile](https://www.ycombinator.com/companies/opentag)):** Digital coworkers living in workplace chat channels to execute engineering tasks in sandboxes.
-* **[Linzumi](https://www.ycombinator.com/launches/linzumi-team-chat-for-directing-ai-coding-agents) (YC 2024):** Dedicated team chat designed for directing swarms of AI coding agents with human-in-the-loop governance.
-* **[Greptile](https://www.ycombinator.com/companies/greptile) & [Ellipsis](https://www.ycombinator.com/companies/ellipsis) (YC S23/W24):** Multi-million ARR platforms automating codebase QA and Slack-driven bug fixes.
-* **#1 Trending Story on Hacker News (836+ pts):** *"AI is forcing us to pay off 40 years of technical debt."* AutoFix Room directly automates the resolution of legacy bugs and regression prevention.
-
-*(Read our full [MARKET_RESEARCH.md](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/MARKET_RESEARCH.md) for detailed startup teardowns and funding analysis).*
+When a customer complaint or billing ticket arrives:
+1. **`@supportflow-triager`** classifies the issue, extracts ticket metadata, and delegates investigation.
+2. **`@supportflow-investigator`** runs deterministic tools (`lookup_ticket.py`, `lookup_customer.py`), detects plan mismatches, and enforces customer PII masking.
+3. **`@supportflow-responder`** searches company policies (`search_knowledge.py`), drafts an empathetic response, and requests human sign-off.
+4. **Human Support Lead** approves the resolution with one click before any dispatch occurs.
 
 ---
 
-## 🏗️ Architecture & Interaction Flow
+## 🏗️ System Architecture
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Dev as Human Engineer
-    participant Room as Switch Room (#incident-war-room)
-    participant Triager as @autofix-triager
-    participant Coder as @autofix-coder (Codex)
-    participant Target as Sample Codebase (sample-app)
+    actor Customer as Customer (CloudDesk SaaS)
+    actor Lead as Human Support Lead
+    participant Room as Mattermost (#SupportFlow)
+    participant Triager as @supportflow-triager
+    participant Inv as @supportflow-investigator
+    participant Resp as @supportflow-responder
+    participant Engine as Deterministic Python Engine & KB
 
-    Dev->>Room: Pastes error log (or speaks prompt via Wispr Flow)
-    Note over Room: Switch routes message by @mention and addressing rules
-    Room->>Triager: Delivers payload
-    Triager->>Target: Inspects files & stack trace
-    Triager->>Room: Explains root cause & tags @autofix-coder
-    Room->>Coder: Dispatches reproduction directive
-    Coder->>Target: Executes reproduction test (Fails: KeyError)
-    Coder->>Target: Applies patch in cart_service.py
-    Coder->>Target: Re-runs test suite (Passes: 3/3 OK)
-    Coder->>Room: Posts unified diff & asks for human sign-off
-    Dev->>Room: "@autofix-coder approved, merge!"
-    Coder->>Target: Finalizes commit
+    Customer->>Room: Drops Ticket TKT-1001 (Pro plan not active)
+    Note over Room: Switch delivers payload via Room WebSocket
+    Room->>Triager: Classifies ticket (Category: Billing, Priority: High)
+    Triager->>Inv: Delegates customer & transaction lookup
+    Inv->>Engine: python scripts/lookup_customer.py --id CUS-501
+    Engine-->>Inv: Discrepancy Found! Paid $9.99, but Plan is Free
+    Inv->>Room: Posts verified evidence (PII Masked)
+    Triager->>Resp: Instructs response preparation
+    Resp->>Engine: python scripts/search_knowledge.py --query "billing mismatch"
+    Engine-->>Resp: Returns Billing & Activation Policy
+    Resp->>Engine: python scripts/create_draft.py (Pending Approval)
+    Resp->>Room: Displays draft & asks for human sign-off
+    Lead->>Room: "@supportflow-responder approved! Dispatch sync."
+    Lead->>Engine: python scripts/approve_response.py --ticket TKT-1001
 ```
 
 ---
 
 ## 👥 The Autonomous Swarm
 
-| Agent Persona | Role | Addressing Rule | Provider |
+| Agent Persona | Role | Addressing Rule | Provider & Tools |
 | :--- | :--- | :--- | :--- |
-| **`@autofix-triager`** | Lead Incident Triager | `anyone` | Local Coding Agent / LLM |
-| **`@autofix-coder`** | Autonomous Bug Fixer | `owner_and_owner_agents` | `codex` CLI |
-| **Human Engineer** | Incident Commander | Team Member | Mattermost / Slack |
+| **`@supportflow-triager`** | Support Manager | `anyone` | `codex` / `lookup_ticket.py` |
+| **`@supportflow-investigator`** | Customer Investigator | `anyone` | `codex` / `lookup_customer.py` |
+| **`@supportflow-responder`** | Response Writer & Quality Reviewer | `anyone` | `codex` / `search_knowledge.py`, `create_draft.py` |
+| **Human Support Lead** | Final Governance Authority | Team Member | Mattermost Chat / Web Dashboard |
 
 ---
 
 ## 🚀 Quickstart & Setup Guide
 
 ### 1. Prerequisites
-* **Docker:** Running on your host machine.
-* **Switch Console:** Installed (RPM, AppImage, or DMG).
-* **AI Coding Agent:** `codex` installed (`codex-cli 0.152.1`).
+* **Python 3.10+** (Tested on Python 3.14)
+* **Docker** (Running locally on your host)
+* **Switch Console** installed & local server running on port `34079`
 
-### 2. Apply the Switch Room Template
+### 2. Install Dependencies & Run Tests
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Run the 100% passing test suite
+python3 -m pytest -v
+```
+
+### 3. Start the Live FastAPI Dashboard
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+Open **`http://127.0.0.1:8000`** in your browser to watch the live queue and approval dashboard.
+
+### 4. Import the Switch Room Template
 1. Open **Switch Console**.
-2. Go to **Templates** → click **Import Custom Template** (or create a template from `templates/autofix-room.template.yaml`).
-3. Set your team prefix (e.g. `team1`).
-4. Click **Create agent and room**.
-5. Switch launches the `#team1-autofix` room in your local Mattermost chat!
+2. Navigate to **Templates** → click **Import template**.
+3. Select `switch/supportflow-room.template.yaml`.
+4. Choose **Mattermost** as the bridge and your project directory as the workspace.
+5. Click **Create room**.
+6. Switch will launch the `#SupportFlow` channel in Mattermost with all 3 agents ready!
 
 ---
 
 ## 🎬 2-Minute Demo Script (For Hackathon Video)
 
-Follow this exact script when recording your submission video with OBS or Loom:
+### Scene 1: The Problem (0:00 – 0:30)
+> *"Welcome to SupportFlow! For SaaS companies, billing confusion causes support backlogs. Today, customer Alex Morgan submitted ticket `TKT-1001`: 'I paid for Pro yesterday, but my account still says Free.' Let's watch our Switch swarm resolve this in seconds."*
 
-### Phase 1: The Hook (0:00 – 0:30)
-> *"Hi everyone! In modern software teams, incident response is broken. An on-call engineer gets paged at 2 AM, spends 45 minutes finding the broken file, manually writes a fix, and waits for morning reviews. With Switch AI, we built **AutoFix Room** — an autonomous multi-agent engineering swarm that turns solo coding agents into collaborative teammates."*
-
-### Phase 2: Live Incident in Mattermost (0:30 – 1:30)
-1. Open the `#team1-autofix` channel in Mattermost.
-2. Paste the contents of `sample-app/error_trace.log`:
+### Scene 2: Live Swarm Investigation in Mattermost (0:30 – 1:30)
+1. Post in `#SupportFlow`:
    ```text
-   @team1-triager [CRITICAL] 500 Internal Server Error in cart-service:
-   KeyError: 'EXPIRED50' in calculate_total (cart_service.py line 34).
-   14 checkouts aborted!
+   @supportflow-triager Please investigate ticket TKT-1001.
    ```
-3. Watch **`@team1-triager`** reply in the thread, explaining that invalid coupons cause unhandled dictionary lookups.
-4. `@team1-triager` tags **`@team1-coder`**.
-5. `@team1-coder` executes the reproduction test, applies the `.get(coupon_code, 0.0)` fix in `sample-app/cart_service.py`, confirms all unit tests pass, and displays the clean diff.
+2. **`@supportflow-triager`** extracts metadata, confirms category `BILLING`, and tags `@supportflow-investigator`.
+3. **`@supportflow-investigator`** runs `lookup_customer.py` and confirms:
+   - Payment confirmed: `$9.99` on 2026-11-04 (`TXN-9001`).
+   - Discrepancy confirmed: Plan is still `Free`.
+   - Customer email is masked (`al***n@example.com`).
+4. **`@supportflow-responder`** searches `billing.md`, drafts the empathetic reply explaining the provisioning sync delay, and creates the pending draft.
 
-### Phase 3: Human-in-the-Loop Sign-off (1:30 – 2:00)
-1. You (Human Engineer) reply in thread:
+### Scene 3: Human Governance & Approval (1:30 – 2:00)
+1. You (Human Support Lead) reply in thread:
    ```text
-   @team1-coder verified and approved. Merge to staging!
+   @supportflow-responder approved!
    ```
-2. Explain the architecture:
-   > *"Everything you saw ran locally using Docker, Switch Core, and local Codex. Code never left our machine. This solves technical debt instantly, reduces MTTR to seconds, and maintains 100% human oversight."*
+2. Show the web dashboard at `http://127.0.0.1:8000` updating to **APPROVED**.
+3. Emphasize Switch's core values:
+   > *"Everything ran locally through Switch AI and Codex in Docker. Zero PII leakage, zero AI hallucinations, and 100% human governance."*
 
 ---
 
@@ -117,22 +122,33 @@ Follow this exact script when recording your submission video with OBS or Loom:
 
 ```text
 Flip the Switch Hackathon/
-├── MARKET_RESEARCH.md            # YC startup precedent & market validation
-├── README.md                     # Project overview & demo walkthrough
-├── templates/
-│   └── autofix-room.template.yaml# Official Switch Room specification
-└── sample-app/
-    ├── cart_service.py           # Target service with simulated edge-case bug
-    ├── test_cart.py              # Reproduction and regression test suite
-    └── error_trace.log           # Realistic production incident log
+├── app/
+│   ├── main.py                     # FastAPI backend & Live Dashboard
+│   ├── models.py                   # Pydantic schemas
+│   └── services/                   # Ticket, Customer, KB & Draft services
+├── data/
+│   ├── tickets.json                # Demo support tickets
+│   ├── customers.json              # Verified customer ledger
+│   └── knowledge_base/             # Markdown company policies
+├── scripts/                        # Deterministic CLI tools
+│   ├── lookup_ticket.py
+│   ├── lookup_customer.py
+│   ├── search_knowledge.py
+│   ├── create_draft.py
+│   └── approve_response.py
+├── switch/
+│   ├── supportflow-room.template.yaml # Official Switch room specification
+│   └── agent-prompts/              # Extended markdown system prompts
+├── tests/                          # 10 Pytest test suites (100% passing)
+├── Dockerfile                      # Production container image
+├── docker-compose.yml              # Single-command stack
+└── requirements.txt                # Python dependencies
 ```
 
 ---
 
 ## 🏆 Hackathon Tracks Targeted
 
-* **Best Business Workflow ($2,000 Cash):** Practical, production-grade ROI for engineering and on-call teams.
-* **Code with Wispr ($500 Cash):** Dictate incident commands and bug descriptions by voice into chat.
-* **Best Blog (AirPods 5):** Technical walkthrough based on `MARKET_RESEARCH.md`.
+* **Best Business Workflow ($2,000 Cash):** Practical, production-grade ROI for support operations.
+* **Code with Wispr ($500 Cash):** Dictate ticket commands via Wispr Flow voice.
 * **#HowISwitch Post (Logitech Mechanical Keyboard):** 60-second video demo shared on X/LinkedIn.
-

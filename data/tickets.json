@@ -1,0 +1,32 @@
+[
+  {
+    "ticket_id": "TKT-1001",
+    "customer_id": "CUS-501",
+    "category": "billing",
+    "priority": "high",
+    "subject": "Pro subscription not activated",
+    "message": "I paid for the Pro plan yesterday, but my account still shows the Free plan. My payment was deducted. Please resolve this issue.",
+    "status": "open",
+    "created_at": "2026-11-05T08:30:00Z"
+  },
+  {
+    "ticket_id": "TKT-1002",
+    "customer_id": "CUS-502",
+    "category": "refund",
+    "priority": "medium",
+    "subject": "Refund request - duplicate charge",
+    "message": "I was charged twice for my monthly subscription ($9.99 x 2). Please refund the duplicate transaction.",
+    "status": "open",
+    "created_at": "2026-11-05T09:15:00Z"
+  },
+  {
+    "ticket_id": "TKT-1003",
+    "customer_id": "CUS-503",
+    "category": "technical",
+    "priority": "medium",
+    "subject": "Cannot log in to dashboard",
+    "message": "The login page keeps throwing an authentication error after password submit.",
+    "status": "open",
+    "created_at": "2026-11-05T10:00:00Z"
+  }
+]
