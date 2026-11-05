@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+workflow-video/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# OS & Environment
+.DS_Store
+*.env
+*.log
+
+# Large Binaries / Downloads
+*.rpm
+*.AppImage
+*.deb
