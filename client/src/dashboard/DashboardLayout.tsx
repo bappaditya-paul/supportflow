@@ -21,6 +21,7 @@ interface DashboardLayoutProps {
   onRejectDraft: () => void;
   onSendOperatorMessage: (text: string, isInternal: boolean) => void;
   onResyncCustomer?: () => void;
+  compact?: boolean;
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
@@ -39,16 +40,19 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   onRejectDraft,
   onSendOperatorMessage,
   onResyncCustomer,
+  compact = false,
 }) => {
   const [currentTab, setCurrentTab] = useState('inbox');
+  const [showProfileDrawer, setShowProfileDrawer] = useState(!compact);
 
   return (
-    <div className="flex h-screen w-full bg-[#0d0e12] text-neutral-200 overflow-hidden font-sans">
+    <div className="flex h-full w-full bg-[#0d0e12] text-neutral-200 overflow-hidden font-sans">
       {/* 1. Global Navigation Sidebar */}
       <SidebarNav
         currentTab={currentTab}
         onSelectTab={setCurrentTab}
         openTicketsCount={tickets.filter((t) => t.status !== 'resolved').length}
+        compact={compact}
       />
 
       {/* 2. Main Content Area */}
@@ -59,6 +63,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             tickets={tickets}
             selectedTicketId={selectedTicketId}
             onSelectTicket={onSelectTicket}
+            compact={compact}
           />
 
           {/* Central Conversation Thread */}
@@ -77,11 +82,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           />
 
           {/* Customer Metadata Drawer */}
-          <VisitorProfileDrawer
-            customer={customer}
-            ticket={activeTicket}
-            onResync={onResyncCustomer}
-          />
+          {showProfileDrawer && (
+            <VisitorProfileDrawer
+              customer={customer}
+              ticket={activeTicket}
+              onResync={onResyncCustomer}
+            />
+          )}
         </div>
       )}
 

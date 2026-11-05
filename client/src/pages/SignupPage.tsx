@@ -1,29 +1,43 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import {
-  Building2,
+  Github,
   Mail,
   Lock,
   User,
   ArrowRight,
-  MessageSquare,
   ShieldCheck,
   CheckCircle2,
+  AlertCircle,
   Loader2,
+  ChevronDown,
+  Building2,
 } from 'lucide-react';
+import { MaskLogo, FacehashAvatar, AsciiMatrixBackground } from '../components/primitives';
 
 export const SignupPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const plan = searchParams.get('plan') || 'hobby';
+
   const [fullName, setFullName] = useState('Alex Rivera');
   const [email, setEmail] = useState('alex@clouddesk.dev');
-  const [subdomain, setSubdomain] = useState('clouddesk');
-  const [chatBridge, setChatBridge] = useState<'mattermost' | 'slack' | 'discord'>('mattermost');
+  const [workspace, setWorkspace] = useState('CloudDesk Inc');
   const [password, setPassword] = useState('••••••••••••');
+  const [showEmailForm, setShowEmailForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!fullName || !email || !password) {
+      setError('Please fill out all required fields.');
+      return;
+    }
+    setError('');
     setLoading(true);
+
     setTimeout(() => {
       setLoading(false);
       navigate('/dashboard');
@@ -31,195 +45,235 @@ export const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0e12] text-neutral-100 flex flex-col justify-center py-12 px-4 sm:px-6 select-none">
-      <div className="max-w-4xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 border border-neutral-800 rounded-[4px] bg-[#121319] overflow-hidden shadow-2xl">
-        {/* Left Column: Registration Form */}
-        <div className="p-8 sm:p-10 flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FCFCFC] dark:bg-[#0d0e12] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans select-none overflow-x-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row">
+        {/* LEFT COLUMN: SIGNUP CARD */}
+        <div className="w-full lg:w-1/2 flex flex-col justify-between p-8 sm:p-14 lg:p-20 z-10">
           <div>
-            <div className="flex items-center gap-2 mb-6">
-              <div className="w-7 h-7 rounded-[3px] bg-gradient-to-br from-blue-500 to-indigo-700 flex items-center justify-center text-white font-bold text-xs shadow-sm">
-                SF
-              </div>
-              <span className="font-bold text-sm tracking-tight text-white uppercase font-mono">
-                SupportFlow
+            {/* Brand Logo Header */}
+            <Link to="/" className="inline-flex items-center gap-2 mb-12">
+              <MaskLogo size={24} className="text-neutral-900 dark:text-white" />
+              <span className="font-bold text-base tracking-tight text-neutral-900 dark:text-white">
+                supportflow
               </span>
-            </div>
+            </Link>
 
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              Create Your Support Workspace
-            </h1>
-            <p className="text-xs text-neutral-400 mt-1">
-              Connect your team chat and launch your autonomous support swarm in minutes.
-            </p>
-
-            <form onSubmit={handleSignup} className="mt-6 space-y-3.5">
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <User className="w-3.5 h-3.5 text-neutral-500 absolute left-2.5 top-2.5" />
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    placeholder="Alex Rivera"
-                    className="w-full pl-8 pr-3 py-1.5 bg-[#161722] border border-neutral-800 focus:border-blue-500 rounded-[2px] text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none transition-colors"
-                  />
-                </div>
+            <div className="max-w-md">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-mono font-medium text-[#DF3E03] dark:text-[#FF6633] mb-4 border border-dashed border-[#DF3E03]/30 rounded-[2px] bg-[#DF3E03]/5">
+                <span>Selected: {plan.toUpperCase()} TIER</span>
               </div>
 
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                  Work Email
-                </label>
-                <div className="relative">
-                  <Mail className="w-3.5 h-3.5 text-neutral-500 absolute left-2.5 top-2.5" />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="alex@company.com"
-                    className="w-full pl-8 pr-3 py-1.5 bg-[#161722] border border-neutral-800 focus:border-blue-500 rounded-[2px] text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none transition-colors"
-                  />
-                </div>
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
+                Create your account
+              </h1>
+              <p className="text-sm text-neutral-500 mb-8 leading-relaxed">
+                Start your 14-day free trial. Zero hallucinations, 10-line integration, and team chat sync.
+              </p>
+
+              {/* Social Login Buttons */}
+              <div className="space-y-2.5 mb-6">
+                <button
+                  type="button"
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <path
+                      fill="#4285F4"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                    />
+                  </svg>
+                  <span>Continue with Google</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
+                >
+                  <Github className="w-4 h-4 text-neutral-900 dark:text-white" />
+                  <span>Continue with GitHub</span>
+                </button>
               </div>
 
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                  Workspace Subdomain
-                </label>
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    value={subdomain}
-                    onChange={(e) => setSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                    required
-                    placeholder="acme"
-                    className="flex-1 px-3 py-1.5 bg-[#161722] border border-neutral-800 focus:border-blue-500 rounded-l-[2px] text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none font-mono"
-                  />
-                  <span className="px-2.5 py-1.5 bg-[#1a1b26] border border-l-0 border-neutral-800 rounded-r-[2px] text-[11px] text-neutral-400 font-mono">
-                    .supportflow.ai
-                  </span>
-                </div>
-              </div>
+              {/* Progressive Disclosure: Use email instead */}
+              {!showEmailForm ? (
+                <button
+                  type="button"
+                  onClick={() => setShowEmailForm(true)}
+                  className="w-full py-2 text-xs font-mono text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <span>Use email instead</span>
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="my-5 flex items-center gap-3">
+                    <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
+                    <span className="text-[10px] font-mono text-neutral-400 uppercase">
+                      Registration Details
+                    </span>
+                    <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
+                  </div>
 
-              {/* Chat Bridge Selection */}
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                  Target Team Chat Bridge
-                </label>
-                <div className="grid grid-cols-3 gap-2 text-xs font-mono">
-                  {(['mattermost', 'slack', 'discord'] as const).map((bridge) => (
+                  {error && (
+                    <div className="mb-4 p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-[2px] text-xs text-rose-600 dark:text-rose-300 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                      <span>{error}</span>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSignup} className="space-y-3.5">
+                    <div>
+                      <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                        placeholder="Alex Rivera"
+                        className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
+                        Work Email
+                      </label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        placeholder="alex@clouddesk.dev"
+                        className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
+                        Workspace Name
+                      </label>
+                      <input
+                        type="text"
+                        value={workspace}
+                        onChange={(e) => setWorkspace(e.target.value)}
+                        required
+                        placeholder="CloudDesk Inc"
+                        className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
+                        Password
+                      </label>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        placeholder="••••••••••••"
+                        className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors font-mono"
+                      />
+                    </div>
+
                     <button
-                      key={bridge}
-                      type="button"
-                      onClick={() => setChatBridge(bridge)}
-                      className={`p-2 rounded-[2px] border text-center capitalize transition-colors cursor-pointer ${
-                        chatBridge === bridge
-                          ? 'bg-blue-950/60 border-blue-500 text-blue-300 font-semibold'
-                          : 'bg-[#161722] border-neutral-800 text-neutral-400 hover:text-neutral-200'
-                      }`}
+                      type="submit"
+                      disabled={loading}
+                      className="w-full py-2.5 px-4 bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 text-xs font-semibold rounded-[2px] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 mt-4"
                     >
-                      {bridge}
+                      {loading ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Creating workspace...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Create workspace</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </>
+                      )}
                     </button>
-                  ))}
-                </div>
-              </div>
+                  </form>
+                </motion.div>
+              )}
 
-              <div>
-                <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className="w-3.5 h-3.5 text-neutral-500 absolute left-2.5 top-2.5" />
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    placeholder="••••••••••••"
-                    className="w-full pl-8 pr-3 py-1.5 bg-[#161722] border border-neutral-800 focus:border-blue-500 rounded-[2px] text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none transition-colors"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full mt-4 flex items-center justify-center gap-2 py-2 px-3 bg-blue-600 hover:bg-blue-500 active:scale-98 text-xs font-semibold text-white rounded-[2px] transition-all cursor-pointer shadow-sm disabled:opacity-50"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Provisioning Swarm...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Create Workspace & Start Free</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </>
-                )}
-              </button>
-            </form>
+              {/* Bottom Switcher */}
+              <p className="mt-8 text-xs text-neutral-500">
+                Already have an account?{' '}
+                <Link
+                  to="/login"
+                  className="font-medium text-neutral-900 dark:text-white underline hover:text-[#DF3E03] transition-colors"
+                >
+                  Log in
+                </Link>
+              </p>
+            </div>
           </div>
 
-          <div className="pt-6 border-t border-neutral-800 text-center text-xs text-neutral-500">
-            Already have an account?{' '}
-            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-semibold">
-              Sign In
-            </Link>
+          <div className="pt-8 text-[11px] text-neutral-400 font-mono">
+            By signing up, you agree to our Terms of Service & Privacy Policy.
           </div>
         </div>
 
-        {/* Right Column: Architectural Highlights */}
-        <div className="p-8 bg-[#0b0c10] border-t md:border-t-0 md:border-l border-neutral-800 flex flex-col justify-between text-xs">
-          <div className="space-y-4">
-            <h2 className="text-sm font-bold text-white uppercase font-mono tracking-wider">
-              Autonomous Support Architecture
-            </h2>
-            <p className="text-neutral-400 text-xs leading-relaxed">
-              When you connect SupportFlow, Switch AI launches an isolated room in your team chat. Every support turn is collaborative:
-            </p>
+        {/* RIGHT COLUMN: VERTICAL DIVIDER & ASCII LIVE WIDGET */}
+        <div className="hidden lg:flex w-1/2 relative bg-neutral-100/50 dark:bg-[#111218]/50 border-l border-dashed border-neutral-200 dark:border-neutral-800 flex-col items-center justify-center p-12 overflow-hidden">
+          <AsciiMatrixBackground opacity={0.12} />
 
-            <div className="space-y-3 pt-2">
-              <div className="p-3 bg-[#13141c] border border-neutral-800 rounded-[2px] space-y-1">
-                <div className="font-mono text-[11px] font-bold text-blue-400 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3 h-3 text-blue-400" />
-                  Deterministic Tool Inspection
-                </div>
-                <p className="text-[11px] text-neutral-400 leading-relaxed font-sans">
-                  Agents audit databases and Stripe via strictly typed Python tools. Zero hallucinated records.
-                </p>
-              </div>
-
-              <div className="p-3 bg-[#13141c] border border-neutral-800 rounded-[2px] space-y-1">
-                <div className="font-mono text-[11px] font-bold text-emerald-400 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                  100% Human Governance Gate
-                </div>
-                <p className="text-[11px] text-neutral-400 leading-relaxed font-sans">
-                  No automated resolution leaves without explicit sign-off from your team operators.
-                </p>
-              </div>
-
-              <div className="p-3 bg-[#13141c] border border-neutral-800 rounded-[2px] space-y-1">
-                <div className="font-mono text-[11px] font-bold text-amber-400 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3 h-3 text-amber-400" />
-                  Live Keystroke Ghost Typing
-                </div>
-                <p className="text-[11px] text-neutral-400 leading-relaxed font-sans">
-                  Broadcast visitor keystrokes in real time to accelerate first-response times by 60%.
-                </p>
+          <div className="relative z-10 w-full max-w-[340px] bg-white dark:bg-[#14151e] border border-neutral-300 dark:border-neutral-700/80 rounded-[8px] p-6 shadow-2xl">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex -space-x-2">
+                <FacehashAvatar seed="sarah" size="sm" showStatus status="online" />
+                <FacehashAvatar seed="lucas" size="sm" showStatus status="online" />
+                <FacehashAvatar seed="alex" size="sm" showStatus status="online" />
               </div>
             </div>
-          </div>
 
-          <div className="pt-6 border-t border-neutral-850 text-[10px] text-neutral-500 font-mono flex items-center justify-between">
-            <span>Flip the Switch Hackathon</span>
-            <span className="text-blue-400">Track 1: Business Workflow</span>
+            <h2 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight mb-1">
+              Evening, how can we help?
+            </h2>
+            <p className="text-xs text-neutral-500 mb-6">
+              We usually reply in a few minutes.
+            </p>
+
+            <Link
+              to="/split"
+              className="w-full block p-3.5 bg-neutral-50 dark:bg-neutral-900/80 hover:bg-neutral-100 dark:hover:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-[4px] transition-colors cursor-pointer group"
+            >
+              <div className="flex items-center justify-between text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                <span>Ask us a question</span>
+                <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:translate-x-0.5 transition-transform" />
+              </div>
+              <p className="text-[11px] text-neutral-500 mt-0.5">
+                Connected to Switch AI & #cloud-support
+              </p>
+            </Link>
+
+            <div className="mt-8 pt-4 border-t border-dashed border-neutral-200 dark:border-neutral-800 flex items-center justify-center gap-1.5 text-[11px] font-mono text-neutral-400">
+              <span>We run on</span>
+              <MaskLogo size={14} className="text-neutral-900 dark:text-white" />
+              <span className="font-bold text-neutral-700 dark:text-neutral-300">supportflow</span>
+            </div>
           </div>
         </div>
       </div>

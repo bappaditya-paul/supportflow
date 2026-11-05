@@ -15,6 +15,8 @@ import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { DocsPage } from './pages/DocsPage';
+import { ChangelogPage } from './pages/ChangelogPage';
+import { BlogPage } from './pages/BlogPage';
 import { CloudDeskDemo } from './demo/CloudDeskDemo';
 import { SupportWidget } from './widget/SupportWidget';
 import { DashboardLayout } from './dashboard/DashboardLayout';
@@ -253,7 +255,15 @@ function AppShell() {
     }
 
     return () => {
-      ws?.close();
+      if (ws) {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        } else if (ws.readyState === WebSocket.CONNECTING) {
+          ws.onopen = () => {
+            ws?.close();
+          };
+        }
+      }
     };
   }, []);
 
@@ -446,6 +456,8 @@ function AppShell() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/docs" element={<DocsPage />} />
+          <Route path="/changelog" element={<ChangelogPage />} />
+          <Route path="/blog" element={<BlogPage />} />
 
           {/* Sandbox Demo Page with Floating Support Widget */}
           <Route
@@ -522,6 +534,7 @@ function AppShell() {
                     onRejectDraft={handleRejectDraft}
                     onSendOperatorMessage={handleSendOperatorMessage}
                     onResyncCustomer={handleResyncCustomer}
+                    compact={true}
                   />
                 </div>
               </div>

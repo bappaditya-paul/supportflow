@@ -6,12 +6,14 @@ interface ConversationListPaneProps {
   tickets: Ticket[];
   selectedTicketId: string | null;
   onSelectTicket: (ticketId: string) => void;
+  compact?: boolean;
 }
 
 export const ConversationListPane: React.FC<ConversationListPaneProps> = ({
   tickets,
   selectedTicketId,
   onSelectTicket,
+  compact = false,
 }) => {
   const [filter, setFilter] = useState<'all' | 'investigating' | 'awaiting_approval' | 'resolved'>('all');
   const [search, setSearch] = useState('');
@@ -28,7 +30,7 @@ export const ConversationListPane: React.FC<ConversationListPaneProps> = ({
   });
 
   return (
-    <div className="w-80 shrink-0 h-full bg-[#14151b] border-r border-neutral-800 flex flex-col select-none">
+    <div className={`${compact ? 'w-60' : 'w-72'} shrink-0 h-full bg-[#14151b] border-r border-neutral-800 flex flex-col select-none transition-all`}>
       {/* Header & Search */}
       <div className="p-3 border-b border-neutral-800 space-y-2">
         <div className="flex items-center justify-between">
