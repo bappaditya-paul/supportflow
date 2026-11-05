@@ -56,3 +56,4 @@ The Demonstration Portal simulates a realistic customer B2B SaaS platform (*Clou
 - **Trigger Scenario Button:** Injects the scenario immediately into both the widget and the operator inbox.
 - **Typing in Widget:** Emits `GHOST_TYPING` WebSocket event; operator sees live keystroke preview before submit.
 - **Split View Switcher:** Toggles split-screen layout where judges can see the customer typing on the left and the operator desk responding on the right.
+

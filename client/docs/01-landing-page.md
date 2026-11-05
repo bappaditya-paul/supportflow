@@ -59,3 +59,4 @@ The public homepage communicates the core value proposition of SupportFlow: an a
 - **Interactive Replay:** Clicking "Replay Flow" steps through the multi-agent execution timeline with pulsating agent avatars.
 - **Call-to-Action:** Clicking "Get Started Free" redirects to `/signup`.
 - **Sign In:** Redirects to `/login`.
+

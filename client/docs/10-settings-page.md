@@ -52,3 +52,4 @@ The Settings Page manages infrastructure connections, chat bridges, API keys, an
 - **Test Connection:** Pings `http://localhost:34079/health` and displays live ping response time.
 - **Toggle Governance:** Saving immediately enforces security checks across the FastAPI backend.
 - **Copy API Key:** Clicking key field copies token to clipboard securely.
+

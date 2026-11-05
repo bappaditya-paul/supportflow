@@ -62,3 +62,4 @@ export interface SwitchAgentState {
   status: 'idle' | 'analyzing' | 'querying_db' | 'drafting' | 'ready';
   last_action?: string;
 }
+

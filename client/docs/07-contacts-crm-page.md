@@ -48,3 +48,4 @@ The Customer Directory provides support leads and operators with a complete audi
 - **Search Filtering:** Instant client-side fuzzy search across IDs, names, and emails.
 - **Discrepancy Tag:** Customers with mismatched tiers flash a soft amber/red warning pill.
 - **Force Sync Action:** Calls backend service to immediately update user's database role and clears the discrepancy tag.
+

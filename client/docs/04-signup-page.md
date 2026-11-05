@@ -54,3 +54,4 @@ The Registration page allows new companies, support leads, and developers to cre
 - **Subdomain Check:** Live debounced check verifying slug availability (`clouddesk.supportflow.ai`).
 - **Bridge Selection:** Changes setup hints (e.g. prompts for Mattermost webhook URL or Switch Docker container).
 - **Form Submission:** Generates user account, provisions initial workspace, and redirects to `/dashboard/inbox`.
+

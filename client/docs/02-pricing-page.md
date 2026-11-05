@@ -65,3 +65,4 @@ The Pricing Page presents transparent, developer-first pricing tiers for Support
   - Pro: Redirects to `/signup?plan=pro`.
   - Enterprise: Opens modal or mailto trigger.
 - **Accordion:** Smooth height transition revealing policy details.
+

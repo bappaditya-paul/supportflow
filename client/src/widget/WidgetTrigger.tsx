@@ -32,3 +32,4 @@ export const WidgetTrigger: React.FC<WidgetTriggerProps> = ({
     </button>
   );
 };
+

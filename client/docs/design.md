@@ -218,3 +218,4 @@ To ensure sub-second loads and ultra-fast operator workflows:
 - [x] Implement the `ApprovalDispatchGate` with 1-click human verification.
 - [x] Add 3-way view switcher in `App.tsx` (`Split Demo`, `Customer SaaS`, `Operator Cockpit`).
 - [x] Compile cleanly with `npm run build` in `client/`.
+

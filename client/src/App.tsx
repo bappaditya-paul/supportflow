@@ -1,17 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import {
-  Monitor,
-  Columns,
-  LayoutDashboard,
-  Sparkles,
-  Wifi,
-  WifiOff,
-  RefreshCw,
-  ExternalLink,
-} from 'lucide-react';
+  Navbar,
+} from './components/Navbar';
+import {
+  Footer,
+} from './components/Footer';
+import {
+  CommandPalette,
+} from './components/CommandPalette';
+import { LandingPage } from './pages/LandingPage';
+import { PricingPage } from './pages/PricingPage';
+import { LoginPage } from './pages/LoginPage';
+import { SignupPage } from './pages/SignupPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { DocsPage } from './pages/DocsPage';
+import { CloudDeskDemo } from './demo/CloudDeskDemo';
 import { SupportWidget } from './widget/SupportWidget';
 import { DashboardLayout } from './dashboard/DashboardLayout';
-import { CloudDeskDemo } from './demo/CloudDeskDemo';
 import type { Ticket, Customer, TimelineItem, DraftResponse, SwitchAgentState } from './types';
 
 // Initial Mock Fixtures
@@ -171,57 +177,6 @@ const INITIAL_TIMELINES: Record<string, TimelineItem[]> = {
       created_at: '7 mins ago',
     },
   ],
-  'TKT-1002': [
-    {
-      id: 'msg-t2-1',
-      ticket_id: 'TKT-1002',
-      sender_type: 'customer',
-      sender_name: 'Sarah Chen',
-      text: 'We are conducting a load test on our staging cluster tonight. We need our concurrent node limit bumped from 20 to 50 nodes for the next 48 hours.',
-      visibility: 'public',
-      created_at: '45 mins ago',
-    },
-    {
-      id: 'tool-t2-1',
-      ticket_id: 'TKT-1002',
-      sender_type: 'agent',
-      sender_name: '@investigator',
-      text: 'Checking SLA tier and enterprise contracts...',
-      visibility: 'private',
-      created_at: '44 mins ago',
-      tool_call: {
-        name: 'lookup_customer',
-        params: { customer_id: 'CUST-002' },
-        result: {
-          customer_id: 'CUST-002',
-          name: 'Sarah Chen',
-          plan: 'enterprise',
-          contract: 'Enterprise-Tier-A',
-        },
-        status: 'completed',
-      },
-    },
-  ],
-  'TKT-1003': [
-    {
-      id: 'msg-t3-1',
-      ticket_id: 'TKT-1003',
-      sender_type: 'customer',
-      sender_name: 'Marcus Vance',
-      text: 'Where can I find the Okta SAML 2.0 metadata certificate?',
-      visibility: 'public',
-      created_at: '2 hours ago',
-    },
-    {
-      id: 'msg-t3-2',
-      ticket_id: 'TKT-1003',
-      sender_type: 'operator',
-      sender_name: 'Operator Desk',
-      text: 'Hi Marcus! You can download our latest SAML metadata XML and signing cert directly from your Settings > Security > SSO tab, or at https://clouddesk.dev/saml/metadata.xml.',
-      visibility: 'public',
-      created_at: '1 hour ago',
-    },
-  ],
 };
 
 const INITIAL_DRAFTS: Record<string, DraftResponse> = {
@@ -235,21 +190,16 @@ const INITIAL_DRAFTS: Record<string, DraftResponse> = {
       'API rate limit restricted to 60 req/min instead of Pro entitlement (600 req/min).',
     ],
     applicable_policies: ['Policy KB-001: Billing Discrepancy Protocol', 'Policy KB-002: <15m Pro SLA'],
-    proposed_response: `Hi Alex,
-
-Thank you for reaching out and alerting us to this!
-
-We investigated our payment gateway records and verified that your $49 Pro payment was processed successfully. Due to a momentary webhook delivery delay, your database record was not immediately updated.
-
-We have now manually synchronized your account to Pro and unlocked your API quota to 600 req/min. You have full access to all Pro features right now.
-
-We apologize for the friction and wish you great success with your product launch tomorrow! Please let us know if there is anything else we can do to support your launch.`,
+    proposed_response: `Hi Alex,\n\nThank you for reaching out and alerting us to this!\n\nWe investigated our payment gateway records and verified that your $49 Pro payment was processed successfully. Due to a momentary webhook delivery delay, your database record was not immediately updated.\n\nWe have now manually synchronized your account to Pro and unlocked your API quota to 600 req/min. You have full access to all Pro features right now.\n\nWe apologize for the friction and wish you great success with your product launch tomorrow! Please let us know if there is anything else we can do to support your launch.`,
     status: 'PENDING_APPROVAL',
   },
 };
 
-export default function App() {
-  const [viewMode, setViewMode] = useState<'split' | 'saas' | 'operator'>('split');
+function AppShell() {
+  const location = useLocation();
+  const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
+
+  // Tickets & Swarm States
   const [tickets, setTickets] = useState<Ticket[]>(INITIAL_TICKETS);
   const [selectedTicketId, setSelectedTicketId] = useState<string>('TKT-1001');
   const [customers, setCustomers] = useState<Record<string, Customer>>(INITIAL_CUSTOMERS);
@@ -257,17 +207,16 @@ export default function App() {
   const [drafts, setDrafts] = useState<Record<string, DraftResponse>>(INITIAL_DRAFTS);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Widget state
+  // Widget States
   const [isWidgetOpen, setIsWidgetOpen] = useState(true);
   const [customerTypingText, setCustomerTypingText] = useState('');
   const [isCustomerTyping, setIsCustomerTyping] = useState(false);
   const [isAgentTyping, setIsAgentTyping] = useState(false);
 
-  // WebSocket Connection State
+  // WebSocket Connection
   const [wsConnected, setWsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
 
-  // Switch AI Agents Live Status
   const [agents, setAgents] = useState<SwitchAgentState[]>([
     { name: '@triager', role: 'Classifier', status: 'idle' },
     { name: '@investigator', role: 'Deterministic Tools', status: 'idle' },
@@ -279,34 +228,23 @@ export default function App() {
   const activeTimeline = timelines[selectedTicketId] || [];
   const activeDraft = drafts[selectedTicketId] || null;
 
-  // Try connecting to FastAPI WebSocket server
+  // Initialize WebSocket
   useEffect(() => {
     let ws: WebSocket | null = null;
     try {
       ws = new WebSocket('ws://localhost:8000/ws');
-      ws.onopen = () => {
-        setWsConnected(true);
-      };
-      ws.onclose = () => {
-        setWsConnected(false);
-      };
-      ws.onerror = () => {
-        setWsConnected(false);
-      };
+      ws.onopen = () => setWsConnected(true);
+      ws.onclose = () => setWsConnected(false);
+      ws.onerror = () => setWsConnected(false);
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (data.type === 'GHOST_TYPING') {
             setCustomerTypingText(data.text);
             setIsCustomerTyping(data.is_typing);
-          } else if (data.type === 'NEW_TIMELINE_ITEM') {
-            setTimelines((prev) => ({
-              ...prev,
-              [data.ticket_id]: [...(prev[data.ticket_id] || []), data.item],
-            }));
           }
         } catch (e) {
-          console.error('Failed to parse WebSocket message', e);
+          console.error(e);
         }
       };
       wsRef.current = ws;
@@ -319,12 +257,10 @@ export default function App() {
     };
   }, []);
 
-  // Handle Customer Typing in Widget (Ghost-typing broadcast)
   const handleTyping = (text: string, isTyping: boolean) => {
     setCustomerTypingText(text);
     setIsCustomerTyping(isTyping);
 
-    // Send through WebSocket if connected
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(
         JSON.stringify({
@@ -337,7 +273,6 @@ export default function App() {
     }
   };
 
-  // Handle Customer Sending Message
   const handleSendMessage = (text: string) => {
     const newItem: TimelineItem = {
       id: `msg-${Date.now()}`,
@@ -354,7 +289,6 @@ export default function App() {
       [selectedTicketId]: [...(prev[selectedTicketId] || []), newItem],
     }));
 
-    // Trigger Swarm Response Simulation
     setIsAgentTyping(true);
     setAgents([
       { name: '@triager', role: 'Classifier', status: 'analyzing' },
@@ -378,24 +312,13 @@ export default function App() {
       ]);
       setIsAgentTyping(false);
     }, 2000);
-
-    setTimeout(() => {
-      setAgents([
-        { name: '@triager', role: 'Classifier', status: 'idle' },
-        { name: '@investigator', role: 'Deterministic Tools', status: 'idle' },
-        { name: '@responder', role: 'Draft Composer', status: 'ready' },
-      ]);
-    }, 2500);
   };
 
-  // Handle Operator Approving Draft
   const handleApproveDraft = (finalText: string) => {
     setIsProcessing(true);
-
     setTimeout(() => {
       const approvedAt = new Date().toLocaleTimeString();
 
-      // Update Draft
       setDrafts((prev) => ({
         ...prev,
         [selectedTicketId]: {
@@ -407,7 +330,6 @@ export default function App() {
         },
       }));
 
-      // Update Ticket
       setTickets((prev) =>
         prev.map((t) =>
           t.ticket_id === selectedTicketId
@@ -416,7 +338,6 @@ export default function App() {
         )
       );
 
-      // Resync customer DB plan to pro
       if (activeTicket) {
         setCustomers((prev) => ({
           ...prev,
@@ -427,7 +348,6 @@ export default function App() {
         }));
       }
 
-      // Add dispatched message to timeline
       const dispatchedItem: TimelineItem = {
         id: `msg-dispatched-${Date.now()}`,
         ticket_id: selectedTicketId,
@@ -444,10 +364,9 @@ export default function App() {
       }));
 
       setIsProcessing(false);
-    }, 600);
+    }, 500);
   };
 
-  // Handle Operator Rejecting Draft
   const handleRejectDraft = () => {
     setDrafts((prev) => {
       const copy = { ...prev };
@@ -462,7 +381,6 @@ export default function App() {
     );
   };
 
-  // Handle Operator Sending Note / Public Reply
   const handleSendOperatorMessage = (text: string, isInternal: boolean) => {
     const newItem: TimelineItem = {
       id: `msg-op-${Date.now()}`,
@@ -480,18 +398,11 @@ export default function App() {
     }));
   };
 
-  // Handle Scenario Injection
   const handleTriggerScenario = (scenario: 'billing' | 'refund' | 'access') => {
-    if (scenario === 'billing') {
-      setSelectedTicketId('TKT-1001');
-      setIsWidgetOpen(true);
-    } else if (scenario === 'refund') {
-      setSelectedTicketId('TKT-1002');
-      setIsWidgetOpen(true);
-    } else if (scenario === 'access') {
-      setSelectedTicketId('TKT-1003');
-      setIsWidgetOpen(true);
-    }
+    if (scenario === 'billing') setSelectedTicketId('TKT-1001');
+    if (scenario === 'refund') setSelectedTicketId('TKT-1002');
+    if (scenario === 'access') setSelectedTicketId('TKT-1003');
+    setIsWidgetOpen(true);
   };
 
   const handleResyncCustomer = () => {
@@ -511,109 +422,43 @@ export default function App() {
     }
   };
 
+  const isFullscreenView = location.pathname.startsWith('/dashboard') || location.pathname === '/split';
+
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#0d0e12] overflow-hidden select-none">
-      {/* Top Navigation & Hackathon Control Bar */}
-      <header className="h-12 bg-[#12131a] border-b border-neutral-800 px-4 flex items-center justify-between z-40 shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-[2px] bg-blue-500 shadow-sm" />
-            <span className="font-bold text-xs tracking-tight text-white uppercase font-mono">
-              SupportFlow
-            </span>
-          </div>
-          <span className="text-neutral-600">|</span>
-          <span className="text-[11px] text-neutral-300 font-medium hidden sm:inline">
-            Flip the Switch Hackathon · Track 1: Best Business Workflow
-          </span>
-        </div>
+    <div className="min-h-screen bg-[#0d0e12] text-neutral-100 flex flex-col font-sans select-none">
+      <CommandPalette
+        isOpen={cmdPaletteOpen}
+        onClose={() => setCmdPaletteOpen(false)}
+      />
 
-        {/* View Mode Selector */}
-        <div className="flex items-center bg-[#181a24] p-0.5 rounded-[2px] border border-neutral-800 text-xs">
-          <button
-            onClick={() => setViewMode('split')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] transition-colors cursor-pointer ${
-              viewMode === 'split'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            <Columns className="w-3.5 h-3.5" />
-            <span>Split Demo View</span>
-          </button>
+      {/* Global Navbar */}
+      <Navbar
+        onOpenCommandPalette={() => setCmdPaletteOpen(true)}
+        wsConnected={wsConnected}
+      />
 
-          <button
-            onClick={() => setViewMode('saas')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] transition-colors cursor-pointer ${
-              viewMode === 'saas'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            <Monitor className="w-3.5 h-3.5" />
-            <span>Customer SaaS App</span>
-          </button>
+      {/* Main View Router */}
+      <div className="flex-1 flex flex-col">
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/docs" element={<DocsPage />} />
 
-          <button
-            onClick={() => setViewMode('operator')}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-[2px] transition-colors cursor-pointer ${
-              viewMode === 'operator'
-                ? 'bg-blue-600 text-white font-medium'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            <LayoutDashboard className="w-3.5 h-3.5" />
-            <span>Operator Cockpit</span>
-          </button>
-        </div>
-
-        {/* Connection & Telemetry Indicators */}
-        <div className="flex items-center gap-3 text-xs font-mono">
-          <div className="flex items-center gap-1.5 text-neutral-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Switch AI: 34079</span>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-neutral-400">
-            {wsConnected ? (
-              <span className="text-emerald-400 flex items-center gap-1">
-                <Wifi className="w-3 h-3" />
-                <span>WS Live</span>
-              </span>
-            ) : (
-              <span className="text-neutral-400 flex items-center gap-1">
-                <Wifi className="w-3 h-3 text-blue-400" />
-                <span>Standby</span>
-              </span>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Main Viewport Content */}
-      <div className="flex-1 overflow-hidden relative">
-        {/* Split View: Left side is Customer SaaS + Widget; Right side is Operator Cockpit */}
-        {viewMode === 'split' && (
-          <div className="flex h-full w-full divide-x divide-neutral-800">
-            {/* Left Column: Customer Experience */}
-            <div className="w-[42%] h-full flex flex-col bg-[#0d0e12] relative overflow-hidden">
-              <div className="px-4 py-2 bg-[#15161f] border-b border-neutral-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-blue-400 font-bold">
-                    Client View
-                  </span>
-                  <span className="text-xs text-neutral-300 font-medium">
-                    CloudDesk & Embedded Widget
-                  </span>
-                </div>
-                <span className="text-[10px] text-neutral-400 font-mono">
-                  Ghost-typing & instant customer feedback
-                </span>
-              </div>
-
-              <div className="flex-1 overflow-y-auto relative p-4 flex flex-col items-center justify-center bg-neutral-950/40">
+          {/* Sandbox Demo Page with Floating Support Widget */}
+          <Route
+            path="/demo"
+            element={
+              <div className="flex-1 relative overflow-y-auto">
+                <CloudDeskDemo
+                  onOpenWidget={() => setIsWidgetOpen(true)}
+                  onSimulateTicket={handleTriggerScenario}
+                />
                 <SupportWidget
-                  embedded
+                  isOpen={isWidgetOpen}
+                  onToggleOpen={() => setIsWidgetOpen(!isWidgetOpen)}
                   tickets={tickets}
                   activeTicket={activeTicket}
                   timeline={activeTimeline}
@@ -626,25 +471,68 @@ export default function App() {
                   onTriggerScenario={handleTriggerScenario}
                 />
               </div>
-            </div>
+            }
+          />
 
-            {/* Right Column: Operator Cockpit */}
-            <div className="w-[58%] h-full flex flex-col overflow-hidden">
-              <div className="px-4 py-2 bg-[#15161f] border-b border-neutral-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">
-                    Operator Desk
-                  </span>
-                  <span className="text-xs text-neutral-300 font-medium">
-                    Multi-Agent Room + Human Review Gate
-                  </span>
+          {/* Split Demo View (Client on Left, Operator Desk on Right) */}
+          <Route
+            path="/split"
+            element={
+              <div className="flex-1 flex h-[calc(100vh-48px)] overflow-hidden divide-x divide-neutral-800">
+                <div className="w-[42%] h-full flex flex-col bg-[#0d0e12] relative overflow-hidden">
+                  <div className="px-4 py-2 bg-[#15161f] border-b border-neutral-800 flex items-center justify-between">
+                    <span className="text-[10px] font-mono uppercase text-blue-400 font-bold">
+                      Client View (CloudDesk)
+                    </span>
+                    <span className="text-[10px] text-neutral-400 font-mono">
+                      Ghost-typing WebSocket enabled
+                    </span>
+                  </div>
+                  <div className="flex-1 p-4 flex flex-col items-center justify-center bg-neutral-950/40">
+                    <SupportWidget
+                      embedded
+                      tickets={tickets}
+                      activeTicket={activeTicket}
+                      timeline={activeTimeline}
+                      draft={activeDraft}
+                      isAgentTyping={isAgentTyping}
+                      onSelectTicket={setSelectedTicketId}
+                      onStartNewChat={() => setSelectedTicketId('TKT-1001')}
+                      onSendMessage={handleSendMessage}
+                      onTyping={handleTyping}
+                      onTriggerScenario={handleTriggerScenario}
+                    />
+                  </div>
                 </div>
-                <span className="text-[10px] text-neutral-400 font-mono">
-                  Mattermost #cloud-support
-                </span>
-              </div>
 
-              <div className="flex-1 overflow-hidden">
+                <div className="w-[58%] h-full flex flex-col overflow-hidden">
+                  <DashboardLayout
+                    tickets={tickets}
+                    selectedTicketId={selectedTicketId}
+                    activeTicket={activeTicket}
+                    customer={activeCustomer}
+                    timeline={activeTimeline}
+                    draft={activeDraft}
+                    agents={agents}
+                    isProcessing={isProcessing}
+                    customerTypingText={customerTypingText}
+                    isCustomerTyping={isCustomerTyping}
+                    onSelectTicket={setSelectedTicketId}
+                    onApproveDraft={handleApproveDraft}
+                    onRejectDraft={handleRejectDraft}
+                    onSendOperatorMessage={handleSendOperatorMessage}
+                    onResyncCustomer={handleResyncCustomer}
+                  />
+                </div>
+              </div>
+            }
+          />
+
+          {/* Operator Cockpit Fullscreen */}
+          <Route
+            path="/dashboard/*"
+            element={
+              <div className="flex-1 h-[calc(100vh-48px)] overflow-hidden">
                 <DashboardLayout
                   tickets={tickets}
                   selectedTicketId={selectedTicketId}
@@ -663,58 +551,21 @@ export default function App() {
                   onResyncCustomer={handleResyncCustomer}
                 />
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Full SaaS App with Floating Widget */}
-        {viewMode === 'saas' && (
-          <div className="h-full w-full relative overflow-y-auto">
-            <CloudDeskDemo
-              onOpenWidget={() => setIsWidgetOpen(true)}
-              onSimulateTicket={handleTriggerScenario}
-            />
-
-            <SupportWidget
-              isOpen={isWidgetOpen}
-              onToggleOpen={() => setIsWidgetOpen(!isWidgetOpen)}
-              tickets={tickets}
-              activeTicket={activeTicket}
-              timeline={activeTimeline}
-              draft={activeDraft}
-              isAgentTyping={isAgentTyping}
-              onSelectTicket={setSelectedTicketId}
-              onStartNewChat={() => setSelectedTicketId('TKT-1001')}
-              onSendMessage={handleSendMessage}
-              onTyping={handleTyping}
-              onTriggerScenario={handleTriggerScenario}
-            />
-          </div>
-        )}
-
-        {/* Full Operator Cockpit */}
-        {viewMode === 'operator' && (
-          <div className="h-full w-full">
-            <DashboardLayout
-              tickets={tickets}
-              selectedTicketId={selectedTicketId}
-              activeTicket={activeTicket}
-              customer={activeCustomer}
-              timeline={activeTimeline}
-              draft={activeDraft}
-              agents={agents}
-              isProcessing={isProcessing}
-              customerTypingText={customerTypingText}
-              isCustomerTyping={isCustomerTyping}
-              onSelectTicket={setSelectedTicketId}
-              onApproveDraft={handleApproveDraft}
-              onRejectDraft={handleRejectDraft}
-              onSendOperatorMessage={handleSendOperatorMessage}
-              onResyncCustomer={handleResyncCustomer}
-            />
-          </div>
-        )}
+            }
+          />
+        </Routes>
       </div>
+
+      {/* Footer on non-fullscreen views */}
+      {!isFullscreenView && <Footer />}
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
   );
 }

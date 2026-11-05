@@ -58,3 +58,4 @@ The flagship operational cockpit of SupportFlow. This page coordinates real-time
 - `TOOL_INVOKED`: Renders newly executed tool calls dynamically in thread.
 - `DRAFT_READY`: Displays the Human Review card when `@responder` completes policy grounding.
 - `DISPATCH_APPROVED`: Triggers instant DB sync and emits the message to the customer's chat widget.
+

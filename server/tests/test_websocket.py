@@ -10,3 +10,4 @@ def test_websocket_ghost_typing():
             assert data["type"] == "GHOST_TYPING"
             assert data["text"] == "I need help"
             assert data["is_typing"] is True
+

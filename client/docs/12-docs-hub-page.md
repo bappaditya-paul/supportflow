@@ -56,3 +56,4 @@ The Developer Documentation portal provides guides, copy-paste React snippets, A
 - **Switch Room Setup:** Importing `server/switch/supportflow-room.template.yaml` into Switch Console.
 - **Deterministic Tools:** Writing read-only Python scripts that prevent AI hallucinations.
 - **WebSocket Specs:** Connecting to the real-time ghost typing and event stream.
+

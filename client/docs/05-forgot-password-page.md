@@ -50,3 +50,4 @@ The password recovery page allows users to securely reset their credentials via 
 - **Submission:** Dispatches request to `/api/auth/forgot-password`.
 - **View Swap:** In-place animated transition from input form to confirmation banner.
 - **Resend Action:** Debounced 60-second cooldown timer before allowing another email dispatch.
+

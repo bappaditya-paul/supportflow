@@ -54,3 +54,4 @@ The Switch Swarm Studio provides real-time observability, prompt inspection, and
 - **Agent Status Indicator:** Flashes amber during analysis, green when idle/ready, and red on tool failure.
 - **Inspect Prompts:** Opens modal displaying the exact system instructions and addressing rules (`addressing: anyone`).
 - **Restart Room:** Button to trigger Switch bridge reload if needed.
+

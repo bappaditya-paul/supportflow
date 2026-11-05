@@ -52,3 +52,4 @@ The Sign In page provides access for human support operators, team leads, and ad
 - **Loading State:** Button disables, displays spinner and text "Authenticating...".
 - **Error State:** Red hairline banner above inputs with clear error description.
 - **Success Transition:** Redirects directly to `/dashboard/inbox`.
+

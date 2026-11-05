@@ -33,3 +33,4 @@ All pages adhere to the design system reverse-engineered from **Cossistant**:
   - Backgrounds: Dark `#0d0e12`, `#121319`, `#161720` | Light `#FCFCFB`, `#F4F4F3`
   - Text: Primary `#f3f4f6`, Muted `#9ca3af`, Subtle `#6b7280`
   - Accents: Electric Blue `#2563eb`, Emerald Green `#10b981`, Amber Warning `#f59e0b`, Rose Red `#f43f5e`
+

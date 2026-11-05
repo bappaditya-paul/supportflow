@@ -53,3 +53,4 @@ The Knowledge Base page manages the authoritative markdown policy documents and 
 - **Instant Search:** Filters policies in real time as the operator types.
 - **Edit Policy:** Opens inline editor; saving updates the backend markdown file under `server/data/knowledge_base/` immediately.
 - **Grounding Verification:** Displays which tickets have referenced each policy for accountability.
+
