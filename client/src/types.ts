@@ -1,6 +1,17 @@
 export type TicketPriority = 'low' | 'normal' | 'high' | 'urgent';
 export type TicketStatus = 'open' | 'investigating' | 'awaiting_approval' | 'resolved' | 'spam';
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'operator' | 'admin' | 'judge';
+  roleTitle: string;
+  workspace: string;
+  avatarSeed: string;
+  token?: string;
+}
+
 export interface Ticket {
   ticket_id: string;
   customer_id: string;
@@ -62,4 +73,3 @@ export interface SwitchAgentState {
   status: 'idle' | 'analyzing' | 'querying_db' | 'drafting' | 'ready';
   last_action?: string;
 }
-

@@ -29,6 +29,10 @@ import {
   FacehashAvatar,
   MacBrowserFrame,
   FrameworkPills,
+  SpotlightCard,
+  BorderBeamButton,
+  RollingCounter,
+  GlassKeycap,
 } from '../components/primitives';
 
 interface DemoTicket {
@@ -314,10 +318,17 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <MacBrowserFrame
-          url="https://supportflow.ai/shadcn/inbox"
-          className="shadow-2xl border-neutral-200 dark:border-neutral-800"
-        >
+        <div className="relative">
+          {/* OriginKit Ambient Optical Halo */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[75%] bg-gradient-to-tr from-[#DF3E03]/15 via-indigo-600/10 to-blue-500/10 blur-[130px] rounded-full"
+          />
+
+          <MacBrowserFrame
+            url="https://supportflow.ai/shadcn/inbox"
+            className="relative z-10 shadow-2xl border-neutral-200 dark:border-neutral-800"
+          >
           {activeTab === 'preview' ? (
             <div className="flex flex-col lg:flex-row h-[520px] bg-white dark:bg-[#111218] divide-y lg:divide-y-0 lg:divide-x divide-dashed divide-neutral-200 dark:divide-neutral-800 text-xs">
               {/* Left Sub-Nav Column */}
@@ -496,13 +507,11 @@ export const LandingPage: React.FC = () => {
                         <span>Dispatched to Customer & Stripe Synced</span>
                       </span>
                     ) : (
-                      <button
-                        onClick={() => setIsApproved(true)}
-                        className="px-3 py-1 bg-[#DF3E03] hover:bg-[#c93702] text-white text-xs font-medium rounded-[2px] transition-colors cursor-pointer flex items-center gap-1.5 shadow-xs"
-                      >
-                        <Check className="w-3.5 h-3.5" />
+                      <BorderBeamButton onClick={() => setIsApproved(true)}>
+                        <Check className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
                         <span>Approve & Dispatch</span>
-                      </button>
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse ml-1" />
+                      </BorderBeamButton>
                     )}
                   </div>
                 </div>
@@ -546,6 +555,7 @@ export function CustomerSupportWidget() {
             </div>
           )}
         </MacBrowserFrame>
+        </div>
 
         {/* Framework Compatibility Row & Mode Pills */}
         <div className="mt-6">
@@ -573,6 +583,51 @@ export function CustomerSupportWidget() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* LIVE TELEMETRY STATS BAR (OriginKit Stats 01 / Plinth Tally Pattern) */}
+      <section className="px-4 sm:px-6 max-w-6xl mx-auto w-full my-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border border-dashed border-neutral-300 dark:border-neutral-800 p-6 sm:p-8 rounded-[2px] bg-white dark:bg-[#111218] shadow-xs">
+          <div className="text-center md:border-r md:border-dashed md:border-neutral-200 dark:md:border-neutral-800">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-neutral-950 dark:text-white">
+              <RollingCounter value={85} suffix="s" />
+            </div>
+            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-[#DF3E03]" />
+              <span>Avg Resolution</span>
+            </div>
+          </div>
+
+          <div className="text-center md:border-r md:border-dashed md:border-neutral-200 dark:md:border-neutral-800">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-emerald-600 dark:text-emerald-400">
+              <RollingCounter value={0} suffix="%" />
+            </div>
+            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Hallucination Rate</span>
+            </div>
+          </div>
+
+          <div className="text-center md:border-r md:border-dashed md:border-neutral-200 dark:md:border-neutral-800">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-[#DF3E03] dark:text-[#FF6633]">
+              <RollingCounter value={1157} />
+            </div>
+            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <Terminal className="w-3.5 h-3.5 text-blue-500" />
+              <span>Verified Commits</span>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-blue-600 dark:text-blue-400">
+              <RollingCounter value={100} suffix="%" />
+            </div>
+            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-purple-500" />
+              <span>Human Sign-Off</span>
+            </div>
           </div>
         </div>
       </section>
@@ -687,7 +742,7 @@ export function CustomerSupportWidget() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Card 1 */}
-          <div className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
+          <SpotlightCard spotlightColor="rgba(245, 158, 11, 0.16)">
             <div className="size-8 rounded-[2px] bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
               <Shield className="w-4 h-4" />
             </div>
@@ -697,10 +752,10 @@ export function CustomerSupportWidget() {
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
               LLMs cannot guess account status. SupportFlow requires deterministic Python tools to inspect live Stripe events and Postgres records before any response is generated.
             </p>
-          </div>
+          </SpotlightCard>
 
           {/* Card 2 */}
-          <div className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
+          <SpotlightCard spotlightColor="rgba(59, 130, 246, 0.16)">
             <div className="size-8 rounded-[2px] bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4">
               <MessageSquare className="w-4 h-4" />
             </div>
@@ -710,10 +765,10 @@ export function CustomerSupportWidget() {
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Bridges customer conversations directly into your existing <code className="text-blue-500 font-mono">#cloud-support</code> Mattermost channel with two-way operator message synchronization.
             </p>
-          </div>
+          </SpotlightCard>
 
           {/* Card 3 */}
-          <div className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
+          <SpotlightCard spotlightColor="rgba(168, 85, 247, 0.16)">
             <div className="size-8 rounded-[2px] bg-purple-500/10 text-purple-500 flex items-center justify-center mb-4">
               <Sparkles className="w-4 h-4" />
             </div>
@@ -723,10 +778,10 @@ export function CustomerSupportWidget() {
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Powered by Switch AI's multi-agent protocol running locally or on cloud infrastructure for sub-second agent routing, sentiment triage, and policy grounding.
             </p>
-          </div>
+          </SpotlightCard>
 
           {/* Card 4 */}
-          <div className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
+          <SpotlightCard spotlightColor="rgba(16, 185, 129, 0.16)">
             <div className="size-8 rounded-[2px] bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4">
               <Lock className="w-4 h-4" />
             </div>
@@ -736,10 +791,10 @@ export function CustomerSupportWidget() {
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Sensitive mutations like refunds, database plan synchronization, and rate quota increases remain gated behind 1-click human operator approval.
             </p>
-          </div>
+          </SpotlightCard>
 
           {/* Card 5 */}
-          <div className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
+          <SpotlightCard spotlightColor="rgba(223, 62, 3, 0.16)">
             <div className="size-8 rounded-[2px] bg-rose-500/10 text-rose-500 flex items-center justify-center mb-4">
               <Terminal className="w-4 h-4" />
             </div>
@@ -749,10 +804,10 @@ export function CustomerSupportWidget() {
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Install via shadcn CLI and drop the <code className="text-[#DF3E03] font-mono">&lt;Support /&gt;</code> component into your Next.js, Vite, or Remix application in under 3 minutes.
             </p>
-          </div>
+          </SpotlightCard>
 
           {/* Card 6 */}
-          <div className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
+          <SpotlightCard spotlightColor="rgba(6, 182, 212, 0.16)">
             <div className="size-8 rounded-[2px] bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-4">
               <Users className="w-4 h-4" />
             </div>
@@ -762,7 +817,7 @@ export function CustomerSupportWidget() {
             <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
               Deterministic SVG avatars generate unique pastel portraits and expressions for every customer, maintaining a warm, approachable brand aesthetic.
             </p>
-          </div>
+          </SpotlightCard>
         </div>
       </section>
 

@@ -4,4 +4,7 @@ export { MacBrowserFrame } from './MacBrowserFrame';
 export { AsciiMatrixBackground } from './AsciiMatrixBackground';
 export { FrameworkPills } from './FrameworkPills';
 export { HeatmapCalendar } from './HeatmapCalendar';
-
+export { SpotlightCard } from './SpotlightCard';
+export { BorderBeamButton } from './BorderBeamButton';
+export { RollingCounter } from './RollingCounter';
+export { GlassKeycap } from './GlassKeycap';

@@ -11,42 +11,72 @@ import {
   AlertCircle,
   Loader2,
   ChevronDown,
-  MessageSquare,
   Sparkles,
+  Zap,
+  Check,
 } from 'lucide-react';
 import { MaskLogo, FacehashAvatar, AsciiMatrixBackground } from '../components/primitives';
+import { useAuth, DEMO_OPERATOR, DEMO_FOUNDER, DEMO_JUDGE } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('operator@clouddesk.dev');
+  const { loginAs, loginWithCredentials } = useAuth();
+  const [email, setEmail] = useState('operator@supportflow.ai');
   const [password, setPassword] = useState('••••••••••••');
-  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleQuickLogin = (preset: typeof DEMO_OPERATOR) => {
+    setError('');
+    setLoading(true);
+    setSuccessMessage(`Logging in as ${preset.name} (${preset.roleTitle})...`);
+    
+    setTimeout(() => {
+      loginAs(preset);
+      setLoading(false);
+      navigate('/dashboard');
+    }, 400);
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please provide your work email and password.');
+    if (!email) {
+      setError('Please provide your work email.');
       return;
     }
     setError('');
     setLoading(true);
-
-    setTimeout(() => {
+    try {
+      const authenticatedUser = await loginWithCredentials(email, password);
+      setSuccessMessage(`Authenticated as ${authenticatedUser.name}!`);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 300);
+    } catch {
+      setError('Authentication failed. Please try a demo account.');
       setLoading(false);
+    }
+  };
+
+  const handleOAuthClick = async (provider: 'Google' | 'GitHub') => {
+    setLoading(true);
+    setSuccessMessage(`Connecting via ${provider} OAuth...`);
+    setTimeout(() => {
+      loginAs(DEMO_OPERATOR);
       navigate('/dashboard');
-    }, 600);
+    }, 450);
   };
 
   return (
     <div className="min-h-screen bg-[#FCFCFC] dark:bg-[#0d0e12] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans select-none overflow-x-hidden">
       <div className="flex-1 flex flex-col lg:flex-row">
         {/* LEFT COLUMN: AUTH CARD */}
-        <div className="w-full lg:w-1/2 flex flex-col justify-between p-8 sm:p-14 lg:p-20 z-10">
+        <div className="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-12 lg:p-16 z-10">
           <div>
             {/* Brand Logo Header */}
-            <Link to="/" className="inline-flex items-center gap-2 mb-12">
+            <Link to="/" className="inline-flex items-center gap-2 mb-8">
               <MaskLogo size={24} className="text-neutral-900 dark:text-white" />
               <span className="font-bold text-base tracking-tight text-neutral-900 dark:text-white">
                 supportflow
@@ -54,19 +84,138 @@ export const LoginPage: React.FC = () => {
             </Link>
 
             <div className="max-w-md">
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
-                Log in
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-[#DF3E03] dark:text-[#FF6633] mb-3 border border-dashed border-[#DF3E03]/30 rounded-[2px] bg-[#DF3E03]/5">
+                <Sparkles className="w-3 h-3 text-[#DF3E03]" />
+                <span>Flip the Switch Hackathon 2026 · Demo Auth</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
+                Log in to Cockpit
               </h1>
-              <p className="text-sm text-neutral-500 mb-8 leading-relaxed">
-                Welcome back. Enter your credentials to manage active tickets and review agent dispatches.
+              <p className="text-xs text-neutral-500 mb-6 leading-relaxed">
+                Choose a pre-configured judge or operator persona below for instant 1-click access without backend wait.
               </p>
 
-              {/* Social Login Buttons */}
-              <div className="space-y-2.5 mb-6">
+              {/* Success Notification */}
+              {successMessage && (
+                <div className="mb-4 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 rounded-[2px] text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                  <span className="font-mono">{successMessage}</span>
+                </div>
+              )}
+
+              {/* Error Notification */}
+              {error && (
+                <div className="mb-4 p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-[2px] text-xs text-rose-600 dark:text-rose-300 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* 1-CLICK DEMO PERSONA SELECTOR */}
+              <div className="mb-6 space-y-2">
+                <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold mb-1.5 flex items-center gap-1.5">
+                  <Zap className="w-3 h-3 text-[#DF3E03]" />
+                  <span>1-Click Quick Demo Sign In</span>
+                </div>
+
+                {/* Operator Persona (Recommended) */}
                 <button
                   type="button"
-                  onClick={() => navigate('/dashboard')}
-                  className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
+                  data-testid="btn-demo-operator"
+                  onClick={() => handleQuickLogin(DEMO_OPERATOR)}
+                  disabled={loading}
+                  className="w-full text-left p-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900/90 dark:hover:bg-[#181924] border border-neutral-300 dark:border-neutral-700 hover:border-[#DF3E03] dark:hover:border-[#DF3E03] rounded-[2px] transition-all cursor-pointer group flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <FacehashAvatar seed="alex" size="sm" showStatus status="online" />
+                    <div>
+                      <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
+                        Alex Rivera
+                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-[2px]">
+                          RECOMMENDED
+                        </span>
+                      </div>
+                      <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                        operator@supportflow.ai · Lead Tier-2
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#DF3E03] font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                    Sign In <ArrowRight className="w-3 h-3" />
+                  </span>
+                </button>
+
+                {/* Founder Persona */}
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin(DEMO_FOUNDER)}
+                  disabled={loading}
+                  className="w-full text-left p-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900/90 dark:hover:bg-[#181924] border border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-600 rounded-[2px] transition-all cursor-pointer group flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <FacehashAvatar seed="sarah" size="sm" showStatus status="online" />
+                    <div>
+                      <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
+                        Sarah Chen
+                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-[2px]">
+                          ADMIN
+                        </span>
+                      </div>
+                      <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                        founder@startup.io · CEO & Admin
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-mono text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all flex items-center gap-1">
+                    Sign In <ArrowRight className="w-3 h-3" />
+                  </span>
+                </button>
+
+                {/* Hackathon Judge Persona */}
+                <button
+                  type="button"
+                  data-testid="btn-demo-judge"
+                  onClick={() => handleQuickLogin(DEMO_JUDGE)}
+                  disabled={loading}
+                  className="w-full text-left p-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900/90 dark:hover:bg-[#181924] border border-neutral-300 dark:border-neutral-700 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-[2px] transition-all cursor-pointer group flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <FacehashAvatar seed="judge" size="sm" showStatus status="online" />
+                    <div>
+                      <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
+                        Hackathon Judge
+                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-[2px]">
+                          EVALUATOR
+                        </span>
+                      </div>
+                      <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                        judge@fliptheswitch.dev · Track 1 Reviewer
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-500 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                    Sign In <ArrowRight className="w-3 h-3" />
+                  </span>
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="my-5 flex items-center gap-3">
+                <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
+                <span className="text-[10px] font-mono text-neutral-400 uppercase">
+                  Or use standard credentials
+                </span>
+                <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
+              </div>
+
+              {/* Social Login Buttons */}
+              <div className="space-y-2 mb-4">
+                <button
+                  type="button"
+                  onClick={() => handleOAuthClick('Google')}
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2.5 py-2 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path
@@ -91,162 +240,146 @@ export const LoginPage: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={() => navigate('/dashboard')}
-                  className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
+                  onClick={() => handleOAuthClick('GitHub')}
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2.5 py-2 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
                 >
                   <Github className="w-4 h-4 text-neutral-900 dark:text-white" />
                   <span>Continue with GitHub</span>
                 </button>
               </div>
 
-              {/* Progressive Disclosure: Use email instead */}
-              {!showEmailForm ? (
-                <button
-                  type="button"
-                  onClick={() => setShowEmailForm(true)}
-                  className="w-full py-2 text-xs font-mono text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <span>Use email instead</span>
-                  <ChevronDown className="w-3.5 h-3.5" />
-                </button>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="my-5 flex items-center gap-3">
-                    <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
-                    <span className="text-[10px] font-mono text-neutral-400 uppercase">
-                      Email & Password
-                    </span>
-                    <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
-                  </div>
+              {/* Email & Password Form */}
+              <form onSubmit={handleLogin} className="space-y-3 pt-2">
+                <div>
+                  <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
+                    Work Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="operator@supportflow.ai"
+                    className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors"
+                  />
+                </div>
 
-                  {error && (
-                    <div className="mb-4 p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-[2px] text-xs text-rose-600 dark:text-rose-300 flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
-                      <span>{error}</span>
-                    </div>
-                  )}
-
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
-                        Work Email
-                      </label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        placeholder="operator@clouddesk.dev"
-                        className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400">
-                          Password
-                        </label>
-                        <Link
-                          to="/forgot-password"
-                          className="text-[11px] text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 font-mono transition-colors"
-                        >
-                          Forgot password?
-                        </Link>
-                      </div>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        placeholder="••••••••••••"
-                        className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors font-mono"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-2.5 px-4 bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 text-xs font-semibold rounded-[2px] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 mt-4"
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400">
+                      Password
+                    </label>
+                    <Link
+                      to="/forgot-password"
+                      className="text-[11px] text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 font-mono transition-colors"
                     >
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          <span>Signing in...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Log in</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </>
-                      )}
-                    </button>
-                  </form>
-                </motion.div>
-              )}
+                      Forgot password?
+                    </Link>
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••••••"
+                    className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors font-mono"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 px-4 bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 text-xs font-semibold rounded-[2px] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 mt-4"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Log in to Cockpit</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+              </form>
 
               {/* Bottom Switcher */}
-              <p className="mt-8 text-xs text-neutral-500">
+              <p className="mt-6 text-xs text-neutral-500">
                 Don't have an account?{' '}
                 <Link
                   to="/signup"
                   className="font-medium text-neutral-900 dark:text-white underline hover:text-[#DF3E03] transition-colors"
                 >
-                  Sign up
+                  Sign up (Free Demo)
                 </Link>
               </p>
             </div>
           </div>
 
-          <div className="pt-8 text-[11px] text-neutral-400 font-mono">
-            Protected by deterministic zero-hallucination verification · Switch AI
+          <div className="pt-6 text-[11px] text-neutral-400 font-mono">
+            Protected by deterministic zero-hallucination verification · Switch AI Node 34079
           </div>
         </div>
 
-        {/* RIGHT COLUMN: VERTICAL DIVIDER & ASCII LIVE WIDGET */}
+        {/* RIGHT COLUMN: VERTICAL DIVIDER & INTERACTIVE PREVIEW WIDGET */}
         <div className="hidden lg:flex w-1/2 relative bg-neutral-100/50 dark:bg-[#111218]/50 border-l border-dashed border-neutral-200 dark:border-neutral-800 flex-col items-center justify-center p-12 overflow-hidden">
           {/* Subtle ASCII Matrix Watermark */}
           <AsciiMatrixBackground opacity={0.12} />
 
           {/* Floating Cossistant Support Widget */}
-          <div className="relative z-10 w-full max-w-[340px] bg-white dark:bg-[#14151e] border border-neutral-300 dark:border-neutral-700/80 rounded-[8px] p-6 shadow-2xl">
+          <div className="relative z-10 w-full max-w-[360px] bg-white dark:bg-[#14151e] border border-neutral-300 dark:border-neutral-700/80 rounded-[8px] p-6 shadow-2xl">
             {/* Widget Top Header */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex -space-x-2">
-                <FacehashAvatar seed="sarah" size="sm" showStatus status="online" />
-                <FacehashAvatar seed="lucas" size="sm" showStatus status="online" />
                 <FacehashAvatar seed="alex" size="sm" showStatus status="online" />
+                <FacehashAvatar seed="sarah" size="sm" showStatus status="online" />
+                <FacehashAvatar seed="marcus" size="sm" showStatus status="online" />
               </div>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-[2px] bg-emerald-950/60 text-emerald-300 border border-emerald-800/40">
+                LIVE DEMO TICKET
+              </span>
             </div>
 
-            <h2 className="text-xl font-bold text-neutral-900 dark:text-white tracking-tight mb-1">
-              Evening, how can we help?
+            <h2 className="text-lg font-bold text-neutral-900 dark:text-white tracking-tight mb-1">
+              Active Incident: TKT-1001
             </h2>
-            <p className="text-xs text-neutral-500 mb-6">
-              We usually reply in a few minutes.
+            <p className="text-xs text-neutral-500 mb-4">
+              Customer: Alex Rivera (alex.rivera@example.com)
             </p>
 
-            {/* Quick Action Card */}
-            <Link
-              to="/split"
-              className="w-full block p-3.5 bg-neutral-50 dark:bg-neutral-900/80 hover:bg-neutral-100 dark:hover:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-[4px] transition-colors cursor-pointer group"
-            >
-              <div className="flex items-center justify-between text-xs font-medium text-neutral-900 dark:text-neutral-100">
-                <span>Ask us a question</span>
-                <ArrowRight className="w-3.5 h-3.5 text-neutral-400 group-hover:translate-x-0.5 transition-transform" />
+            {/* Simulated Live Complaint Box */}
+            <div className="p-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-[4px] mb-3 text-xs text-neutral-700 dark:text-neutral-300">
+              <div className="text-[10px] font-mono text-[#DF3E03] uppercase font-bold mb-1">
+                Customer Message
               </div>
-              <p className="text-[11px] text-neutral-500 mt-0.5">
-                Connected to Switch AI & #cloud-support
-              </p>
-            </Link>
+              "I paid for Pro yesterday ($49), but my account dashboard still says Free tier..."
+            </div>
+
+            {/* AI Swarm Triage Badge */}
+            <div className="p-2.5 bg-amber-950/30 border border-amber-800/40 rounded-[4px] mb-4 text-[11px] font-mono text-amber-300">
+              <div className="font-bold flex items-center gap-1.5 mb-0.5">
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                @investigator verified Stripe charge #ch_3P7a9x
+              </div>
+              Discrepancy detected · Ready for operator dispatch
+            </div>
+
+            {/* Interactive Action Button (Does not dead-end) */}
+            <button
+              type="button"
+              onClick={() => handleQuickLogin(DEMO_OPERATOR)}
+              className="w-full py-2.5 px-4 bg-[#DF3E03] hover:bg-[#c93702] text-white text-xs font-semibold rounded-[2px] transition-colors cursor-pointer shadow-sm flex items-center justify-center gap-2 group"
+            >
+              <span>Review in Operator Cockpit</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            </button>
 
             {/* Bottom Brand Watermark */}
-            <div className="mt-8 pt-4 border-t border-dashed border-neutral-200 dark:border-neutral-800 flex items-center justify-center gap-1.5 text-[11px] font-mono text-neutral-400">
-              <span>We run on</span>
+            <div className="mt-6 pt-4 border-t border-dashed border-neutral-200 dark:border-neutral-800 flex items-center justify-center gap-1.5 text-[11px] font-mono text-neutral-400">
+              <span>Powered by</span>
               <MaskLogo size={14} className="text-neutral-900 dark:text-white" />
               <span className="font-bold text-neutral-700 dark:text-neutral-300">supportflow</span>
             </div>

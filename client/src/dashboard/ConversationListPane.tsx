@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Search, AlertCircle, CheckCircle2, Clock, Filter, AlertTriangle } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle2, Clock, Filter, X } from 'lucide-react';
 import type { Ticket } from '../types';
+import { FacehashAvatar } from '../components/primitives';
 
 interface ConversationListPaneProps {
   tickets: Ticket[];
@@ -18,88 +19,123 @@ export const ConversationListPane: React.FC<ConversationListPaneProps> = ({
   const [filter, setFilter] = useState<'all' | 'investigating' | 'awaiting_approval' | 'resolved'>('all');
   const [search, setSearch] = useState('');
 
+  const countByStatus = {
+    all: tickets.length,
+    awaiting_approval: tickets.filter((t) => t.status === 'awaiting_approval').length,
+    investigating: tickets.filter((t) => t.status === 'investigating').length,
+    resolved: tickets.filter((t) => t.status === 'resolved').length,
+  };
+
   const filteredTickets = tickets.filter((t) => {
-    const matchesFilter =
-      filter === 'all' ? true : t.status === filter;
+    const matchesFilter = filter === 'all' ? true : t.status === filter;
     const matchesSearch =
       t.ticket_id.toLowerCase().includes(search.toLowerCase()) ||
       t.customer_name.toLowerCase().includes(search.toLowerCase()) ||
       t.subject.toLowerCase().includes(search.toLowerCase()) ||
-      t.complaint.toLowerCase().includes(search.toLowerCase());
+      t.complaint.toLowerCase().includes(search.toLowerCase()) ||
+      (t.category && t.category.toLowerCase().includes(search.toLowerCase()));
     return matchesFilter && matchesSearch;
   });
 
   return (
-    <div className={`${compact ? 'w-60' : 'w-72'} shrink-0 h-full bg-[#14151b] border-r border-neutral-800 flex flex-col select-none transition-all`}>
+    <div
+      className={`${
+        compact ? 'w-64' : 'w-80'
+      } shrink-0 h-full bg-[#111218] border-r border-dashed border-neutral-800 flex flex-col select-none transition-all z-10 min-h-0`}
+    >
       {/* Header & Search */}
-      <div className="p-3 border-b border-neutral-800 space-y-2">
+      <div className="p-3.5 border-b border-dashed border-neutral-800 space-y-2.5 shrink-0">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-neutral-100">Conversations</h2>
-          <span className="text-[11px] font-mono text-neutral-400">
-            {filteredTickets.length} tickets
+          <div className="flex items-center gap-2">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-100">
+              Inbox
+            </h2>
+            <span className="px-1.5 py-0.2 text-[10px] font-mono bg-neutral-800 text-neutral-300 rounded-[2px] border border-neutral-700/60">
+              {filteredTickets.length}
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            Realtime Sync
           </span>
         </div>
 
+        {/* Search Input */}
         <div className="relative">
           <Search className="w-3.5 h-3.5 text-neutral-500 absolute left-2.5 top-2.5" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search tickets..."
-            className="w-full pl-8 pr-3 py-1.5 bg-[#1a1b23] border border-neutral-800 rounded-[2px] text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-blue-500"
+            placeholder="Search tickets, customers, tags..."
+            className="w-full pl-8 pr-7 py-1.5 bg-[#171822] border border-neutral-700/80 rounded-[2px] text-xs text-neutral-200 placeholder:text-neutral-500 focus:outline-none focus:border-[#DF3E03] transition-colors"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-2 top-2 text-neutral-500 hover:text-neutral-300"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          )}
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-0.5 text-[11px] font-mono">
+        {/* Filter Pills Grid: Exactly 4 Columns, Zero Scrollbar */}
+        <div className="grid grid-cols-4 gap-1 p-0.5 bg-neutral-900/90 border border-neutral-800 rounded-[2px] text-[10px] font-mono select-none">
           <button
+            type="button"
             onClick={() => setFilter('all')}
-            className={`px-2 py-0.5 rounded-[2px] transition-colors whitespace-nowrap cursor-pointer ${
+            className={`py-1 text-center rounded-[2px] transition-colors cursor-pointer ${
               filter === 'all'
-                ? 'bg-neutral-800 text-white font-semibold'
+                ? 'bg-neutral-800 text-white font-bold shadow-xs'
                 : 'text-neutral-400 hover:text-neutral-200'
             }`}
           >
-            All
+            All ({countByStatus.all})
           </button>
+
           <button
-            onClick={() => setFilter('investigating')}
-            className={`px-2 py-0.5 rounded-[2px] transition-colors whitespace-nowrap cursor-pointer ${
-              filter === 'investigating'
-                ? 'bg-blue-900/50 text-blue-300 font-semibold'
-                : 'text-neutral-400 hover:text-neutral-200'
-            }`}
-          >
-            Investigating
-          </button>
-          <button
+            type="button"
             onClick={() => setFilter('awaiting_approval')}
-            className={`px-2 py-0.5 rounded-[2px] transition-colors whitespace-nowrap cursor-pointer ${
+            className={`py-1 text-center rounded-[2px] transition-colors cursor-pointer ${
               filter === 'awaiting_approval'
-                ? 'bg-amber-900/50 text-amber-300 font-semibold'
-                : 'text-neutral-400 hover:text-neutral-200'
+                ? 'bg-amber-950/80 text-amber-300 font-bold border border-amber-800/80 shadow-xs'
+                : 'text-neutral-400 hover:text-amber-300'
             }`}
           >
-            Awaiting Approval
+            Review ({countByStatus.awaiting_approval})
           </button>
+
           <button
-            onClick={() => setFilter('resolved')}
-            className={`px-2 py-0.5 rounded-[2px] transition-colors whitespace-nowrap cursor-pointer ${
-              filter === 'resolved'
-                ? 'bg-emerald-900/50 text-emerald-300 font-semibold'
-                : 'text-neutral-400 hover:text-neutral-200'
+            type="button"
+            onClick={() => setFilter('investigating')}
+            className={`py-1 text-center rounded-[2px] transition-colors cursor-pointer ${
+              filter === 'investigating'
+                ? 'bg-blue-950/80 text-blue-300 font-bold border border-blue-800/80 shadow-xs'
+                : 'text-neutral-400 hover:text-blue-300'
             }`}
           >
-            Resolved
+            Swarm ({countByStatus.investigating})
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFilter('resolved')}
+            className={`py-1 text-center rounded-[2px] transition-colors cursor-pointer ${
+              filter === 'resolved'
+                ? 'bg-emerald-950/80 text-emerald-300 font-bold border border-emerald-800/80 shadow-xs'
+                : 'text-neutral-400 hover:text-emerald-300'
+            }`}
+          >
+            Done ({countByStatus.resolved})
           </button>
         </div>
       </div>
 
-      {/* Ticket List */}
-      <div className="flex-1 overflow-y-auto divide-y divide-neutral-850">
+      {/* Ticket List Stream */}
+      <div className="flex-1 overflow-y-auto divide-y divide-neutral-800/60 min-h-0 [scrollbar-width:thin]">
         {filteredTickets.length === 0 ? (
-          <div className="p-8 text-center text-xs text-neutral-500">
+          <div className="p-8 text-center text-xs text-neutral-500 font-mono">
             No conversations match your filter.
           </div>
         ) : (
@@ -110,56 +146,78 @@ export const ConversationListPane: React.FC<ConversationListPaneProps> = ({
               <button
                 key={ticket.ticket_id}
                 onClick={() => onSelectTicket(ticket.ticket_id)}
-                className={`w-full text-left p-3 transition-colors cursor-pointer block relative ${
+                className={`w-full text-left p-3.5 transition-all cursor-pointer block relative ${
                   isSelected
-                    ? 'bg-[#1e202a] border-l-2 border-l-blue-500'
-                    : 'hover:bg-[#181921] border-l-2 border-l-transparent'
+                    ? 'bg-[#181924] border-l-2 border-l-[#DF3E03] shadow-xs'
+                    : 'hover:bg-[#14151e] border-l-2 border-l-transparent'
                 }`}
               >
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-[11px] font-bold text-neutral-300">
-                      {ticket.ticket_id}
+                {/* Top Row: Avatar + Customer Name + Timestamp */}
+                <div className="flex items-start gap-2.5 mb-1.5">
+                  <div className="shrink-0 pt-0.5">
+                    <FacehashAvatar
+                      seed={ticket.customer_name}
+                      size="sm"
+                      showStatus
+                      status={ticket.discrepancy ? 'discrepancy' : 'online'}
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="font-semibold text-xs text-neutral-100 truncate">
+                        {ticket.customer_name}
+                      </span>
+                      <span className="text-[10px] text-neutral-500 font-mono shrink-0">
+                        {ticket.created_at || 'Just now'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-400">
+                      <span className="text-neutral-300 font-bold">{ticket.ticket_id}</span>
+                      <span>·</span>
+                      <span className="uppercase text-neutral-400">{ticket.plan} tier</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Subject Preview */}
+                <div className="text-xs text-neutral-300 font-medium line-clamp-1 mb-1.5 pl-9">
+                  {ticket.subject}
+                </div>
+
+                {/* Tags & Status Pill */}
+                <div className="flex items-center justify-between pl-9 text-[10px] font-mono">
+                  <div className="flex items-center gap-1.5 overflow-hidden">
+                    <span
+                      className={`px-1.5 py-0.2 rounded-[2px] uppercase font-bold tracking-wider ${
+                        ticket.status === 'resolved'
+                          ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/60'
+                          : ticket.status === 'awaiting_approval'
+                          ? 'bg-amber-950/70 text-amber-300 border border-amber-700/80 animate-pulse'
+                          : 'bg-blue-950/70 text-blue-300 border border-blue-800/60'
+                      }`}
+                    >
+                      {ticket.status.replace('_', ' ')}
                     </span>
+
                     {ticket.discrepancy && (
-                      <span className="flex items-center gap-0.5 px-1 py-0.2 text-[9px] font-mono uppercase bg-rose-950/70 text-rose-300 border border-rose-800/60 rounded-[2px] animate-pulse">
+                      <span className="flex items-center gap-1 px-1.5 py-0.2 uppercase bg-rose-950/80 text-rose-300 border border-rose-700/80 rounded-[2px]">
                         <AlertTriangle className="w-2.5 h-2.5" />
                         Discrepancy
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] text-neutral-500 font-mono">
-                    {ticket.created_at || 'Just now'}
-                  </span>
-                </div>
-
-                <div className="font-medium text-xs text-neutral-200 mb-0.5 truncate">
-                  {ticket.customer_name}
-                  <span className="ml-1.5 text-[10px] text-neutral-400 font-normal">
-                    ({ticket.plan})
-                  </span>
-                </div>
-
-                <div className="text-xs text-neutral-400 truncate mb-2">
-                  {ticket.subject}
-                </div>
-
-                <div className="flex items-center justify-between text-[10px]">
-                  <span
-                    className={`font-mono px-1.5 py-0.5 rounded-[2px] uppercase ${
-                      ticket.status === 'resolved'
-                        ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/40'
-                        : ticket.status === 'awaiting_approval'
-                        ? 'bg-amber-950/60 text-amber-300 border border-amber-800/40'
-                        : 'bg-blue-950/60 text-blue-300 border border-blue-800/40'
-                    }`}
-                  >
-                    {ticket.status.replace('_', ' ')}
-                  </span>
 
                   {ticket.priority && (
-                    <span className="text-neutral-500 font-mono uppercase">
-                      {ticket.priority} priority
+                    <span
+                      className={`uppercase text-[9px] ${
+                        ticket.priority === 'high'
+                          ? 'text-[#DF3E03] font-bold'
+                          : 'text-neutral-500'
+                      }`}
+                    >
+                      {ticket.priority}
                     </span>
                   )}
                 </div>

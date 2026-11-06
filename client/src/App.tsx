@@ -9,6 +9,7 @@ import {
 import {
   CommandPalette,
 } from './components/CommandPalette';
+import { AuthProvider } from './context/AuthContext';
 import { LandingPage } from './pages/LandingPage';
 import { PricingPage } from './pages/PricingPage';
 import { LoginPage } from './pages/LoginPage';
@@ -432,23 +433,37 @@ function AppShell() {
     }
   };
 
+  // Global Cmd+K / Ctrl+K listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCmdPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const isFullscreenView = location.pathname.startsWith('/dashboard') || location.pathname === '/split';
 
   return (
-    <div className="min-h-screen bg-[#0d0e12] text-neutral-100 flex flex-col font-sans select-none">
+    <div className={`${isFullscreenView ? 'h-screen overflow-hidden' : 'min-h-screen'} bg-[#0d0e12] text-neutral-100 flex flex-col font-sans select-none`}>
       <CommandPalette
         isOpen={cmdPaletteOpen}
         onClose={() => setCmdPaletteOpen(false)}
       />
 
-      {/* Global Navbar */}
-      <Navbar
-        onOpenCommandPalette={() => setCmdPaletteOpen(true)}
-        wsConnected={wsConnected}
-      />
+      {/* Global Navbar - only rendered on public marketing/content pages; hidden in Cockpit */}
+      {!isFullscreenView && (
+        <Navbar
+          onOpenCommandPalette={() => setCmdPaletteOpen(true)}
+          wsConnected={wsConnected}
+        />
+      )}
 
       {/* Main View Router */}
-      <div className="flex-1 flex flex-col">
+      <div className={`flex-1 flex flex-col ${isFullscreenView ? 'h-screen overflow-hidden' : ''}`}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/pricing" element={<PricingPage />} />
@@ -490,7 +505,7 @@ function AppShell() {
           <Route
             path="/split"
             element={
-              <div className="flex-1 flex h-[calc(100vh-48px)] overflow-hidden divide-x divide-neutral-800">
+              <div className="flex-1 flex h-full overflow-hidden divide-x divide-neutral-800">
                 <div className="w-[42%] h-full flex flex-col bg-[#0d0e12] relative overflow-hidden">
                   <div className="px-4 py-2 bg-[#15161f] border-b border-neutral-800 flex items-center justify-between">
                     <span className="text-[10px] font-mono uppercase text-blue-400 font-bold">
@@ -545,7 +560,7 @@ function AppShell() {
           <Route
             path="/dashboard/*"
             element={
-              <div className="flex-1 h-[calc(100vh-48px)] overflow-hidden">
+              <div className="flex-1 h-full w-full overflow-hidden">
                 <DashboardLayout
                   tickets={tickets}
                   selectedTicketId={selectedTicketId}
@@ -578,7 +593,9 @@ function AppShell() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppShell />
+      <AuthProvider>
+        <AppShell />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

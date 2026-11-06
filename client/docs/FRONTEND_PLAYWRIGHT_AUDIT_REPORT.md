@@ -89,6 +89,7 @@ All 12 high-resolution screenshots were captured on the live Vite dev server (`h
 | **10** | [`10-cossistant-split-view.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/10-cossistant-split-view.png) | `/split` | 1280 × 800 | Live customer widget side-by-side with operator desk. |
 | **11** | [`11-cossistant-dashboard.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/11-cossistant-dashboard.png) | `/dashboard` | 1280 × 800 | Full-screen operator cockpit with live ticket triage and CRM. |
 | **12** | [`12-cossistant-mobile-landing.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/12-cossistant-mobile-landing.png) | `/` (Mobile) | 375 × 667 | Fully responsive layout at mobile viewport width. |
+| **13** | [`13-originkit-premium-landing.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/13-originkit-premium-landing.png) | `/` (Homepage) | 1280 × 800 | OriginKit premium upgrade: atmospheric optical glow, rolling counter telemetry bar (85s, 0%, 1,157, 100%), laser border-beam dispatch button, and mouse-following spotlight bento cards. |
 
 ---
 
