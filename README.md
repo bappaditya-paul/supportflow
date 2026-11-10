@@ -85,7 +85,7 @@ Built using **React 19, TypeScript, Vite, and Tailwind CSS v4**, the frontend fe
 
 ### 2. Run Test Suites
 ```bash
-# Backend pytest suite (24/24 tests passing)
+# Backend pytest suite (25/25 tests passing)
 cd server
 python3 -m pytest -v
 
@@ -167,14 +167,14 @@ SupportFlow/
 │   │   ├── search_knowledge.py
 │   │   ├── create_draft.py
 │   │   └── approve_response.py
-│   ├── switch/
-│   │   ├── supportflow-room.template.yaml# Switch room specification
-│   │   └── agent-prompts/                # Agent system instructions
-│   ├── tests/                            # 24 Pytest suites (100% passing)
-│   ├── Dockerfile
-│   └── docker-compose.yml
-└── supabase/
-    └── migrations/                       # PostgreSQL schema & RLS policies
+│   └── tests/                            # 25 Pytest suites (100% passing)
+├── switch/                               # Switch AI Swarm Specifications
+│   ├── supportflow-room.template.yaml    # Switch room specification
+│   └── agent-prompts/                    # Agent system instructions
+├── supabase/                             # PostgreSQL schema & RLS policies
+│   └── migrations/                       # Initial database schema & RLS
+├── Dockerfile                            # Production container build
+└── docker-compose.yml                    # Local multi-service orchestrator
 ```
 
 ---
