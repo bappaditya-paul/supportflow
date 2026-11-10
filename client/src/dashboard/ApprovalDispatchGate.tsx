@@ -8,7 +8,6 @@ import {
   Sparkles,
   CheckCircle2,
   Lock,
-  ArrowRight,
 } from 'lucide-react';
 import type { DraftResponse } from '../types';
 import { BorderBeamButton } from '../components/primitives';

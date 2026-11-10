@@ -1,20 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import {
-  CheckCircle2,
-  Clock,
   User,
-  Shield,
   Bot,
-  Terminal,
   Lock,
-  Sparkles,
-  ExternalLink,
-  Copy,
   ArrowLeft,
   Check,
 } from 'lucide-react';
 import type { Ticket, TimelineItem, DraftResponse, Customer, SwitchAgentState } from '../types';
-import { SwitchRoomBadge } from './SwitchRoomBadge';
 import { GhostTypingPreview } from './GhostTypingPreview';
 import { ToolExecutionCard } from './ToolExecutionCard';
 import { InternalNoteComposer } from './InternalNoteComposer';
@@ -39,10 +31,10 @@ interface ConversationDetailPaneProps {
 
 export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
   ticket,
-  customer,
+  customer: _customer,
   timeline,
   draft,
-  agents,
+  agents: _agents,
   isProcessing = false,
   customerTypingText = '',
   isCustomerTyping = false,
@@ -75,7 +67,6 @@ export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
 
   const customerName = ticket.customer_name || 'Customer';
   const customerEmail = ticket.customer_email || '';
-  const complaintText = ticket.complaint || ticket.message || ticket.subject || '';
 
   return (
     <div className="flex-1 h-full bg-[#0d0e12] flex flex-col select-none overflow-hidden font-sans min-h-0">
@@ -183,8 +174,6 @@ export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
 
           const isInternal = item.visibility === 'private';
           const isCustomer = item.sender_type === 'customer';
-          const isOperator = item.sender_type === 'operator';
-          const isAgent = item.sender_type === 'agent';
 
           // A. Internal Note (Private team memo or agent report)
           if (isInternal) {

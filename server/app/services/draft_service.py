@@ -2,7 +2,6 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
-from app.models import DraftResponse
 from app.db.supabase import get_supabase_admin
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, HelpCircle, ArrowRight, ShieldCheck, Zap, Sparkles } from 'lucide-react';
-import { MaskLogo } from '../components/primitives';
+import { Check } from 'lucide-react';
 
 export const PricingPage: React.FC = () => {
   const [isAnnual, setIsAnnual] = useState(false);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, AlertTriangle, CheckCircle2, Clock, Filter, X } from 'lucide-react';
+import { Search, CheckCircle2, X } from 'lucide-react';
 import type { Ticket } from '../types';
 import { FacehashAvatar } from '../components/primitives';
 

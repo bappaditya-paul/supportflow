@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { GitCommit, Tag, Sparkles, Terminal, CheckCircle2, ArrowRight } from 'lucide-react';
-import { HeatmapCalendar, MaskLogo } from '../components/primitives';
+import { CheckCircle2 } from 'lucide-react';
+import { HeatmapCalendar } from '../components/primitives';
 
 interface ReleaseEntry {
   version: string;

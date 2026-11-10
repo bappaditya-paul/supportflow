@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, Radio } from 'lucide-react';
+import { Radio } from 'lucide-react';
 
 interface GhostTypingPreviewProps {
   customerName: string;

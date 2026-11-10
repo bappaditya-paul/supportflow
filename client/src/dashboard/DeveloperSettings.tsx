@@ -9,9 +9,6 @@ import {
   Plus,
   Trash2,
   Shield,
-  Lock,
-  Sparkles,
-  ExternalLink,
   RefreshCw,
 } from 'lucide-react';
 import { FacehashAvatar } from '../components/primitives';

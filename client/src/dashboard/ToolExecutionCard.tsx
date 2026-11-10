@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Terminal, ChevronDown, ChevronRight, CheckCircle2, AlertCircle, Loader2, Clock } from 'lucide-react';
+import { Terminal, ChevronDown, ChevronRight, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 interface ToolExecutionCardProps {
   toolName: string;

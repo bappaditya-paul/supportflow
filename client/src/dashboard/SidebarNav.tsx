@@ -9,8 +9,6 @@ import {
   Activity,
   ChevronDown,
   LogOut,
-  Sparkles,
-  Command,
 } from 'lucide-react';
 import { MaskLogo, FacehashAvatar } from '../components/primitives';
 import { useAuth, DEMO_OPERATOR, DEMO_FOUNDER } from '../context/AuthContext';

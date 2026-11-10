@@ -6,8 +6,6 @@ import {
   ArrowUpRight,
   ExternalLink,
   Sparkles,
-  Activity,
-  Shield,
   Zap,
 } from 'lucide-react';
 import { MaskLogo } from './primitives';

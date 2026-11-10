@@ -1,14 +1,10 @@
 import React from 'react';
 import {
-  Server,
   Zap,
   Shield,
   Layers,
   ArrowRight,
-  Terminal,
   Activity,
-  CheckCircle,
-  ExternalLink,
 } from 'lucide-react';
 
 interface CloudDeskDemoProps {

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {
   Navbar,
 } from './components/Navbar';
@@ -189,7 +189,7 @@ function AppShell() {
             setIsCustomerTyping(data.is_typing);
           }
         } catch (e) {
-          console.error(e);
+          console.error('Failed to parse WebSocket ghost-typing payload:', e);
         }
       };
       wsRef.current = ws;

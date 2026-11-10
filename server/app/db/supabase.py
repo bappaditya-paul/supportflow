@@ -1,8 +1,11 @@
 import os
+import logging
 from pathlib import Path
 from typing import Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
+
+logger = logging.getLogger(__name__)
 
 ENV_PATH = Path(__file__).resolve().parent.parent.parent / ".env"
 load_dotenv(ENV_PATH)
@@ -24,7 +27,7 @@ def get_supabase_admin() -> Optional[Client]:
             _client = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
             return _client
     except Exception as e:
-        print(f"Failed to initialize Supabase client: {e}")
+        logger.warning(f"Failed to initialize Supabase client: {e}")
     return None
 
 

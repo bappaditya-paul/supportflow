@@ -7,10 +7,9 @@ from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnec
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
-from pydantic import BaseModel
 
 from app.models import (
-    Ticket, Customer, KnowledgeResult, DraftResponse, ApprovalAction,
+    Ticket, Customer, KnowledgeResult, ApprovalAction,
     WebsiteOnboardingRequest, WebsiteOnboardingResponse, AgentConfig,
     ToolDefinition, CustomSkill, KnowledgeSource, FAQItem, ApiKeyItem,
     AllowedDomain, AnalyticsOverview

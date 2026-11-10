@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  BookOpen,
   Globe,
   HelpCircle,
   FileText,
   Plus,
   Play,
   CheckCircle2,
-  ExternalLink,
-  Trash2,
   Search,
   Upload,
-  Sparkles,
 } from 'lucide-react';
 
 interface KnowledgePage {
@@ -44,7 +40,6 @@ export const KnowledgeHub: React.FC = () => {
   const [pages, setPages] = useState<KnowledgePage[]>([]);
   // Live FAQ State
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Add FAQ Form State
   const [isAddingFaq, setIsAddingFaq] = useState(false);
@@ -73,8 +68,6 @@ export const KnowledgeHub: React.FC = () => {
       }
     } catch (err) {
       console.error('Failed to load knowledge base from server:', err);
-    } finally {
-      setIsLoading(false);
     }
   };
 

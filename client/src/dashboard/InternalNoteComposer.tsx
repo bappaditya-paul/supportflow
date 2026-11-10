@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lock, Send, MessageSquare, Sparkles, Check, X, ShieldAlert } from 'lucide-react';
+import { Lock, Send, MessageSquare, Sparkles, Check } from 'lucide-react';
 import type { DraftResponse } from '../types';
 
 interface InternalNoteComposerProps {

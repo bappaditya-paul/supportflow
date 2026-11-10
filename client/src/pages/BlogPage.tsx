@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
-import { Clock, ArrowRight, Tag, Sparkles, BookOpen } from 'lucide-react';
-import { FacehashAvatar, MaskLogo } from '../components/primitives';
+import { ArrowRight } from 'lucide-react';
+import { FacehashAvatar } from '../components/primitives';
 
 interface BlogPost {
   slug: string;

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Send, Search, HelpCircle, ArrowRight, Zap } from 'lucide-react';
+import React from 'react';
+import { Send, Zap, ArrowRight, HelpCircle } from 'lucide-react';
 import type { Ticket } from '../../types';
 
 interface HomeViewProps {
@@ -15,8 +15,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
   recentTickets,
   onTriggerScenario,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-[#0d0e12] text-neutral-100 p-4 gap-4 font-sans">
       {/* Welcome Card */}

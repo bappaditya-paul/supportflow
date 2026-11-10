@@ -9,7 +9,6 @@ import {
   Columns,
   Users,
   Bot,
-  Settings,
   ArrowRight,
   X,
   Sun,

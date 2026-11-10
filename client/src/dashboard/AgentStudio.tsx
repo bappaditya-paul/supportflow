@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Bot,
   Settings2,
   Command,
   Wrench,
   Check,
   Copy,
   Plus,
-  Sparkles,
   Shield,
-  AlertTriangle,
-  RotateCcw,
   Save,
   X,
-  ExternalLink,
   RefreshCw,
 } from 'lucide-react';
 

@@ -1,25 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
 import {
-  BookOpen,
-  Terminal,
-  Code2,
   Copy,
   Check,
-  ChevronRight,
   Shield,
-  Bot,
-  ExternalLink,
-  Search,
-  Sparkles,
-  ArrowRight,
-  Layers,
-  FileText,
-  Sliders,
-  Cpu,
 } from 'lucide-react';
-import { MaskLogo } from '../components/primitives';
 
 type DocSection = 'intro' | 'quickstart' | 'component' | 'theme' | 'switch' | 'tools' | 'api';
 

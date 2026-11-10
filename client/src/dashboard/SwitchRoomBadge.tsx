@@ -1,5 +1,5 @@
 import React from 'react';
-import { Network, Bot, Cpu, CheckCircle2, Clock } from 'lucide-react';
+import { Network, Bot } from 'lucide-react';
 import type { SwitchAgentState } from '../types';
 
 interface SwitchRoomBadgeProps {

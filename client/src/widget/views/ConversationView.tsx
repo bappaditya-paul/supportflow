@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, CheckCircle2, ShieldAlert, Bot, User, CornerDownLeft, Sparkles, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Send, Bot, Sparkles, ThumbsUp, ThumbsDown } from 'lucide-react';
 import type { Ticket, TimelineItem, DraftResponse } from '../../types';
 
 interface ConversationViewProps {

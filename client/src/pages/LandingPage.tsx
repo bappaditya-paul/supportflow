@@ -3,20 +3,14 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Shield,
-  Zap,
-  Bot,
   Terminal,
   ArrowRight,
   Check,
   Copy,
-  Layers,
   Sparkles,
   ExternalLink,
-  Activity,
   CheckCircle2,
   Clock,
-  Play,
-  RotateCcw,
   Code2,
   Eye,
   MessageSquare,
@@ -32,7 +26,6 @@ import {
   SpotlightCard,
   BorderBeamButton,
   RollingCounter,
-  GlassKeycap,
 } from '../components/primitives';
 
 interface DemoTicket {

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { SidebarNav } from './SidebarNav';
 import { ConversationListPane } from './ConversationListPane';
 import { ConversationDetailPane } from './ConversationDetailPane';
 import { VisitorProfileDrawer } from './VisitorProfileDrawer';
 import type { Ticket, TimelineItem, DraftResponse, Customer, SwitchAgentState } from '../types';
 import { FacehashAvatar } from '../components/primitives';
-import { Bot, CheckCircle2, Shield, Activity, Sparkles, Terminal, BookOpen, Settings, RefreshCw, ArrowUpRight } from 'lucide-react';
+import { RefreshCw, ArrowUpRight } from 'lucide-react';
 import { TopAnalyticsBar } from './TopAnalyticsBar';
 import { AgentStudio } from './AgentStudio';
 import { KnowledgeHub } from './KnowledgeHub';

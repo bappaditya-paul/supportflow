@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import {
   CreditCard,
-  AlertTriangle,
   RefreshCw,
   Database,
-  CheckCircle2,
   Copy,
   Check,
   Globe,

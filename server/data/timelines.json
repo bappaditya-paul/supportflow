@@ -260,6 +260,96 @@
       "text": "Automated verification message.",
       "visibility": "public",
       "created_at": "2026-11-10T14:42:34.826497+00:00"
+    },
+    {
+      "id": "msg-399b6cfc",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:51:43.641337+00:00"
+    },
+    {
+      "id": "msg-bd3990d8",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:51:44.189857+00:00"
+    },
+    {
+      "id": "msg-a9514666",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:51:48.803038+00:00"
+    },
+    {
+      "id": "msg-af324014",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:57:11.916507+00:00"
+    },
+    {
+      "id": "msg-19b830f9",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:59:50.726072+00:00"
+    },
+    {
+      "id": "msg-44adceeb",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Operator Desk",
+      "text": "hey\n",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:04:35.377623+00:00"
+    },
+    {
+      "id": "msg-39d988a4",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:07:37.115423+00:00"
+    },
+    {
+      "id": "msg-1a35c750",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T15:07:37.386766+00:00"
+    },
+    {
+      "id": "msg-094ecc3f",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:07:41.393119+00:00"
+    },
+    {
+      "id": "msg-01b3c848",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:07:58.026135+00:00"
     }
   ]
 }

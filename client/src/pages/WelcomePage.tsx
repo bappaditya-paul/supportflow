@@ -3,14 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import {
   Check,
   Copy,
-  Terminal,
   ArrowRight,
   Sparkles,
   ChevronDown,
   Edit2,
-  ExternalLink,
 } from 'lucide-react';
-import { MaskLogo, FacehashAvatar } from '../components/primitives';
 
 export const WelcomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -392,8 +389,9 @@ import "@supportflow/next/styles.css";
                             )
                           }
                           className="p-1 hover:text-white text-neutral-400 cursor-pointer"
+                          aria-label="Copy package install command"
                         >
-                          <Copy className="w-3.5 h-3.5" />
+                          {copiedSnippet ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </div>
@@ -410,8 +408,9 @@ import "@supportflow/next/styles.css";
                             copyToClipboard(`NEXT_PUBLIC_SUPPORTFLOW_API_KEY=${testApiKey}`, false)
                           }
                           className="p-1 hover:text-white text-neutral-400 cursor-pointer shrink-0 ml-2"
+                          aria-label="Copy publishable API key"
                         >
-                          <Copy className="w-3.5 h-3.5" />
+                          {copiedSnippet ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </div>

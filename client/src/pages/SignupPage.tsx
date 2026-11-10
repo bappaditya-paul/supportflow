@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { motion } from 'motion/react';
 import {
   Github,
-  Mail,
-  Lock,
-  User,
   ArrowRight,
-  ShieldCheck,
   CheckCircle2,
   AlertCircle,
   Loader2,
-  ChevronDown,
-  Building2,
-  Sparkles,
   Zap,
 } from 'lucide-react';
 import { MaskLogo, FacehashAvatar, AsciiMatrixBackground } from '../components/primitives';
-import { useAuth, DEMO_OPERATOR, DEMO_FOUNDER, DEMO_JUDGE } from '../context/AuthContext';
+import { useAuth, DEMO_OPERATOR, DEMO_JUDGE } from '../context/AuthContext';
 
 export const SignupPage: React.FC = () => {
   const [searchParams] = useSearchParams();

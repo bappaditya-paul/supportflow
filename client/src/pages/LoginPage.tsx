@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import {
   Github,
-  Mail,
-  Lock,
   ArrowRight,
-  ShieldCheck,
   CheckCircle2,
   AlertCircle,
   Loader2,
-  ChevronDown,
   Sparkles,
   Zap,
-  Check,
 } from 'lucide-react';
 import { MaskLogo, FacehashAvatar, AsciiMatrixBackground } from '../components/primitives';
 import { useAuth, DEMO_OPERATOR, DEMO_FOUNDER, DEMO_JUDGE } from '../context/AuthContext';
@@ -22,7 +16,6 @@ export const LoginPage: React.FC = () => {
   const { loginAs, loginWithCredentials, signInWithGoogle, signInWithGithub } = useAuth();
   const [email, setEmail] = useState('operator@supportflow.ai');
   const [password, setPassword] = useState('••••••••••••');
-  const [showEmailForm, setShowEmailForm] = useState(true);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
