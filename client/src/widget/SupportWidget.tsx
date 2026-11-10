@@ -64,7 +64,7 @@ export const SupportWidget: React.FC<SupportWidgetProps> = ({
   };
 
   const widgetContent = (
-    <div className="flex flex-col h-full w-full bg-white dark:bg-[#15161b] rounded-[6px] shadow-2xl border border-neutral-300 dark:border-neutral-800 overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-[#0d0e12] rounded-[6px] shadow-2xl border border-white/[0.12] overflow-hidden">
       <WidgetHeader
         title="CloudDesk Support"
         subtitle={view === 'conversation' ? (activeTicket ? activeTicket.ticket_id : 'Active Chat') : 'AI Specialists + Human Team'}
@@ -102,7 +102,7 @@ export const SupportWidget: React.FC<SupportWidgetProps> = ({
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {isOpen && (
-        <div className="mb-4 w-[380px] h-[580px] sm:w-[400px] sm:h-[620px] transition-all duration-200 animate-in fade-in slide-in-from-bottom-4">
+        <div className="mb-4 w-[380px] h-[580px] sm:w-[400px] sm:h-[620px] transition-[transform,opacity] duration-200 motion-reduce:transition-none">
           {widgetContent}
         </div>
       )}

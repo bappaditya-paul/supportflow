@@ -12,7 +12,7 @@ export const RollingCounter: React.FC<RollingCounterProps> = ({
   value,
   suffix = '',
   prefix = '',
-  duration = 1400,
+  duration = 1200,
   className = '',
 }) => {
   const [count, setCount] = useState(0);
@@ -20,7 +20,13 @@ export const RollingCounter: React.FC<RollingCounterProps> = ({
   const spanRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    // Intersection observer so it starts counting when visible
+    // Respect prefers-reduced-motion: show final number immediately
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setCount(value);
+      setHasStarted(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !hasStarted) {
@@ -35,10 +41,15 @@ export const RollingCounter: React.FC<RollingCounterProps> = ({
     }
 
     return () => observer.disconnect();
-  }, [hasStarted]);
+  }, [hasStarted, value]);
 
   useEffect(() => {
     if (!hasStarted) return;
+
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setCount(value);
+      return;
+    }
 
     if (value === 0) {
       setCount(0);
@@ -64,11 +75,13 @@ export const RollingCounter: React.FC<RollingCounterProps> = ({
   }, [hasStarted, value, duration]);
 
   return (
-    <span ref={spanRef} className={`font-mono font-bold tracking-tight inline-block ${className}`}>
+    <span
+      ref={spanRef}
+      className={`font-mono font-bold tracking-tight inline-block tabular-nums ${className}`}
+    >
       {prefix}
       {count.toLocaleString()}
       {suffix}
     </span>
   );
 };
-

@@ -10,3 +10,4 @@ echo "📋 If you see a login link, copy and open it in your browser:"
 echo ""
 
 agy "$@"
+

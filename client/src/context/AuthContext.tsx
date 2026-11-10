@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { AuthUser } from '../types';
+import { supabase } from '../lib/supabase';
 
 export const DEMO_OPERATOR: AuthUser = {
   id: 'usr-op-01',
@@ -40,7 +41,9 @@ interface AuthContextType {
   loginAs: (preset: AuthUser) => void;
   loginWithCredentials: (email: string, password?: string) => Promise<AuthUser>;
   signupWithCredentials: (name: string, email: string, workspace: string) => Promise<AuthUser>;
-  logout: () => void;
+  signInWithGoogle: () => Promise<void>;
+  signInWithGithub: () => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -59,6 +62,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return DEMO_OPERATOR;
   });
 
+  // Sync Supabase Auth session & OAuth state changes
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const supaUser = session.user;
+        const mappedUser: AuthUser = {
+          id: supaUser.id,
+          name:
+            supaUser.user_metadata?.full_name ||
+            supaUser.user_metadata?.name ||
+            supaUser.email?.split('@')[0] ||
+            'Operator',
+          email: supaUser.email || 'operator@supportflow.ai',
+          role: (supaUser.user_metadata?.role as any) || 'operator',
+          roleTitle: 'Verified Google Operator',
+          workspace: supaUser.user_metadata?.workspace || 'SupportFlow · Pro Swarm',
+          avatarSeed: supaUser.email || 'operator',
+          token: session.access_token,
+        };
+        setUser(mappedUser);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const supaUser = session.user;
+        const mappedUser: AuthUser = {
+          id: supaUser.id,
+          name:
+            supaUser.user_metadata?.full_name ||
+            supaUser.user_metadata?.name ||
+            supaUser.email?.split('@')[0] ||
+            'Operator',
+          email: supaUser.email || 'operator@supportflow.ai',
+          role: (supaUser.user_metadata?.role as any) || 'operator',
+          roleTitle: 'Verified Google Operator',
+          workspace: supaUser.user_metadata?.workspace || 'SupportFlow · Pro Swarm',
+          avatarSeed: supaUser.email || 'operator',
+          token: session.access_token,
+        };
+        setUser(mappedUser);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   useEffect(() => {
     try {
       if (user) {
@@ -75,10 +129,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(preset);
   };
 
-  const loginWithCredentials = async (email: string): Promise<AuthUser> => {
-    // Simulate real auth network latency (400ms)
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+    if (error) {
+      console.warn('Supabase Google OAuth initiation warning:', error.message);
+      throw error;
+    }
+  };
+
+  const signInWithGithub = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) {
+      console.warn('Supabase GitHub OAuth initiation warning:', error.message);
+      throw error;
+    }
+  };
+
+  const loginWithCredentials = async (email: string, password?: string): Promise<AuthUser> => {
+    // Attempt Supabase Password Auth if password is provided and not default mock
+    if (password && !password.includes('•')) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (!error && data.session?.user) {
+          const supaUser = data.session.user;
+          const authUser: AuthUser = {
+            id: supaUser.id,
+            name:
+              supaUser.user_metadata?.full_name ||
+              supaUser.user_metadata?.name ||
+              email.split('@')[0],
+            email,
+            role: (supaUser.user_metadata?.role as any) || 'operator',
+            roleTitle: 'Verified Operator',
+            workspace: supaUser.user_metadata?.workspace || 'SupportFlow · Swarm',
+            avatarSeed: email,
+            token: data.session.access_token,
+          };
+          setUser(authUser);
+          return authUser;
+        }
+      } catch (err) {
+        console.warn('Supabase password login fallback to local persona:', err);
+      }
+    }
+
+    // Fallback persona selection
     let authenticatedUser = DEMO_OPERATOR;
     if (email.toLowerCase().includes('founder') || email.toLowerCase().includes('admin')) {
       authenticatedUser = DEMO_FOUNDER;
@@ -105,7 +214,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     email: string,
     workspace: string
   ): Promise<AuthUser> => {
-    await new Promise((resolve) => setTimeout(resolve, 450));
+    try {
+      await supabase.auth.signUp({
+        email,
+        password: 'TemporaryPassword123!',
+        options: {
+          data: {
+            full_name: name,
+            workspace,
+          },
+        },
+      });
+    } catch (e) {
+      console.warn('Supabase signup fallback:', e);
+    }
+
     const newUser: AuthUser = {
       id: `usr-${Date.now()}`,
       name: name || 'Demo User',
@@ -120,8 +243,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return newUser;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      // ignore
+    }
     setUser(null);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   return (
@@ -132,6 +261,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loginAs,
         loginWithCredentials,
         signupWithCredentials,
+        signInWithGoogle,
+        signInWithGithub,
         logout,
       }}
     >

@@ -78,22 +78,22 @@ import { Support } from "@supportflow/react";
 
 export const ChangelogPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[#FCFCFC] dark:bg-[#0d0e12] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans select-none overflow-x-hidden transition-colors">
+    <div className="min-h-screen bg-[#0d0e12] text-neutral-100 flex flex-col font-sans select-none overflow-x-hidden transition-colors">
       <div className="pt-16 sm:pt-24 pb-20 px-4 sm:px-6 max-w-4xl mx-auto w-full">
         {/* Header */}
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] dark:text-[#FF6633] mb-4 border border-dashed border-[#DF3E03]/30 rounded-[2px] bg-[#DF3E03]/5"
+            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] mb-4 border border-white/[0.08] rounded-[3px] bg-white/[0.03]"
           >
             <span>[Product Changelog]</span>
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white [text-wrap:balance]">
             Changelog
           </h1>
-          <p className="mt-3 text-sm text-neutral-500 font-mono">
+          <p className="mt-3 text-sm text-neutral-400 font-mono">
             We're shipping a lot: 1,157 commits and 159 PRs in the past year.
           </p>
         </div>
@@ -104,23 +104,23 @@ export const ChangelogPage: React.FC = () => {
         </div>
 
         {/* Release Timeline Feed */}
-        <div className="space-y-12">
+        <div className="space-y-8">
           {RELEASES.map((rel, idx) => (
             <motion.article
               key={rel.version}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.3 }}
-              className="border border-dashed border-neutral-300 dark:border-neutral-800 bg-white dark:bg-[#111218] rounded-[2px] p-6 sm:p-8 shadow-xs"
+              className="border border-white/[0.08] bg-[#121319] rounded-[4px] p-6 sm:p-8 shadow-xs"
             >
               {/* Header Info */}
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-dashed border-neutral-200 dark:border-neutral-800">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-4 border-b border-white/[0.08]">
                 <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-0.5 bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-mono text-xs font-bold rounded-[2px]">
+                  <span className="px-2.5 py-0.5 bg-white text-neutral-950 font-mono text-xs font-bold rounded-[3px]">
                     v{rel.version}
                   </span>
                   {rel.badge && (
-                    <span className="px-2 py-0.5 bg-[#DF3E03] text-white font-mono text-[10px] font-bold rounded-[2px]">
+                    <span className="px-2 py-0.5 bg-[#DF3E03] text-white font-mono text-[10px] font-bold rounded-[3px]">
                       {rel.badge}
                     </span>
                   )}
@@ -131,18 +131,18 @@ export const ChangelogPage: React.FC = () => {
               </div>
 
               {/* Title & Description */}
-              <h2 className="text-xl sm:text-2xl font-bold text-neutral-950 dark:text-neutral-50 tracking-tight mb-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-3">
                 {rel.title}
               </h2>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
+              <p className="text-sm text-neutral-400 leading-relaxed mb-6 font-sans">
                 {rel.description}
               </p>
 
               {/* Highlights List */}
               <div className="space-y-2 mb-6">
                 {rel.highlights.map((h, i) => (
-                  <div key={i} className="flex items-start gap-2.5 text-xs text-neutral-700 dark:text-neutral-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                  <div key={i} className="flex items-start gap-2.5 text-xs text-neutral-300 font-sans">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                     <span>{h}</span>
                   </div>
                 ))}
@@ -150,8 +150,8 @@ export const ChangelogPage: React.FC = () => {
 
               {/* Code Snippet if present */}
               {rel.codeSnippet && (
-                <div className="p-4 bg-[#0a0a0c] text-neutral-200 rounded-[2px] font-mono text-xs border border-neutral-800 overflow-x-auto">
-                  <div className="text-[10px] text-neutral-500 mb-2">// Quickstart Usage</div>
+                <div className="p-4 bg-[#090a0f] text-neutral-200 rounded-[4px] font-mono text-xs border border-white/[0.08] overflow-x-auto">
+                  <div className="text-[10px] text-neutral-500 mb-2 font-mono">// Quickstart Usage</div>
                   <pre>
                     <code>{rel.codeSnippet}</code>
                   </pre>

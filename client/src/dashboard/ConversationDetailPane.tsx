@@ -10,12 +10,13 @@ import {
   Sparkles,
   ExternalLink,
   Copy,
+  ArrowLeft,
+  Check,
 } from 'lucide-react';
 import type { Ticket, TimelineItem, DraftResponse, Customer, SwitchAgentState } from '../types';
 import { SwitchRoomBadge } from './SwitchRoomBadge';
 import { GhostTypingPreview } from './GhostTypingPreview';
 import { ToolExecutionCard } from './ToolExecutionCard';
-import { ApprovalDispatchGate } from './ApprovalDispatchGate';
 import { InternalNoteComposer } from './InternalNoteComposer';
 import { FacehashAvatar } from '../components/primitives';
 
@@ -28,6 +29,9 @@ interface ConversationDetailPaneProps {
   isProcessing?: boolean;
   customerTypingText?: string;
   isCustomerTyping?: boolean;
+  showProfileDrawer?: boolean;
+  onToggleProfileDrawer?: () => void;
+  onBackToInbox?: () => void;
   onApproveDraft: (text: string) => void;
   onRejectDraft: () => void;
   onSendOperatorMessage: (text: string, isInternal: boolean) => void;
@@ -42,6 +46,9 @@ export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
   isProcessing = false,
   customerTypingText = '',
   isCustomerTyping = false,
+  showProfileDrawer,
+  onToggleProfileDrawer,
+  onBackToInbox,
   onApproveDraft,
   onRejectDraft,
   onSendOperatorMessage,
@@ -50,7 +57,6 @@ export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
 
   useEffect(() => {
     if (containerRef.current) {
-      // Smooth scroll to bottom so the dispatch gate is immediately visible
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
         behavior: 'smooth',
@@ -61,77 +67,104 @@ export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
   if (!ticket) {
     return (
       <div className="flex-1 h-full bg-[#0d0e12] flex flex-col items-center justify-center text-neutral-500 font-mono min-h-0">
-        <Bot className="w-10 h-10 mb-2 opacity-30 text-[#DF3E03]" />
+        <Bot className="w-10 h-10 mb-2 opacity-30 text-white" />
         <p className="text-xs">Select a conversation from the inbox to begin</p>
       </div>
     );
   }
 
+  const customerName = ticket.customer_name || 'Customer';
+  const customerEmail = ticket.customer_email || '';
+  const complaintText = ticket.complaint || ticket.message || ticket.subject || '';
+
   return (
-    <div className="flex-1 h-full bg-[#0f1016] flex flex-col select-none overflow-hidden font-sans min-h-0">
-      {/* Detail Pane Header */}
-      <div className="px-5 py-3 border-b border-dashed border-neutral-800 bg-[#12131b] flex items-center justify-between shrink-0 gap-4">
+    <div className="flex-1 h-full bg-[#0d0e12] flex flex-col select-none overflow-hidden font-sans min-h-0">
+      {/* 1. Detail Pane Header: Minimal, High-Contrast & Elegant */}
+      <div className="px-4 sm:px-6 py-3.5 border-b border-white/[0.08] bg-[#0b0c10] flex items-center justify-between shrink-0 gap-4">
         <div className="flex items-center gap-3 min-w-0">
-          <FacehashAvatar seed={ticket.customer_name} size="sm" showStatus status="online" />
+          {onBackToInbox && (
+            <button
+              type="button"
+              onClick={onBackToInbox}
+              aria-label="Back to ticket list"
+              className="md:hidden p-1.5 -ml-1 text-neutral-400 hover:text-white rounded-[3px] bg-white/[0.04] border border-white/[0.08] cursor-pointer shrink-0 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
+
+          <FacehashAvatar seed={customerName} size="sm" showStatus status="online" />
+
           <div className="min-w-0">
-            <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-              <span className="font-mono text-xs font-bold text-neutral-100 bg-neutral-800/80 px-1.5 py-0.2 rounded-[2px] border border-neutral-700 shrink-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="font-mono text-[11px] font-medium text-neutral-300 bg-white/[0.06] px-1.5 py-0.2 rounded-[3px] border border-white/[0.08] shrink-0">
                 {ticket.ticket_id}
               </span>
-              <span className="text-xs font-bold text-neutral-100 truncate max-w-md">
+              <span className="text-xs sm:text-sm font-semibold text-white truncate">
                 {ticket.subject}
-              </span>
-              <span
-                className={`text-[9px] font-mono px-1.5 py-0.2 rounded-[2px] uppercase font-bold shrink-0 ${
-                  ticket.status === 'resolved'
-                    ? 'bg-emerald-950/70 text-emerald-300 border border-emerald-800/40'
-                    : ticket.status === 'awaiting_approval'
-                    ? 'bg-amber-950/70 text-amber-300 border border-amber-800/40'
-                    : 'bg-blue-950/70 text-blue-300 border border-blue-800/40'
-                }`}
-              >
-                {ticket.status.replace('_', ' ')}
               </span>
             </div>
 
-            <div className="text-[11px] text-neutral-400 font-mono flex items-center gap-2 truncate">
-              <span>Customer: <strong className="text-neutral-200">{ticket.customer_name}</strong></span>
+            <div className="text-[11px] text-neutral-400 font-mono flex items-center gap-1.5 truncate">
+              <span className="text-neutral-300 font-sans">{customerName}</span>
+              {customerEmail && (
+                <>
+                  <span>·</span>
+                  <span className="text-neutral-500 truncate">{customerEmail}</span>
+                </>
+              )}
               <span>·</span>
-              <span className="text-neutral-400 truncate">{ticket.customer_email}</span>
+              {ticket.status === 'resolved' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400">
+                  <Check className="w-3 h-3" />
+                  Resolved
+                </span>
+              ) : ticket.status === 'awaiting_approval' ? (
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse motion-reduce:animate-none" />
+                  Needs Review
+                </span>
+              ) : (
+                <span className="text-neutral-500 text-[10px]">In Progress</span>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Switch Room Telemetry */}
-        <div className="shrink-0">
-          <SwitchRoomBadge roomName="cloud-support" agents={agents} isProcessing={isProcessing} />
+        {/* Right Header Actions: Compact Switch Status + Customer Profile Toggle */}
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-[3px] bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-neutral-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>#cloud-support</span>
+          </div>
+
+          {onToggleProfileDrawer && (
+            <button
+              type="button"
+              onClick={onToggleProfileDrawer}
+              aria-label={showProfileDrawer ? 'Hide customer metadata' : 'Show customer metadata'}
+              title="Customer Metadata"
+              className={`p-1.5 rounded-[3px] border transition-colors cursor-pointer ${
+                showProfileDrawer
+                  ? 'bg-white/10 text-white border-white/20'
+                  : 'text-neutral-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border-white/[0.08]'
+              }`}
+            >
+              <User className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Ghost Typing Indicator */}
+      {/* 2. Ghost Typing Indicator */}
       <GhostTypingPreview
-        customerName={ticket.customer_name}
+        customerName={customerName}
         typingText={customerTypingText}
         isTyping={isCustomerTyping}
       />
 
-      {/* Main Conversation Stream with generous bottom clearance so action box is never cut off */}
-      <div ref={containerRef} className="flex-1 overflow-y-auto p-5 pb-20 space-y-4 min-h-0 [scrollbar-width:thin]">
-        {/* Ticket Initial Problem Card */}
-        <div className="p-4 bg-[#14151e] border border-neutral-800 rounded-[2px] text-xs shadow-xs">
-          <div className="flex items-center justify-between text-neutral-400 font-mono text-[11px] mb-2 pb-2 border-b border-neutral-800/80">
-            <div className="flex items-center gap-2">
-              <FacehashAvatar seed={ticket.customer_name} size="xs" />
-              <span className="font-semibold text-neutral-200">Initial Issue Report</span>
-              <span className="text-[10px] text-neutral-500">via In-App Widget</span>
-            </div>
-            <span className="text-neutral-500">{ticket.created_at}</span>
-          </div>
-          <div className="text-neutral-200 leading-relaxed font-sans pl-1">
-            {ticket.complaint}
-          </div>
-        </div>
-
+      {/* 3. Main Conversation Timeline Stream */}
+      <div ref={containerRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 min-h-0 [scrollbar-width:thin]">
         {/* Timeline Items */}
         {timeline.map((item) => {
           if (item.tool_call) {
@@ -153,73 +186,81 @@ export const ConversationDetailPane: React.FC<ConversationDetailPaneProps> = ({
           const isOperator = item.sender_type === 'operator';
           const isAgent = item.sender_type === 'agent';
 
-          return (
-            <div
-              key={item.id}
-              className={`flex flex-col text-xs ${
-                isInternal
-                  ? 'border-l-2 border-amber-500/80 bg-[#16151b] p-3.5 rounded-[2px] border border-amber-900/30'
-                  : isCustomer
-                  ? 'bg-[#14151f] p-3.5 rounded-[2px] border border-neutral-800'
-                  : 'bg-[#121824] p-3.5 rounded-[2px] border border-blue-900/40'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-2 font-mono text-[11px]">
-                <div className="flex items-center gap-2">
-                  {isInternal && <Lock className="w-3.5 h-3.5 text-amber-400" />}
-                  {isCustomer && <FacehashAvatar seed={item.sender_name} size="xs" />}
-                  {isAgent && <Bot className="w-3.5 h-3.5 text-blue-400" />}
-                  {isOperator && <FacehashAvatar seed="alex" size="xs" />}
-
-                  <span
-                    className={`font-semibold ${
-                      isInternal
-                        ? 'text-amber-400'
-                        : isAgent
-                        ? 'text-blue-300'
-                        : isOperator
-                        ? 'text-emerald-300'
-                        : 'text-neutral-200'
-                    }`}
-                  >
-                    {item.sender_name}
-                  </span>
-
-                  {isInternal && (
-                    <span className="text-[9px] font-mono text-amber-400/90 uppercase tracking-wide bg-amber-950/60 px-1.5 py-0.2 rounded-[2px] border border-amber-800/40">
-                      Internal Note · Switch Room
-                    </span>
-                  )}
+          // A. Internal Note (Private team memo or agent report)
+          if (isInternal) {
+            return (
+              <div
+                key={item.id}
+                className="my-2 p-3.5 bg-white/[0.02] border border-dashed border-white/[0.12] rounded-[4px] text-xs font-sans"
+              >
+                <div className="flex items-center justify-between mb-1.5 font-mono text-[11px] text-neutral-400">
+                  <div className="flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-neutral-400" />
+                    <span className="font-semibold text-neutral-200">{item.sender_name}</span>
+                    <span className="text-neutral-500">· Internal Note</span>
+                  </div>
+                  <span className="text-neutral-500 text-[10px] tabular-nums">{item.created_at}</span>
                 </div>
-
-                <span className="text-neutral-500 text-[10px]">{item.created_at}</span>
+                <div className="text-neutral-300 leading-relaxed pl-1 whitespace-pre-wrap">
+                  {item.text}
+                </div>
               </div>
+            );
+          }
 
-              <div className="text-neutral-200 leading-relaxed font-sans whitespace-pre-wrap pl-1">
-                {item.text}
+          // B. Customer Message
+          if (isCustomer) {
+            return (
+              <div key={item.id} className="flex justify-start my-2">
+                <div className="max-w-[85%] bg-[#111218] border border-white/[0.08] rounded-[6px] p-4 text-xs">
+                  <div className="flex items-center justify-between gap-3 mb-2 font-mono text-[11px] text-neutral-400">
+                    <div className="flex items-center gap-2">
+                      <FacehashAvatar seed={item.sender_name} size="xs" />
+                      <span className="font-semibold text-white">{item.sender_name}</span>
+                    </div>
+                    <span className="text-neutral-500 text-[10px] tabular-nums">{item.created_at}</span>
+                  </div>
+                  <div className="text-neutral-100 text-xs sm:text-[13px] leading-relaxed font-sans whitespace-pre-wrap">
+                    {item.text}
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // C. Operator or Verified Agent Public Reply
+          return (
+            <div key={item.id} className="flex justify-end my-2">
+              <div className="max-w-[85%] bg-white/[0.06] border border-white/10 rounded-[6px] p-4 text-xs shadow-xs">
+                <div className="flex items-center justify-between gap-3 mb-2 font-mono text-[11px] text-neutral-400">
+                  <div className="flex items-center gap-2">
+                    <FacehashAvatar seed="alex" size="xs" />
+                    <span className="font-semibold text-white">{item.sender_name}</span>
+                    <span className="text-[9px] font-mono bg-white/10 text-neutral-300 px-1.5 py-0.2 rounded-[2px]">
+                      Verified
+                    </span>
+                  </div>
+                  <span className="text-neutral-500 text-[10px] tabular-nums">{item.created_at}</span>
+                </div>
+                <div className="text-neutral-100 text-xs sm:text-[13px] leading-relaxed font-sans whitespace-pre-wrap">
+                  {item.text}
+                </div>
               </div>
             </div>
           );
         })}
-
-        {/* Approval Dispatch Gate: Guaranteed Full Visibility */}
-        {draft && (
-          <div id="approval-dispatch-gate" className="pt-2">
-            <ApprovalDispatchGate
-              draft={draft}
-              onApprove={onApproveDraft}
-              onReject={onRejectDraft}
-              isDispatching={isProcessing}
-            />
-          </div>
-        )}
       </div>
 
-      {/* Operator Reply & Switch Prompt Composer */}
+      {/* 4. Operator Reply & Switch AI Draft Composer (Unified at Bottom) */}
       <div className="shrink-0">
         <InternalNoteComposer
           onSendNote={onSendOperatorMessage}
           disabled={isProcessing}
+          draft={draft}
+          onApproveDraft={onApproveDraft}
+          onRejectDraft={onRejectDraft}
+          customerName={customerName}
+          ticketId={ticket.ticket_id}
         />
       </div>
     </div>

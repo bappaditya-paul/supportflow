@@ -10,6 +10,7 @@ import {
   CommandPalette,
 } from './components/CommandPalette';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { LandingPage } from './pages/LandingPage';
 import { PricingPage } from './pages/PricingPage';
 import { LoginPage } from './pages/LoginPage';
@@ -21,193 +22,19 @@ import { BlogPage } from './pages/BlogPage';
 import { CloudDeskDemo } from './demo/CloudDeskDemo';
 import { SupportWidget } from './widget/SupportWidget';
 import { DashboardLayout } from './dashboard/DashboardLayout';
+import { WelcomePage } from './pages/WelcomePage';
 import type { Ticket, Customer, TimelineItem, DraftResponse, SwitchAgentState } from './types';
-
-// Initial Mock Fixtures
-const INITIAL_TICKETS: Ticket[] = [
-  {
-    ticket_id: 'TKT-1001',
-    customer_id: 'CUST-001',
-    customer_name: 'Alex Rivera',
-    customer_email: 'alex.rivera@example.com',
-    subject: 'Paid for Pro yesterday, but still showing Free tier',
-    complaint:
-      'I paid for Pro yesterday with my credit card ($49), but my account dashboard still says Free tier and my API rate limit is locked at 60 req/min. Can someone fix this ASAP? We have a product launch tomorrow.',
-    plan: 'free',
-    created_at: '10 mins ago',
-    status: 'awaiting_approval',
-    priority: 'high',
-    category: 'Billing / Discrepancy',
-    discrepancy: true,
-  },
-  {
-    ticket_id: 'TKT-1002',
-    customer_id: 'CUST-002',
-    customer_name: 'Sarah Chen',
-    customer_email: 'sarah.chen@techcorp.io',
-    subject: 'Emergency concurrency limit increase for workload test',
-    complaint:
-      'We are conducting a load test on our staging cluster tonight. We need our concurrent node limit bumped from 20 to 50 nodes for the next 48 hours.',
-    plan: 'enterprise',
-    created_at: '45 mins ago',
-    status: 'investigating',
-    priority: 'high',
-    category: 'Quota Increase',
-    discrepancy: false,
-  },
-  {
-    ticket_id: 'TKT-1003',
-    customer_id: 'CUST-003',
-    customer_name: 'Marcus Vance',
-    customer_email: 'm.vance@startup.co',
-    subject: 'Where to find Okta SAML 2.0 metadata certificate?',
-    complaint:
-      'Setting up enterprise SSO for our team. Does CloudDesk support SP-initiated SAML and where can I find the ACS URL and cert?',
-    plan: 'free',
-    created_at: '2 hours ago',
-    status: 'resolved',
-    priority: 'normal',
-    category: 'Authentication / SSO',
-    discrepancy: false,
-  },
-];
-
-const INITIAL_CUSTOMERS: Record<string, Customer> = {
-  'CUST-001': {
-    customer_id: 'CUST-001',
-    name: 'Alex Rivera',
-    email: 'alex.rivera@example.com',
-    plan: 'free',
-    paid_plan: 'pro',
-    payment_status: 'paid',
-    last_payment_date: '2026-11-04 18:22:10 UTC',
-    stripe_charge_id: 'ch_3P7a9xK201LMN7',
-    account_created: '2026-06-12',
-  },
-  'CUST-002': {
-    customer_id: 'CUST-002',
-    name: 'Sarah Chen',
-    email: 'sarah.chen@techcorp.io',
-    plan: 'enterprise',
-    paid_plan: 'enterprise',
-    payment_status: 'paid',
-    last_payment_date: '2026-10-01 09:00:00 UTC',
-    stripe_charge_id: 'ch_99KaaL781200PQ',
-    account_created: '2025-02-14',
-  },
-  'CUST-003': {
-    customer_id: 'CUST-003',
-    name: 'Marcus Vance',
-    email: 'm.vance@startup.co',
-    plan: 'free',
-    paid_plan: 'free',
-    payment_status: 'none',
-    last_payment_date: 'N/A',
-    stripe_charge_id: 'N/A',
-    account_created: '2026-09-20',
-  },
-};
-
-const INITIAL_TIMELINES: Record<string, TimelineItem[]> = {
-  'TKT-1001': [
-    {
-      id: 'msg-1',
-      ticket_id: 'TKT-1001',
-      sender_type: 'customer',
-      sender_name: 'Alex Rivera',
-      text: 'I paid for Pro yesterday with my credit card ($49), but my account dashboard still says Free tier and my API rate limit is locked at 60 req/min. Can someone fix this ASAP? We have a product launch tomorrow.',
-      visibility: 'public',
-      created_at: '10 mins ago',
-    },
-    {
-      id: 'tool-1',
-      ticket_id: 'TKT-1001',
-      sender_type: 'agent',
-      sender_name: '@investigator',
-      text: 'Executing database customer lookup...',
-      visibility: 'private',
-      created_at: '9 mins ago',
-      tool_call: {
-        name: 'lookup_customer',
-        params: { customer_id: 'CUST-001' },
-        result: {
-          customer_id: 'CUST-001',
-          name: 'Alex Rivera',
-          plan: 'free',
-          status: 'active',
-        },
-        status: 'completed',
-      },
-    },
-    {
-      id: 'tool-2',
-      ticket_id: 'TKT-1001',
-      sender_type: 'agent',
-      sender_name: '@investigator',
-      text: 'Querying Stripe API for latest charges...',
-      visibility: 'private',
-      created_at: '9 mins ago',
-      tool_call: {
-        name: 'check_stripe',
-        params: { email: 'alex.rivera@example.com' },
-        result: {
-          status: 'succeeded',
-          amount: 4900,
-          currency: 'usd',
-          plan: 'pro',
-          charge_id: 'ch_3P7a9xK201LMN7',
-          paid_at: '2026-11-04 18:22:10 UTC',
-        },
-        status: 'completed',
-      },
-    },
-    {
-      id: 'msg-2',
-      ticket_id: 'TKT-1001',
-      sender_type: 'agent',
-      sender_name: '@investigator',
-      text: 'DISCREPANCY DETECTED: Customer has valid active Pro subscription in Stripe ($49), but database user record is still set to "free". Root cause: Webhook sync delay or dropped event.',
-      visibility: 'private',
-      created_at: '8 mins ago',
-    },
-    {
-      id: 'msg-3',
-      ticket_id: 'TKT-1001',
-      sender_type: 'agent',
-      sender_name: '@responder',
-      text: 'Grounding draft in Policy KB-001: Immediate sync required + proactive apology. Prepared resolution draft awaiting human authorization.',
-      visibility: 'private',
-      created_at: '7 mins ago',
-    },
-  ],
-};
-
-const INITIAL_DRAFTS: Record<string, DraftResponse> = {
-  'TKT-1001': {
-    ticket_id: 'TKT-1001',
-    customer_name: 'Alex Rivera',
-    complaint_summary: 'Customer paid for Pro tier via Stripe, but app database reflects Free tier.',
-    investigation_findings: [
-      'Stripe charge ch_3P7a9xK201LMN7 for $49 verified as SUCCEEDED.',
-      'Internal users table records plan="free" due to webhook synchronization failure.',
-      'API rate limit restricted to 60 req/min instead of Pro entitlement (600 req/min).',
-    ],
-    applicable_policies: ['Policy KB-001: Billing Discrepancy Protocol', 'Policy KB-002: <15m Pro SLA'],
-    proposed_response: `Hi Alex,\n\nThank you for reaching out and alerting us to this!\n\nWe investigated our payment gateway records and verified that your $49 Pro payment was processed successfully. Due to a momentary webhook delivery delay, your database record was not immediately updated.\n\nWe have now manually synchronized your account to Pro and unlocked your API quota to 600 req/min. You have full access to all Pro features right now.\n\nWe apologize for the friction and wish you great success with your product launch tomorrow! Please let us know if there is anything else we can do to support your launch.`,
-    status: 'PENDING_APPROVAL',
-  },
-};
 
 function AppShell() {
   const location = useLocation();
   const [cmdPaletteOpen, setCmdPaletteOpen] = useState(false);
 
-  // Tickets & Swarm States
-  const [tickets, setTickets] = useState<Ticket[]>(INITIAL_TICKETS);
-  const [selectedTicketId, setSelectedTicketId] = useState<string>('TKT-1001');
-  const [customers, setCustomers] = useState<Record<string, Customer>>(INITIAL_CUSTOMERS);
-  const [timelines, setTimelines] = useState<Record<string, TimelineItem[]>>(INITIAL_TIMELINES);
-  const [drafts, setDrafts] = useState<Record<string, DraftResponse>>(INITIAL_DRAFTS);
+  // Tickets & Swarm States (Connected to real FastAPI backend)
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [selectedTicketId, setSelectedTicketId] = useState<string>('');
+  const [customers, setCustomers] = useState<Record<string, Customer>>({});
+  const [timelines, setTimelines] = useState<Record<string, TimelineItem[]>>({});
+  const [drafts, setDrafts] = useState<Record<string, DraftResponse>>({});
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Widget States
@@ -225,6 +52,170 @@ function AppShell() {
     { name: '@investigator', role: 'Deterministic Tools', status: 'idle' },
     { name: '@responder', role: 'Draft Composer', status: 'idle' },
   ]);
+
+  // Load real data from FastAPI backend on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadBackendData() {
+      try {
+        const [ticketsRes, customersRes, draftsRes] = await Promise.all([
+          fetch('http://localhost:8000/tickets'),
+          fetch('http://localhost:8000/customers'),
+          fetch('http://localhost:8000/drafts'),
+        ]);
+
+        if (!ticketsRes.ok) return;
+        const backendTickets: any[] = await ticketsRes.json();
+        if (!backendTickets || !backendTickets.length) return;
+
+        const customerMap: Record<string, Customer> = {};
+        if (customersRes.ok) {
+          const allCust: Customer[] = await customersRes.json();
+          for (const c of allCust) {
+            customerMap[c.customer_id] = c;
+          }
+        }
+
+        const draftMap: Record<string, DraftResponse> = {};
+        if (draftsRes.ok) {
+          const allDrafts: any[] = await draftsRes.json();
+          for (const d of allDrafts) {
+            draftMap[d.ticket_id] = {
+              ticket_id: d.ticket_id,
+              customer_name: customerMap[d.ticket_id]?.name || 'Alex Morgan',
+              complaint_summary: 'Billing Discrepancy Protocol',
+              proposed_response: d.draft_text || d.proposed_response || '',
+              draft_text: d.draft_text || d.proposed_response || '',
+              evidence_used: d.evidence_used || '',
+              policy_references: d.policy_references || '',
+              status: d.status === 'APPROVED' ? 'APPROVED' : 'PENDING_APPROVAL',
+              approved_by: d.approver,
+              approved_at: d.decided_at,
+            };
+          }
+        }
+
+        const timelineMap: Record<string, TimelineItem[]> = {};
+
+        for (const t of backendTickets) {
+          const customerObj = customerMap[t.customer_id];
+          const isTkt1001 = t.ticket_id === 'TKT-1001';
+
+          timelineMap[t.ticket_id] = [
+            {
+              id: `msg-${t.ticket_id}-1`,
+              ticket_id: t.ticket_id,
+              sender_type: 'customer',
+              sender_name: customerObj?.name || 'Customer',
+              text: t.message || t.complaint || t.subject,
+              visibility: 'public',
+              created_at: '10 mins ago',
+            },
+            ...(isTkt1001
+              ? [
+                  {
+                    id: `tool-${t.ticket_id}-1`,
+                    ticket_id: t.ticket_id,
+                    sender_type: 'agent' as const,
+                    sender_name: '@investigator',
+                    text: 'Executing database customer lookup...',
+                    visibility: 'private' as const,
+                    created_at: '9 mins ago',
+                    tool_call: {
+                      name: 'lookup_customer',
+                      params: { customer_id: t.customer_id },
+                      result: {
+                        customer_id: t.customer_id,
+                        name: customerObj?.name || 'Alex Morgan',
+                        plan: customerObj?.plan || 'free',
+                        status: 'active',
+                      },
+                      status: 'completed' as const,
+                    },
+                  },
+                  {
+                    id: `tool-${t.ticket_id}-2`,
+                    ticket_id: t.ticket_id,
+                    sender_type: 'agent' as const,
+                    sender_name: '@investigator',
+                    text: 'Querying Stripe API for latest charges...',
+                    visibility: 'private' as const,
+                    created_at: '9 mins ago',
+                    tool_call: {
+                      name: 'check_stripe',
+                      params: { email: customerObj?.email_masked || 'al***n@example.com' },
+                      result: {
+                        status: 'succeeded',
+                        amount: customerObj?.payment_amount ? customerObj.payment_amount * 100 : 999,
+                        currency: 'usd',
+                        plan: customerObj?.expected_plan || 'pro',
+                        charge_id: customerObj?.transaction_id || 'TXN-9001',
+                        paid_at: customerObj?.payment_date || '2026-11-04',
+                      },
+                      status: 'completed' as const,
+                    },
+                  },
+                  {
+                    id: `msg-${t.ticket_id}-2`,
+                    ticket_id: t.ticket_id,
+                    sender_type: 'agent' as const,
+                    sender_name: '@investigator',
+                    text: 'DISCREPANCY DETECTED: Customer has valid active Pro subscription in payment ledger ($9.99), but internal database user record is still set to "free". Root cause: Webhook sync delay.',
+                    visibility: 'private' as const,
+                    created_at: '8 mins ago',
+                  },
+                  {
+                    id: `msg-${t.ticket_id}-3`,
+                    ticket_id: t.ticket_id,
+                    sender_type: 'agent' as const,
+                    sender_name: '@responder',
+                    text: 'Grounding draft in Policy KB-001: Immediate sync required + proactive apology. Prepared resolution draft awaiting human authorization.',
+                    visibility: 'private' as const,
+                    created_at: '7 mins ago',
+                  },
+                ]
+              : []),
+          ];
+        }
+
+        const formattedTickets: Ticket[] = backendTickets.map((t) => {
+          const c = customerMap[t.customer_id];
+          return {
+            ticket_id: t.ticket_id,
+            customer_id: t.customer_id,
+            customer_name: c?.name || (t.ticket_id === 'TKT-1001' ? 'Alex Morgan' : t.ticket_id === 'TKT-1002' ? 'Jamie Smith' : 'Taylor Lee'),
+            customer_email: c?.email_masked || (t.ticket_id === 'TKT-1001' ? 'al***n@example.com' : t.ticket_id === 'TKT-1002' ? 'ja***h@example.com' : 'ta***e@example.com'),
+            subject: t.subject,
+            complaint: t.message || t.complaint || t.subject,
+            plan: c?.plan || 'free',
+            created_at: '10 mins ago',
+            status: draftMap[t.ticket_id]?.status === 'APPROVED' ? 'resolved' : (t.ticket_id === 'TKT-1001' ? 'awaiting_approval' : 'investigating'),
+            priority: t.priority || 'normal',
+            category: t.category || 'General',
+            discrepancy: c?.discrepancy_detected ?? (t.category === 'billing'),
+          };
+        });
+
+        if (isMounted) {
+          setTickets(formattedTickets);
+          setCustomers(customerMap);
+          setDrafts(draftMap);
+          setTimelines(timelineMap);
+          if (formattedTickets.length > 0) {
+            setSelectedTicketId(formattedTickets[0].ticket_id);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load tickets from backend:', err);
+      }
+    }
+
+    loadBackendData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const activeTicket = tickets.find((t) => t.ticket_id === selectedTicketId) || null;
   const activeCustomer = activeTicket ? customers[activeTicket.customer_id] || null : null;
@@ -325,8 +316,24 @@ function AppShell() {
     }, 2000);
   };
 
-  const handleApproveDraft = (finalText: string) => {
+  const handleApproveDraft = async (finalText: string) => {
     setIsProcessing(true);
+
+    // Call backend API to record approval
+    try {
+      await fetch(`http://localhost:8000/drafts/${selectedTicketId}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ticket_id: selectedTicketId,
+          decision: 'approve',
+          approver: 'Operator Desk',
+        }),
+      });
+    } catch (e) {
+      console.warn('Backend approval dispatch sync warning:', e);
+    }
+
     setTimeout(() => {
       const approvedAt = new Date().toLocaleTimeString();
 
@@ -355,6 +362,7 @@ function AppShell() {
           [activeTicket.customer_id]: {
             ...prev[activeTicket.customer_id],
             plan: 'pro',
+            discrepancy_detected: false,
           },
         }));
       }
@@ -363,7 +371,7 @@ function AppShell() {
         id: `msg-dispatched-${Date.now()}`,
         ticket_id: selectedTicketId,
         sender_type: 'operator',
-        sender_name: 'CloudDesk Support (Human Verified)',
+        sender_name: 'SupportFlow Support (Human Verified)',
         text: finalText,
         visibility: 'public',
         created_at: 'Just now',
@@ -375,7 +383,7 @@ function AppShell() {
       }));
 
       setIsProcessing(false);
-    }, 500);
+    }, 400);
   };
 
   const handleRejectDraft = () => {
@@ -423,6 +431,8 @@ function AppShell() {
         [activeTicket.customer_id]: {
           ...prev[activeTicket.customer_id],
           plan: 'pro',
+          discrepancy_detected: false,
+          discrepancy_note: undefined,
         },
       }));
       setTickets((prev) =>
@@ -445,7 +455,10 @@ function AppShell() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const isFullscreenView = location.pathname.startsWith('/dashboard') || location.pathname === '/split';
+  const isFullscreenView =
+    location.pathname.startsWith('/dashboard') ||
+    location.pathname === '/split' ||
+    location.pathname === '/welcome';
 
   return (
     <div className={`${isFullscreenView ? 'h-screen overflow-hidden' : 'min-h-screen'} bg-[#0d0e12] text-neutral-100 flex flex-col font-sans select-none`}>
@@ -473,6 +486,7 @@ function AppShell() {
           <Route path="/docs" element={<DocsPage />} />
           <Route path="/changelog" element={<ChangelogPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/welcome" element={<WelcomePage />} />
 
           {/* Sandbox Demo Page with Floating Support Widget */}
           <Route
@@ -505,17 +519,17 @@ function AppShell() {
           <Route
             path="/split"
             element={
-              <div className="flex-1 flex h-full overflow-hidden divide-x divide-neutral-800">
+              <div className="flex-1 flex h-full overflow-hidden divide-x divide-white/[0.08]">
                 <div className="w-[42%] h-full flex flex-col bg-[#0d0e12] relative overflow-hidden">
-                  <div className="px-4 py-2 bg-[#15161f] border-b border-neutral-800 flex items-center justify-between">
-                    <span className="text-[10px] font-mono uppercase text-blue-400 font-bold">
+                  <div className="px-4 py-2.5 bg-[#0d0e12] border-b border-white/[0.08] flex items-center justify-between">
+                    <span className="text-[10px] font-mono uppercase text-[#DF3E03] font-semibold">
                       Client View (CloudDesk)
                     </span>
                     <span className="text-[10px] text-neutral-400 font-mono">
                       Ghost-typing WebSocket enabled
                     </span>
                   </div>
-                  <div className="flex-1 p-4 flex flex-col items-center justify-center bg-neutral-950/40">
+                  <div className="flex-1 p-4 flex flex-col items-center justify-center bg-[#090a0f]">
                     <SupportWidget
                       embedded
                       tickets={tickets}
@@ -593,9 +607,11 @@ function AppShell() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppShell />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppShell />
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

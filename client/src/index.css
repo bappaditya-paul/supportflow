@@ -1,47 +1,144 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+
+:root {
+  --color-surface-canvas: #f8fafc;
+  --color-surface-base: #ffffff;
+  --color-surface-1: #f1f5f9;
+  --color-surface-2: #e2e8f0;
+  --color-surface-3: #cbd5e1;
+  --color-surface-hover: #f1f5f9;
+
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+
+  --color-border-subtle: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.16);
+  --color-border-default: rgba(0, 0, 0, 0.1);
+  --color-border-focus: rgba(223, 62, 3, 0.6);
+
+  --color-brand-orange: #DF3E03;
+  --color-brand-orange-hover: #c93702;
+  --color-brand-orange-subtle: rgba(223, 62, 3, 0.08);
+  --color-brand-orange-border: rgba(223, 62, 3, 0.35);
+
+  --color-brand-emerald: #10B981;
+  --color-brand-blue: #3B82F6;
+  --color-brand-amber: #F59E0B;
+  --color-brand-rose: #EF4444;
+}
+
+:root[data-theme="dark"],
+.dark {
+  --color-surface-canvas: #090a0f;
+  --color-surface-base: #0d0e12;
+  --color-surface-1: #121319;
+  --color-surface-2: #161722;
+  --color-surface-3: #1a1c28;
+  --color-surface-hover: #222432;
+
+  --color-text-primary: #ededed;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-border-default: rgba(255, 255, 255, 0.08);
+  --color-border-focus: rgba(223, 62, 3, 0.6);
+
+  --color-brand-orange-subtle: rgba(223, 62, 3, 0.15);
+}
+
 @theme inline {
   --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "Geist Mono", monospace;
+  --font-mono: "Geist Mono", "JetBrains Mono", monospace;
 
-  /* Cossistant Utilitarian Geometry */
+  /* Vercel Geometric Radius Tokens */
   --radius-xs: 2px;
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
 
-  /* Palette - Light Mode Canvas */
-  --color-canvas: oklch(99% 0 0);           /* #FCFCFC Warm Ivory */
-  --color-canvas-card: oklch(98% 0 0);
-  --color-canvas-muted: oklch(96% 0 0);
-  --color-canvas-hover: oklch(95% 0 0);
+  --color-surface-canvas: var(--color-surface-canvas);
+  --color-surface-base: var(--color-surface-base);
+  --color-surface-1: var(--color-surface-1);
+  --color-surface-2: var(--color-surface-2);
+  --color-surface-3: var(--color-surface-3);
+  --color-surface-hover: var(--color-surface-hover);
 
-  /* Foreground Texts */
-  --color-fg: oklch(14.5% 0 0);             /* #141414 Deep Charcoal */
-  --color-fg-muted: oklch(55% 0 0);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
 
-  /* Semantic Brand Accents */
-  --color-brand-blue: hsla(218, 92%, 62%, 1);
-  --color-brand-orange: hsla(19, 99%, 46%, 1);   /* Internal notes & alerts */
-  --color-brand-green: hsla(156, 86%, 38%, 1);   /* Resolved & verified */
-  --color-brand-yellow: hsla(48, 95%, 58%, 1);   /* Discrepancy & attention */
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-strong: var(--color-border-strong);
+  --color-border-default: var(--color-border-default);
+  --color-border-focus: var(--color-border-focus);
 
-  /* Borders */
-  --color-border-subtle: oklch(92.2% 0 0);
+  --color-brand-orange: var(--color-brand-orange);
+  --color-brand-orange-hover: var(--color-brand-orange-hover);
+  --color-brand-orange-subtle: var(--color-brand-orange-subtle);
+  --color-brand-orange-border: var(--color-brand-orange-border);
+
+  --color-brand-emerald: var(--color-brand-emerald);
+  --color-brand-blue: var(--color-brand-blue);
+  --color-brand-amber: var(--color-brand-amber);
+  --color-brand-rose: var(--color-brand-rose);
 }
 
 @layer base {
   body {
     font-family: var(--font-sans);
+    background-color: var(--color-surface-base);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Accessible focus ring system conforming to Vercel Guidelines */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--color-surface-base), 0 0 0 2px var(--color-brand-orange);
+  }
+
+  /* Motion reduction support */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-/* Custom dashed utility matching Cossistant */
-.border-blueprint {
-  border: 1px dashed var(--color-border-subtle);
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.dark .border-blueprint {
-  border: 1px dashed rgba(255, 255, 255, 0.12);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.25);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.45);
+}
+
+/* Hairline utility */
+.border-hairline {
+  border: 1px solid var(--color-border-subtle);
+}
+
+.border-hairline-strong {
+  border: 1px solid var(--color-border-strong);
+}

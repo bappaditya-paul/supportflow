@@ -60,7 +60,7 @@ const DEMO_TICKETS: DemoTicket[] = [
     name: 'Pieter Levels',
     seed: 'pieter',
     subject: 'Stripe webhook race condition on Pro plan upgrade',
-    preview: "Paid $49 yesterday, dashboard still says Free tier and API rate limit locked...",
+    preview: "Paid $49 yesterday, dashboard still says Free tier and API rate limit locked…",
     time: '10m ago',
     category: 'Billing Discrepancy',
     status: 'awaiting_approval',
@@ -80,7 +80,7 @@ const DEMO_TICKETS: DemoTicket[] = [
     name: 'Marc Louvion',
     seed: 'marc',
     subject: 'Emergency concurrency limit increase for load test',
-    preview: "Conducting load test on staging cluster tonight. Need node limit bumped...",
+    preview: "Conducting load test on staging cluster tonight. Need node limit bumped…",
     time: '24m ago',
     category: 'Quota Increase',
     status: 'investigating',
@@ -216,17 +216,17 @@ export const LandingPage: React.FC = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] dark:text-[#FF6633] mb-6 border border-dashed border-[#DF3E03]/30 dark:border-[#FF6633]/30 bg-[#DF3E03]/5 dark:bg-[#DF3E03]/10 rounded-[2px]"
+          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] dark:text-[#FF6633] mb-6 border border-[#DF3E03]/30 bg-[#DF3E03]/5 dark:bg-[#DF3E03]/10 rounded-[3px]"
         >
           <span>[AI agent team member that learns from you, not a chatbot]</span>
         </motion.div>
 
-        {/* Hero Title */}
+        {/* Hero Title with text-wrap: balance */}
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 max-w-4xl mx-auto leading-[1.08]"
+          className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-950 dark:text-white max-w-4xl mx-auto leading-[1.08] [text-wrap:balance]"
         >
           AI Agent Customer Support for Your SaaS in Under 10 Lines of Code
         </motion.h1>
@@ -236,7 +236,7 @@ export const LandingPage: React.FC = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-6 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-base sm:text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed [text-wrap:pretty]"
         >
           An autonomous support teammate connected to <strong>Mattermost</strong> & <strong>Switch AI</strong>. Runs deterministic tools to verify databases and Stripe payments, eliminating hallucinations with human-in-the-loop sign-off.
         </motion.p>
@@ -250,7 +250,7 @@ export const LandingPage: React.FC = () => {
         >
           <Link
             to="/docs"
-            className="w-full sm:w-auto px-5 py-2.5 bg-neutral-950 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-100 text-xs font-medium rounded-[2px] transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
+            className="w-full sm:w-auto h-9 px-5 bg-white text-neutral-950 hover:bg-neutral-200 text-xs font-semibold rounded-[4px] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2"
           >
             <span>Install SupportFlow now</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -258,23 +258,25 @@ export const LandingPage: React.FC = () => {
 
           <Link
             to="/split"
-            className="w-full sm:w-auto px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-800 text-xs font-mono rounded-[2px] transition-colors cursor-pointer flex items-center justify-center gap-2"
+            className="w-full sm:w-auto h-9 px-4 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 border border-white/10 text-xs font-mono rounded-[4px] transition-colors cursor-pointer flex items-center justify-center gap-2"
           >
             <span>Live Split Demo</span>
-            <ExternalLink className="w-3.5 h-3.5 text-neutral-500" />
+            <ExternalLink className="w-3.5 h-3.5 text-neutral-400" />
           </Link>
 
-          {/* Copyable Terminal Registry Snippet */}
-          <div className="w-full sm:w-auto flex items-center bg-white dark:bg-[#13141b] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px] px-3 py-1.5 text-xs font-mono text-neutral-800 dark:text-neutral-300 shadow-sm">
-            <span className="text-neutral-400 mr-2">$</span>
-            <span className="text-[#DF3E03] dark:text-[#FF7744]">bunx --bun shadcn@latest add @supportflow/widget</span>
+          {/* Copyable Terminal Registry Snippet with hairline border */}
+          <div className="w-full sm:w-auto h-9 flex items-center bg-[#13141b] border border-white/10 rounded-[4px] px-3 text-xs font-mono text-neutral-300 shadow-xs">
+            <span className="text-neutral-500 mr-2">$</span>
+            <span className="text-[#DF3E03]">bunx --bun shadcn@latest add @supportflow/widget</span>
             <button
+              type="button"
               onClick={copyInstall}
-              className="ml-3 p-1 hover:text-neutral-950 dark:hover:text-white transition-colors cursor-pointer text-neutral-400"
+              className="ml-3 p-1 hover:text-white transition-colors cursor-pointer text-neutral-400"
               title="Copy installation command"
+              aria-label="Copy installation command"
             >
               {copiedInstall ? (
-                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
               ) : (
                 <Copy className="w-3.5 h-3.5" />
               )}
@@ -327,50 +329,50 @@ export const LandingPage: React.FC = () => {
 
           <MacBrowserFrame
             url="https://supportflow.ai/shadcn/inbox"
-            className="relative z-10 shadow-2xl border-neutral-200 dark:border-neutral-800"
+            className="relative z-10 shadow-2xl border-white/[0.08]"
           >
           {activeTab === 'preview' ? (
-            <div className="flex flex-col lg:flex-row h-[520px] bg-white dark:bg-[#111218] divide-y lg:divide-y-0 lg:divide-x divide-dashed divide-neutral-200 dark:divide-neutral-800 text-xs">
+            <div className="flex flex-col lg:flex-row min-h-[520px] bg-[#111218] divide-y lg:divide-y-0 lg:divide-x divide-white/[0.08] text-xs">
               {/* Left Sub-Nav Column */}
-              <div className="w-full lg:w-44 p-3 bg-neutral-50/50 dark:bg-neutral-950/40 flex flex-col gap-3 font-mono">
+              <div className="w-full lg:w-44 p-3 bg-neutral-950/40 flex flex-col gap-3 font-mono">
                 <div className="flex items-center justify-between px-2 py-1">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">
                     Mailbox
                   </span>
-                  <span className="text-[10px] bg-neutral-200 dark:bg-neutral-800 px-1.5 py-0.5 rounded-[2px] text-neutral-700 dark:text-neutral-300 font-bold">
+                  <span className="text-[10px] bg-white/[0.06] px-1.5 py-0.5 rounded-[2px] text-neutral-300 font-bold tabular-nums">
                     10
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-0.5">
-                  <div className="px-2 py-1.5 bg-neutral-200/80 dark:bg-neutral-800/80 rounded-[2px] font-medium text-neutral-900 dark:text-neutral-100 flex items-center justify-between">
+                  <div className="px-2 py-1.5 bg-white/[0.06] rounded-[3px] font-medium text-white flex items-center justify-between">
                     <span>Inbox</span>
-                    <span className="text-[10px] text-neutral-500">4</span>
+                    <span className="text-[10px] text-neutral-400 tabular-nums">4</span>
                   </div>
-                  <div className="px-2 py-1.5 text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300 rounded-[2px] flex items-center justify-between">
+                  <div className="px-2 py-1.5 text-neutral-400 hover:text-white rounded-[3px] flex items-center justify-between transition-colors">
                     <span>Resolved</span>
-                    <span className="text-[10px] text-neutral-400">24</span>
+                    <span className="text-[10px] text-neutral-400 tabular-nums">24</span>
                   </div>
-                  <div className="px-2 py-1.5 text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-300 rounded-[2px] flex items-center justify-between">
+                  <div className="px-2 py-1.5 text-neutral-400 hover:text-white rounded-[3px] flex items-center justify-between transition-colors">
                     <span>Spam</span>
-                    <span className="text-[10px] text-neutral-400">0</span>
+                    <span className="text-[10px] text-neutral-400 tabular-nums">0</span>
                   </div>
                 </div>
 
-                <div className="mt-auto pt-3 border-t border-dashed border-neutral-200 dark:border-neutral-800 text-[10px]">
+                <div className="mt-auto pt-3 border-t border-white/[0.08] text-[10px]">
                   <span className="text-neutral-400 uppercase tracking-wider block mb-1">
                     Autonomous Agents
                   </span>
                   <div className="space-y-1">
-                    <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-mono">
+                    <div className="flex items-center gap-1.5 text-blue-400 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                       <span>@triager</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-mono">
+                    <div className="flex items-center gap-1.5 text-amber-400 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                       <span>@investigator</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400 font-mono">
+                    <div className="flex items-center gap-1.5 text-purple-400 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                       <span>@responder</span>
                     </div>
@@ -379,11 +381,12 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Middle Ticket List Column */}
-              <div className="w-full lg:w-72 divide-y divide-dashed divide-neutral-200 dark:divide-neutral-800 overflow-y-auto">
+              <div className="w-full lg:w-72 divide-y divide-white/[0.08] overflow-y-auto">
                 {DEMO_TICKETS.map((ticket) => {
                   const isSelected = ticket.id === selectedTicketId;
                   return (
                     <button
+                      type="button"
                       key={ticket.id}
                       onClick={() => {
                         setSelectedTicketId(ticket.id);
@@ -391,24 +394,24 @@ export const LandingPage: React.FC = () => {
                       }}
                       className={`w-full text-left p-3 transition-colors cursor-pointer flex gap-3 items-start ${
                         isSelected
-                          ? 'bg-neutral-100 dark:bg-neutral-800/60 border-l-2 border-[#DF3E03]'
-                          : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/40'
+                          ? 'bg-white/[0.06] border-l-2 border-[#DF3E03]'
+                          : 'hover:bg-white/[0.02]'
                       }`}
                     >
                       <FacehashAvatar seed={ticket.seed} size={32} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1 mb-1">
-                          <span className="font-semibold text-xs text-neutral-900 dark:text-neutral-100 truncate">
+                          <span className="font-semibold text-xs text-white truncate">
                             {ticket.name}
                           </span>
-                          <span className="text-[10px] text-neutral-400 font-mono shrink-0">
+                          <span className="text-[10px] text-neutral-400 font-mono shrink-0 tabular-nums">
                             {ticket.time}
                           </span>
                         </div>
-                        <p className="text-xs text-neutral-700 dark:text-neutral-300 font-medium truncate mb-1">
+                        <p className="text-xs text-neutral-300 font-medium truncate mb-1">
                           {ticket.subject}
                         </p>
-                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400 line-clamp-1">
+                        <p className="text-[11px] text-neutral-400 line-clamp-1">
                           {ticket.preview}
                         </p>
                       </div>
@@ -418,14 +421,14 @@ export const LandingPage: React.FC = () => {
               </div>
 
               {/* Right Active Conversation View */}
-              <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between overflow-y-auto bg-neutral-50/20 dark:bg-neutral-950/20">
+              <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between overflow-y-auto bg-neutral-950/20">
                 <div className="space-y-4">
                   {/* Thread Header */}
-                  <div className="flex items-center justify-between pb-3 border-b border-dashed border-neutral-200 dark:border-neutral-800">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                     <div className="flex items-center gap-2.5">
                       <FacehashAvatar seed={selectedTicket.seed} size={28} />
                       <div>
-                        <div className="font-semibold text-xs text-neutral-900 dark:text-neutral-100">
+                        <div className="font-semibold text-xs text-white">
                           {selectedTicket.name}
                         </div>
                         <div className="text-[10px] text-neutral-500 font-mono">
@@ -587,45 +590,45 @@ export function CustomerSupportWidget() {
         </div>
       </section>
 
-      {/* LIVE TELEMETRY STATS BAR (OriginKit Stats 01 / Plinth Tally Pattern) */}
+      {/* LIVE TELEMETRY STATS BAR */}
       <section className="px-4 sm:px-6 max-w-6xl mx-auto w-full my-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border border-dashed border-neutral-300 dark:border-neutral-800 p-6 sm:p-8 rounded-[2px] bg-white dark:bg-[#111218] shadow-xs">
-          <div className="text-center md:border-r md:border-dashed md:border-neutral-200 dark:md:border-neutral-800">
-            <div className="text-3xl sm:text-5xl font-mono font-bold text-neutral-950 dark:text-white">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 border border-white/[0.08] p-6 sm:p-8 rounded-[4px] bg-[#111218] shadow-xs">
+          <div className="text-center md:border-r md:border-white/[0.08]">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-white tabular-nums">
               <RollingCounter value={85} suffix="s" />
             </div>
-            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+            <div className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-[#DF3E03]" />
               <span>Avg Resolution</span>
             </div>
           </div>
 
-          <div className="text-center md:border-r md:border-dashed md:border-neutral-200 dark:md:border-neutral-800">
-            <div className="text-3xl sm:text-5xl font-mono font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="text-center md:border-r md:border-white/[0.08]">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-emerald-400 tabular-nums">
               <RollingCounter value={0} suffix="%" />
             </div>
-            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
-              <Shield className="w-3.5 h-3.5 text-emerald-500" />
+            <div className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" />
               <span>Hallucination Rate</span>
             </div>
           </div>
 
-          <div className="text-center md:border-r md:border-dashed md:border-neutral-200 dark:md:border-neutral-800">
-            <div className="text-3xl sm:text-5xl font-mono font-bold text-[#DF3E03] dark:text-[#FF6633]">
+          <div className="text-center md:border-r md:border-white/[0.08]">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-[#DF3E03] tabular-nums">
               <RollingCounter value={1157} />
             </div>
-            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-blue-500" />
+            <div className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <Terminal className="w-3.5 h-3.5 text-blue-400" />
               <span>Verified Commits</span>
             </div>
           </div>
 
           <div className="text-center">
-            <div className="text-3xl sm:text-5xl font-mono font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-3xl sm:text-5xl font-mono font-bold text-blue-400 tabular-nums">
               <RollingCounter value={100} suffix="%" />
             </div>
-            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-purple-500" />
+            <div className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider mt-2 flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
               <span>Human Sign-Off</span>
             </div>
           </div>
@@ -685,19 +688,19 @@ export function CustomerSupportWidget() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
-            className="p-6 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px] shadow-sm"
+            className="p-6 bg-[#111218] border border-white/[0.08] rounded-[4px] shadow-sm"
           >
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-dashed border-neutral-200 dark:border-neutral-800">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
               <div className="flex items-center gap-3">
                 <FacehashAvatar seed={replaySteps[replayStep].faceSeed} size={36} />
                 <div>
-                  <div className="font-bold text-sm text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                  <div className="font-semibold text-sm text-white flex items-center gap-2">
                     <span>{replaySteps[replayStep].agent}</span>
-                    <span className="text-xs font-normal text-neutral-500 font-mono">
+                    <span className="text-xs font-normal text-neutral-400 font-mono">
                       ({replaySteps[replayStep].role})
                     </span>
                   </div>
-                  <div className="text-[11px] text-neutral-500 font-mono">
+                  <div className="text-[11px] text-neutral-400 font-mono">
                     Step {replayStep + 1} of {replaySteps.length} · Switch AI Swarm Protocol
                   </div>
                 </div>
@@ -705,14 +708,15 @@ export function CustomerSupportWidget() {
 
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-2.5 py-1 text-xs font-mono border rounded-[2px] ${replaySteps[replayStep].badgeColor}`}
+                  className={`px-2.5 py-1 text-xs font-mono border rounded-[3px] ${replaySteps[replayStep].badgeColor}`}
                 >
                   {replaySteps[replayStep].badge}
                 </span>
 
                 <button
+                  type="button"
                   onClick={() => setReplayStep((prev) => (prev + 1) % replaySteps.length)}
-                  className="px-3 py-1 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-medium rounded-[2px] transition-colors cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1 bg-white/[0.04] hover:bg-white/[0.08] text-neutral-200 text-xs font-medium rounded-[3px] border border-white/10 transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <span>Next Step</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -721,7 +725,7 @@ export function CustomerSupportWidget() {
             </div>
 
             <div className="pt-4">
-              <p className="text-sm text-neutral-800 dark:text-neutral-200 leading-relaxed font-sans">
+              <p className="text-sm text-neutral-200 leading-relaxed font-sans">
                 {replaySteps[replayStep].message}
               </p>
             </div>

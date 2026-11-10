@@ -1,0 +1,67 @@
+{
+  "TKT-1001": [
+    {
+      "id": "msg-seed-TKT-1001-1",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Customer",
+      "text": "Support inquiry filed for TKT-1001.",
+      "visibility": "public",
+      "created_at": "2026-11-07T15:57:16.196080+00:00"
+    },
+    {
+      "id": "msg-175bb856",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Hello, any update on my Pro subscription activation?",
+      "visibility": "public",
+      "created_at": "2026-11-07T15:57:16.198099+00:00"
+    },
+    {
+      "id": "msg-a785d617",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T12:53:22.987766+00:00"
+    },
+    {
+      "id": "msg-23e64f7f",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T12:56:12.169345+00:00"
+    },
+    {
+      "id": "msg-ccd4ef65",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T12:56:18.416656+00:00"
+    },
+    {
+      "id": "msg-901df2ae",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T12:56:56.855100+00:00"
+    },
+    {
+      "id": "msg-44888fc3",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T12:57:02.527890+00:00"
+    }
+  ]
+}

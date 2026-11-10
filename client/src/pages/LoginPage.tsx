@@ -19,7 +19,7 @@ import { MaskLogo, FacehashAvatar, AsciiMatrixBackground } from '../components/p
 import { useAuth, DEMO_OPERATOR, DEMO_FOUNDER, DEMO_JUDGE } from '../context/AuthContext';
 
 export const LoginPage: React.FC = () => {
-  const { loginAs, loginWithCredentials } = useAuth();
+  const { loginAs, loginWithCredentials, signInWithGoogle, signInWithGithub } = useAuth();
   const [email, setEmail] = useState('operator@supportflow.ai');
   const [password, setPassword] = useState('••••••••••••');
   const [showEmailForm, setShowEmailForm] = useState(true);
@@ -62,7 +62,29 @@ export const LoginPage: React.FC = () => {
 
   const handleOAuthClick = async (provider: 'Google' | 'GitHub') => {
     setLoading(true);
-    setSuccessMessage(`Connecting via ${provider} OAuth...`);
+    setSuccessMessage(`Connecting to ${provider} OAuth...`);
+    if (provider === 'Google') {
+      try {
+        await signInWithGoogle();
+        return;
+      } catch (err: any) {
+        console.warn('Google OAuth initiation note:', err?.message);
+        setError(err?.message || 'Google OAuth failed to initialize');
+        setLoading(false);
+        return;
+      }
+    }
+    if (provider === 'GitHub') {
+      try {
+        await signInWithGithub();
+        return;
+      } catch (err: any) {
+        console.warn('GitHub OAuth initiation note:', err?.message);
+        setError(err?.message || 'GitHub OAuth failed to initialize');
+        setLoading(false);
+        return;
+      }
+    }
     setTimeout(() => {
       loginAs(DEMO_OPERATOR);
       navigate('/dashboard');
@@ -84,7 +106,7 @@ export const LoginPage: React.FC = () => {
             </Link>
 
             <div className="max-w-md">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-[#DF3E03] dark:text-[#FF6633] mb-3 border border-dashed border-[#DF3E03]/30 rounded-[2px] bg-[#DF3E03]/5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-[#DF3E03] mb-3 border border-white/[0.08] rounded-[3px] bg-white/[0.03]">
                 <Sparkles className="w-3 h-3 text-[#DF3E03]" />
                 <span>Flip the Switch Hackathon 2026 · Demo Auth</span>
               </div>
@@ -98,16 +120,16 @@ export const LoginPage: React.FC = () => {
 
               {/* Success Notification */}
               {successMessage && (
-                <div className="mb-4 p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 rounded-[2px] text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
+                <div className="mb-4 p-2.5 bg-emerald-950/40 border border-emerald-700/60 rounded-[4px] text-xs text-emerald-300 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
                   <span className="font-mono">{successMessage}</span>
                 </div>
               )}
 
               {/* Error Notification */}
               {error && (
-                <div className="mb-4 p-2.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-[2px] text-xs text-rose-600 dark:text-rose-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                <div className="mb-4 p-2.5 bg-rose-950/40 border border-rose-800/60 rounded-[4px] text-xs text-rose-300 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                   <span>{error}</span>
                 </div>
               )}
@@ -125,24 +147,24 @@ export const LoginPage: React.FC = () => {
                   data-testid="btn-demo-operator"
                   onClick={() => handleQuickLogin(DEMO_OPERATOR)}
                   disabled={loading}
-                  className="w-full text-left p-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900/90 dark:hover:bg-[#181924] border border-neutral-300 dark:border-neutral-700 hover:border-[#DF3E03] dark:hover:border-[#DF3E03] rounded-[2px] transition-all cursor-pointer group flex items-center justify-between"
+                  className="w-full text-left p-3 bg-[#121319] hover:bg-[#161722] border border-white/[0.08] hover:border-[#DF3E03]/50 rounded-[4px] transition-colors cursor-pointer group flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <FacehashAvatar seed="alex" size="sm" showStatus status="online" />
                     <div>
                       <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                        Alex Rivera
-                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-[2px]">
+                        <span>Alex Rivera</span>
+                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-blue-950/60 text-blue-300 border border-blue-800/40 rounded-[3px]">
                           RECOMMENDED
                         </span>
                       </div>
-                      <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                      <div className="text-[11px] font-mono text-neutral-400">
                         operator@supportflow.ai · Lead Tier-2
                       </div>
                     </div>
                   </div>
-                  <span className="text-[11px] font-mono text-[#DF3E03] font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                    Sign In <ArrowRight className="w-3 h-3" />
+                  <span className="text-[11px] font-mono text-[#DF3E03] font-semibold group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                    <span>Sign In</span> <ArrowRight className="w-3 h-3" />
                   </span>
                 </button>
 
@@ -151,24 +173,24 @@ export const LoginPage: React.FC = () => {
                   type="button"
                   onClick={() => handleQuickLogin(DEMO_FOUNDER)}
                   disabled={loading}
-                  className="w-full text-left p-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900/90 dark:hover:bg-[#181924] border border-neutral-300 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-600 rounded-[2px] transition-all cursor-pointer group flex items-center justify-between"
+                  className="w-full text-left p-3 bg-[#121319] hover:bg-[#161722] border border-white/[0.08] hover:border-white/[0.16] rounded-[4px] transition-colors cursor-pointer group flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <FacehashAvatar seed="sarah" size="sm" showStatus status="online" />
                     <div>
                       <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                        Sarah Chen
-                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-[2px]">
+                        <span>Sarah Chen</span>
+                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-white/[0.06] text-neutral-300 rounded-[3px]">
                           ADMIN
                         </span>
                       </div>
-                      <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                      <div className="text-[11px] font-mono text-neutral-400">
                         founder@startup.io · CEO & Admin
                       </div>
                     </div>
                   </div>
-                  <span className="text-[11px] font-mono text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all flex items-center gap-1">
-                    Sign In <ArrowRight className="w-3 h-3" />
+                  <span className="text-[11px] font-mono text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                    <span>Sign In</span> <ArrowRight className="w-3 h-3" />
                   </span>
                 </button>
 
@@ -178,35 +200,35 @@ export const LoginPage: React.FC = () => {
                   data-testid="btn-demo-judge"
                   onClick={() => handleQuickLogin(DEMO_JUDGE)}
                   disabled={loading}
-                  className="w-full text-left p-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900/90 dark:hover:bg-[#181924] border border-neutral-300 dark:border-neutral-700 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-[2px] transition-all cursor-pointer group flex items-center justify-between"
+                  className="w-full text-left p-3 bg-[#121319] hover:bg-[#161722] border border-white/[0.08] hover:border-emerald-500/50 rounded-[4px] transition-colors cursor-pointer group flex items-center justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <FacehashAvatar seed="judge" size="sm" showStatus status="online" />
                     <div>
                       <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                        Hackathon Judge
-                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-[2px]">
+                        <span>Hackathon Judge</span>
+                        <span className="px-1.5 py-0.2 text-[9px] font-mono bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 rounded-[3px]">
                           EVALUATOR
                         </span>
                       </div>
-                      <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                      <div className="text-[11px] font-mono text-neutral-400">
                         judge@fliptheswitch.dev · Track 1 Reviewer
                       </div>
                     </div>
                   </div>
-                  <span className="text-[11px] font-mono text-emerald-500 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                    Sign In <ArrowRight className="w-3 h-3" />
+                  <span className="text-[11px] font-mono text-emerald-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+                    <span>Sign In</span> <ArrowRight className="w-3 h-3" />
                   </span>
                 </button>
               </div>
 
               {/* Divider */}
               <div className="my-5 flex items-center gap-3">
-                <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
+                <div className="flex-1 h-px bg-white/[0.08]" />
                 <span className="text-[10px] font-mono text-neutral-400 uppercase">
                   Or use standard credentials
                 </span>
-                <div className="flex-1 h-px bg-neutral-200 dark:bg-neutral-800" />
+                <div className="flex-1 h-px bg-white/[0.08]" />
               </div>
 
               {/* Social Login Buttons */}
@@ -215,7 +237,7 @@ export const LoginPage: React.FC = () => {
                   type="button"
                   onClick={() => handleOAuthClick('Google')}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2.5 py-2 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
+                  className="w-full flex items-center justify-center gap-2.5 py-2 px-4 bg-[#121319] hover:bg-white/[0.04] border border-white/[0.08] text-xs font-medium text-neutral-200 rounded-[4px] transition-colors cursor-pointer shadow-xs"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path
@@ -242,9 +264,9 @@ export const LoginPage: React.FC = () => {
                   type="button"
                   onClick={() => handleOAuthClick('GitHub')}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2.5 py-2 px-4 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs font-medium text-neutral-800 dark:text-neutral-200 rounded-[2px] transition-colors cursor-pointer shadow-xs"
+                  className="w-full flex items-center justify-center gap-2.5 py-2 px-4 bg-[#121319] hover:bg-white/[0.04] border border-white/[0.08] text-xs font-medium text-neutral-200 rounded-[4px] transition-colors cursor-pointer shadow-xs"
                 >
-                  <Github className="w-4 h-4 text-neutral-900 dark:text-white" />
+                  <Github className="w-4 h-4 text-white" />
                   <span>Continue with GitHub</span>
                 </button>
               </div>
@@ -252,50 +274,52 @@ export const LoginPage: React.FC = () => {
               {/* Email & Password Form */}
               <form onSubmit={handleLogin} className="space-y-3 pt-2">
                 <div>
-                  <label className="block text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400 mb-1">
+                  <label htmlFor="login-email" className="block text-xs font-mono uppercase text-neutral-400 mb-1.5">
                     Work Email
                   </label>
                   <input
+                    id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="operator@supportflow.ai"
-                    className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors"
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-white/[0.08] focus:border-[#DF3E03] focus-visible:ring-1 focus-visible:ring-[#DF3E03] rounded-[4px] text-xs text-white placeholder:text-neutral-500 focus:outline-none transition-colors"
                   />
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-mono uppercase text-neutral-600 dark:text-neutral-400">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label htmlFor="login-password" className="text-xs font-mono uppercase text-neutral-400">
                       Password
                     </label>
                     <Link
                       to="/forgot-password"
-                      className="text-[11px] text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 font-mono transition-colors"
+                      className="text-[11px] text-neutral-400 hover:text-white font-mono transition-colors"
                     >
                       Forgot password?
                     </Link>
                   </div>
                   <input
+                    id="login-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="••••••••••••"
-                    className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-[#DF3E03] rounded-[2px] text-xs text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none transition-colors font-mono"
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-white/[0.08] focus:border-[#DF3E03] focus-visible:ring-1 focus-visible:ring-[#DF3E03] rounded-[4px] text-xs text-white placeholder:text-neutral-500 focus:outline-none transition-colors font-mono"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 px-4 bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 text-xs font-semibold rounded-[2px] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 mt-4"
+                  className="w-full py-2.5 px-4 bg-[#DF3E03] hover:bg-[#c93702] text-white text-xs font-semibold rounded-[4px] transition-colors cursor-pointer shadow-xs flex items-center justify-center gap-2 mt-4"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Signing in...</span>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin motion-reduce:animate-none" />
+                      <span>Signing in…</span>
                     </>
                   ) : (
                     <>

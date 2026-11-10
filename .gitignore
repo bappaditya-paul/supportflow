@@ -1,9 +1,61 @@
-node_modules/
-dist/
-__pycache__/
-*.pyc
-.pytest_cache/
-.playwright-mcp/
-.env
-.DS_Store
+# ==============================================================================
+# SupportFlow Git Ignore Rules
+# ==============================================================================
 
+# Node / Frontend Dependencies & Builds
+node_modules/
+client/node_modules/
+dist/
+client/dist/
+build/
+.vite/
+*.tsbuildinfo
+client/tsconfig.tsbuildinfo
+
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.eggs/
+server/artifacts/
+artifacts/
+
+# Environment Variables & Secrets (Keep .env.example)
+.env
+.env.*
+*.env
+client/.env
+server/.env
+!.env.example
+!client/.env.example
+!server/.env.example
+
+# Unnecessary Bloat: Screenshots, Playwright Dumps, Wallpapers & Heavy Media
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.mp4
+.playwright-mcp/
+client/docs/audit_screenshots/
+reverse-engineering/screenshots/
+
+# AI Agent Skills Local Cache (Dependencies defined in skills-lock.json)
+.agents/
+
+# OS & Editor Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace

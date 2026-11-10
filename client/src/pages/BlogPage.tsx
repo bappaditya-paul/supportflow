@@ -117,22 +117,22 @@ export const BlogPage: React.FC = () => {
   const gridPosts = filteredPosts.filter((p) => p.slug !== featuredPost.slug);
 
   return (
-    <div className="min-h-screen bg-[#FCFCFC] dark:bg-[#0d0e12] text-neutral-900 dark:text-neutral-100 flex flex-col font-sans select-none overflow-x-hidden transition-colors">
+    <div className="min-h-screen bg-[#0d0e12] text-neutral-100 flex flex-col font-sans select-none overflow-x-hidden transition-colors">
       <div className="pt-16 sm:pt-24 pb-20 px-4 sm:px-6 max-w-6xl mx-auto w-full">
         {/* Header */}
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] dark:text-[#FF6633] mb-4 border border-dashed border-[#DF3E03]/30 rounded-[2px] bg-[#DF3E03]/5"
+            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] mb-4 border border-white/[0.08] rounded-[3px] bg-white/[0.03]"
           >
             <span>[Engineering & Architecture]</span>
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-white [text-wrap:balance]">
             Blog
           </h1>
-          <p className="mt-3 text-sm text-neutral-500 font-mono">
+          <p className="mt-3 text-sm text-neutral-400 font-mono">
             Thoughts, design systems, and agent orchestration patterns from our team.
           </p>
         </div>
@@ -144,11 +144,12 @@ export const BlogPage: React.FC = () => {
             return (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 rounded-[2px] border transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-[3px] border transition-colors cursor-pointer ${
                   isSelected
-                    ? 'border-neutral-950 bg-neutral-950 text-white dark:border-white dark:bg-white dark:text-neutral-950 font-bold shadow-xs'
-                    : 'border-dashed border-neutral-300 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600 bg-white dark:bg-neutral-900/60'
+                    ? 'border-white bg-white text-neutral-950 font-semibold shadow-xs'
+                    : 'border-white/[0.08] text-neutral-400 hover:text-white hover:border-white/[0.16] bg-white/[0.03]'
                 }`}
               >
                 {cat}
@@ -162,10 +163,10 @@ export const BlogPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-14 border border-dashed border-neutral-300 dark:border-neutral-800 bg-white dark:bg-[#111218] rounded-[2px] p-6 sm:p-10 shadow-xs flex flex-col md:flex-row gap-8 items-center"
+            className="mb-14 border border-white/[0.08] bg-[#121319] rounded-[4px] p-6 sm:p-10 shadow-xs flex flex-col md:flex-row gap-8 items-center"
           >
             {/* Visual Avatar Hero Showcase */}
-            <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-neutral-50 dark:bg-neutral-950/60 border border-dashed border-neutral-200 dark:border-neutral-800 rounded-[2px]">
+            <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-[#090a0f] border border-white/[0.08] rounded-[4px]">
               <div className="flex -space-x-4 hover:space-x-2 transition-all">
                 <FacehashAvatar seed="kate" size={96} />
                 <FacehashAvatar seed="lucas" size={96} />
@@ -176,7 +177,7 @@ export const BlogPage: React.FC = () => {
             <div className="w-full md:w-1/2 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="px-2 py-0.5 bg-[#DF3E03] text-white font-mono text-[10px] font-bold rounded-[2px] uppercase">
+                  <span className="px-2 py-0.5 bg-[#DF3E03] text-white font-mono text-[10px] font-bold rounded-[3px] uppercase">
                     FEATURED
                   </span>
                   <span className="text-xs font-mono text-neutral-400">
@@ -184,19 +185,19 @@ export const BlogPage: React.FC = () => {
                   </span>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 mb-3 leading-snug">
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-3 leading-snug">
                   {featuredPost.title}
                 </h2>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
+                <p className="text-sm text-neutral-400 leading-relaxed mb-6 font-sans">
                   {featuredPost.excerpt}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-dashed border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center justify-between pt-4 border-t border-white/[0.08]">
                 <div className="flex items-center gap-2.5">
                   <FacehashAvatar seed={featuredPost.author.seed} size={28} />
                   <div>
-                    <div className="text-xs font-bold text-neutral-900 dark:text-neutral-100">
+                    <div className="text-xs font-semibold text-white">
                       {featuredPost.author.name}
                     </div>
                     <div className="text-[10px] text-neutral-500 font-mono">
@@ -205,7 +206,10 @@ export const BlogPage: React.FC = () => {
                   </div>
                 </div>
 
-                <button className="text-xs font-medium text-[#DF3E03] dark:text-[#FF6633] hover:underline flex items-center gap-1 cursor-pointer">
+                <button
+                  type="button"
+                  className="text-xs font-medium text-[#DF3E03] hover:underline flex items-center gap-1 cursor-pointer transition-colors"
+                >
                   <span>Read article</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -222,11 +226,11 @@ export const BlogPage: React.FC = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.08, duration: 0.3 }}
-              className="border border-dashed border-neutral-300 dark:border-neutral-800 bg-white dark:bg-[#111218] rounded-[2px] p-6 flex flex-col justify-between shadow-xs hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors"
+              className="border border-white/[0.08] bg-[#121319] rounded-[4px] p-6 flex flex-col justify-between shadow-xs hover:border-white/[0.16] transition-colors"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className="px-2 py-0.5 border border-dashed border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 font-mono text-[10px] rounded-[2px] uppercase">
+                  <span className="px-2 py-0.5 border border-white/[0.08] bg-white/[0.05] text-neutral-300 font-mono text-[10px] rounded-[3px] uppercase">
                     {post.category}
                   </span>
                   <span className="text-[11px] font-mono text-neutral-400">
@@ -234,18 +238,18 @@ export const BlogPage: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="text-base font-bold text-neutral-950 dark:text-neutral-50 tracking-tight mb-2 leading-snug">
+                <h3 className="text-base font-semibold text-white tracking-tight mb-2 leading-snug">
                   {post.title}
                 </h3>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6 line-clamp-3">
+                <p className="text-xs text-neutral-400 leading-relaxed mb-6 line-clamp-3 font-sans">
                   {post.excerpt}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-dashed border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+              <div className="pt-4 border-t border-white/[0.08] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FacehashAvatar seed={post.author.seed} size={24} />
-                  <span className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+                  <span className="text-xs font-medium text-neutral-200">
                     {post.author.name}
                   </span>
                 </div>

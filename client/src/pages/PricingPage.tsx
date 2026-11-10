@@ -135,16 +135,16 @@ export const PricingPage: React.FC = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] dark:text-[#FF6633] mb-6 border border-dashed border-[#DF3E03]/30 dark:border-[#FF6633]/30 bg-[#DF3E03]/5 dark:bg-[#DF3E03]/10 rounded-[2px]"
+          className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-medium tracking-tight text-[#DF3E03] mb-6 border border-[#DF3E03]/30 bg-[#DF3E03]/10 rounded-[3px]"
         >
           <span>[Limited launch offer – up to 56% off lifetime while subscribed]</span>
         </motion.div>
 
         {/* Page Title */}
-        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-neutral-950 dark:text-neutral-50 max-w-3xl mx-auto leading-tight">
+        <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white max-w-3xl mx-auto leading-tight [text-wrap:balance]">
           Predictable, Transparent Pricing
         </h1>
-        <p className="mt-4 text-sm sm:text-base text-neutral-600 dark:text-neutral-400 max-w-xl mx-auto leading-relaxed">
+        <p className="mt-4 text-sm sm:text-base text-neutral-400 max-w-xl mx-auto leading-relaxed [text-wrap:pretty]">
           Start free, then grow your SaaS with autonomous AI support agents that never hallucinate customer details.
         </p>
 
@@ -172,62 +172,62 @@ export const PricingPage: React.FC = () => {
           </span>
         </div>
 
-        {/* Cossistant Vertical Dashed Pricing Matrix */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-dashed divide-neutral-200 dark:divide-neutral-800 border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111218] rounded-[2px] shadow-sm text-left">
+        {/* Vercel-style Clean Pricing Matrix */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.08] border border-white/[0.08] bg-[#111218] rounded-[4px] shadow-sm text-left">
           {tiers.map((tier) => (
             <div
               key={tier.name}
               className={`p-6 sm:p-8 flex flex-col justify-between ${
-                tier.highlighted ? 'bg-neutral-50/50 dark:bg-neutral-900/40 relative' : ''
+                tier.highlighted ? 'bg-white/[0.03] relative' : ''
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                  <h3 className="text-lg font-bold text-white">
                     {tier.name}
                   </h3>
                   {tier.badge && (
-                    <span className="px-2 py-0.5 bg-[#DF3E03] text-white font-mono text-[10px] font-bold rounded-[2px] tracking-wider uppercase">
+                    <span className="px-2 py-0.5 bg-[#DF3E03] text-white font-mono text-[10px] font-bold rounded-[3px] tracking-wider uppercase">
                       {tier.badge}
                     </span>
                   )}
                 </div>
 
-                <p className="text-xs text-neutral-500 min-h-[36px] leading-relaxed">
+                <p className="text-xs text-neutral-400 min-h-[36px] leading-relaxed">
                   {tier.tagline}
                 </p>
 
                 {/* Price Display */}
                 <div className="mt-6 mb-8">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl sm:text-5xl font-bold font-mono text-neutral-950 dark:text-white tracking-tight">
+                    <span className="text-4xl sm:text-5xl font-bold font-mono text-white tracking-tight tabular-nums">
                       {tier.price}
                     </span>
                     {tier.originalPrice && (
-                      <span className="text-lg font-mono text-neutral-400 line-through">
+                      <span className="text-lg font-mono text-neutral-500 line-through tabular-nums">
                         {tier.originalPrice}
                       </span>
                     )}
                     {tier.discount && (
-                      <span className="text-xs font-mono font-semibold text-[#DF3E03] dark:text-[#FF6633]">
+                      <span className="text-xs font-mono font-semibold text-[#DF3E03]">
                         {tier.discount}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-neutral-500 font-mono">
+                  <span className="text-xs text-neutral-400 font-mono">
                     / {tier.period}
                   </span>
                 </div>
 
                 {/* Included Features List */}
-                <div className="space-y-3 pt-6 border-t border-dashed border-neutral-200 dark:border-neutral-800 text-xs">
+                <div className="space-y-3 pt-6 border-t border-white/[0.08] text-xs">
                   <div className="text-[10px] font-mono uppercase text-neutral-400 tracking-wider font-semibold">
                     Included Features
                   </div>
                   {tier.features.map((feat) => (
                     <div key={feat} className="flex items-start gap-2.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                      <span className="text-neutral-700 dark:text-neutral-300 leading-snug">
+                      <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-neutral-300 leading-snug">
                         {feat}
                       </span>
                     </div>
@@ -236,13 +236,13 @@ export const PricingPage: React.FC = () => {
               </div>
 
               {/* Action Button */}
-              <div className="mt-8 pt-6 border-t border-dashed border-neutral-200 dark:border-neutral-800">
+              <div className="mt-8 pt-6 border-t border-white/[0.08]">
                 <Link
                   to={tier.ctaLink}
-                  className={`w-full block text-center py-2.5 px-4 text-xs font-semibold rounded-[2px] transition-all cursor-pointer shadow-xs ${
+                  className={`w-full block text-center py-2.5 px-4 text-xs font-semibold rounded-[4px] transition-colors cursor-pointer shadow-xs ${
                     tier.highlighted
-                      ? 'bg-neutral-950 hover:bg-neutral-800 text-white dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-100'
-                      : 'bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-900 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-700'
+                      ? 'bg-white hover:bg-neutral-200 text-neutral-950'
+                      : 'bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10'
                   }`}
                 >
                   {tier.cta}
@@ -263,60 +263,60 @@ export const PricingPage: React.FC = () => {
             </h2>
           </div>
 
-          <div className="overflow-x-auto border border-dashed border-neutral-200 dark:border-neutral-800 rounded-[2px] bg-white dark:bg-[#111218]">
-            <table className="w-full text-xs">
+          <div className="overflow-x-auto border border-white/[0.08] rounded-[4px] bg-[#111218]">
+            <table className="w-full text-xs min-w-[580px]">
               <thead>
-                <tr className="border-b border-dashed border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/60 text-neutral-500 font-mono">
+                <tr className="border-b border-white/[0.08] bg-white/[0.02] text-neutral-400 font-mono">
                   <th className="p-3.5 text-left font-semibold">Feature</th>
                   <th className="p-3.5 text-center font-semibold w-32">Free</th>
                   <th className="p-3.5 text-center font-semibold w-32">Hobby</th>
                   <th className="p-3.5 text-center font-semibold w-32">Pro</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-dashed divide-neutral-200 dark:divide-neutral-800">
+              <tbody className="divide-y divide-white/[0.08]">
                 {comparisonRows.map((cat) => (
                   <React.Fragment key={cat.category}>
-                    <tr className="bg-neutral-100/50 dark:bg-neutral-900/60 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+                    <tr className="bg-white/[0.03] font-mono text-[10px] uppercase tracking-wider text-neutral-400">
                       <td colSpan={4} className="p-2.5 px-3.5 font-bold">
                         {cat.category}
                       </td>
                     </tr>
                     {cat.rows.map((row) => (
-                      <tr key={row.feature} className="hover:bg-neutral-50/50 dark:hover:bg-neutral-900/30">
-                        <td className="p-3.5 text-neutral-800 dark:text-neutral-200 font-medium">
+                      <tr key={row.feature} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="p-3.5 text-neutral-200 font-medium">
                           {row.feature}
                         </td>
                         <td className="p-3.5 text-center font-mono">
                           {typeof row.free === 'boolean' ? (
                             row.free ? (
-                              <Check className="w-4 h-4 text-emerald-500 mx-auto" />
+                              <Check className="w-4 h-4 text-emerald-400 mx-auto" />
                             ) : (
-                              <span className="text-neutral-400">—</span>
+                              <span className="text-neutral-500">—</span>
                             )
                           ) : (
-                            <span className="text-neutral-600 dark:text-neutral-400">{row.free}</span>
+                            <span className="text-neutral-400">{row.free}</span>
                           )}
                         </td>
                         <td className="p-3.5 text-center font-mono">
                           {typeof row.hobby === 'boolean' ? (
                             row.hobby ? (
-                              <Check className="w-4 h-4 text-emerald-500 mx-auto" />
+                              <Check className="w-4 h-4 text-emerald-400 mx-auto" />
                             ) : (
-                              <span className="text-neutral-400">—</span>
+                              <span className="text-neutral-500">—</span>
                             )
                           ) : (
-                            <span className="text-neutral-600 dark:text-neutral-400">{row.hobby}</span>
+                            <span className="text-neutral-400">{row.hobby}</span>
                           )}
                         </td>
                         <td className="p-3.5 text-center font-mono">
                           {typeof row.pro === 'boolean' ? (
                             row.pro ? (
-                              <Check className="w-4 h-4 text-emerald-500 mx-auto" />
+                              <Check className="w-4 h-4 text-emerald-400 mx-auto" />
                             ) : (
-                              <span className="text-neutral-400">—</span>
+                              <span className="text-neutral-500">—</span>
                             )
                           ) : (
-                            <span className="text-neutral-900 dark:text-white font-bold">{row.pro}</span>
+                            <span className="text-white font-bold">{row.pro}</span>
                           )}
                         </td>
                       </tr>
@@ -331,10 +331,10 @@ export const PricingPage: React.FC = () => {
         {/* Interactive FAQ Section with Motion */}
         <div className="mt-20 max-w-3xl mx-auto text-left">
           <div className="text-center mb-8">
-            <span className="text-xs font-mono text-[#DF3E03] dark:text-[#FF6633] uppercase tracking-wider font-bold">
+            <span className="text-xs font-mono text-[#DF3E03] uppercase tracking-wider font-bold">
               [Answers to Common Questions]
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mt-1">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mt-1">
               Frequently Asked Questions
             </h2>
           </div>
@@ -345,11 +345,12 @@ export const PricingPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="border border-dashed border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#111218] rounded-[2px] overflow-hidden shadow-xs"
+                  className="border border-white/[0.08] bg-[#111218] rounded-[4px] overflow-hidden shadow-xs"
                 >
                   <button
+                    type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between p-4 text-xs font-semibold text-neutral-900 dark:text-neutral-100 hover:text-[#DF3E03] dark:hover:text-[#FF6633] transition-colors cursor-pointer text-left"
+                    className="w-full flex items-center justify-between p-4 text-xs font-semibold text-neutral-200 hover:text-white transition-colors cursor-pointer text-left"
                   >
                     <span>{faq.q}</span>
                     <span className="font-mono text-neutral-400 text-sm ml-2">
@@ -365,7 +366,7 @@ export const PricingPage: React.FC = () => {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="p-4 pt-0 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed border-t border-dashed border-neutral-100 dark:border-neutral-800/60 bg-neutral-50/50 dark:bg-neutral-950/40">
+                        <div className="p-4 pt-0 text-xs text-neutral-400 leading-relaxed border-t border-white/[0.08] bg-white/[0.02]">
                           {faq.a}
                         </div>
                       </motion.div>
