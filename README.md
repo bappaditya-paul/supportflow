@@ -12,6 +12,7 @@
 
 <p align="center">
   <a href="https://bharatcode.ai/hackathon"><img src="https://img.shields.io/badge/Hackathon-BharatCode_2026-FF9933?style=for-the-badge&logo=codeforces&logoColor=white" alt="BharatCode Hackathon"></a>
+  <a href="https://client-eight-kappa-94.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo on Vercel"></a>
   <a href="https://github.com/bappaditya-paul/supportflow/actions"><img src="https://img.shields.io/badge/Build-Passing%20(25%2F25)-10B981?style=for-the-badge&logo=githubactions&logoColor=white" alt="Build Status"></a>
   <a href="#-hackathon-judge-evaluation-matrix-11--11"><img src="https://img.shields.io/badge/Judge_Matrix-11%2F11_Verified-00D26A?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Judge Matrix"></a>
   <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI"></a>
