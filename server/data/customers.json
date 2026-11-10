@@ -9,7 +9,9 @@
     "payment_amount": 9.99,
     "payment_date": "2026-11-04",
     "transaction_id": "TXN-9001",
-    "card_last4": "4242"
+    "card_last4": "4242",
+    "discrepancy_detected": true,
+    "discrepancy_note": "Payment confirmed, but plan is 'free' instead of 'pro'!"
   },
   {
     "customer_id": "CUS-502",

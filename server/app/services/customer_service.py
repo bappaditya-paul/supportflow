@@ -89,3 +89,60 @@ def get_customer_by_id(customer_id: str) -> Optional[Customer]:
         return None
 
     return _build_customer_from_dict(match)
+
+
+def sync_customer_plan(customer_id: str, new_plan: str = "pro", expected_plan: Optional[str] = None) -> Customer:
+    """Synchronize customer plan to paid entitlement and clear discrepancy flag."""
+    target_id = customer_id.strip().upper()
+    alias_map = {"CUST-001": "CUS-501", "CUST-002": "CUS-502", "CUST-003": "CUS-503"}
+    if target_id in alias_map:
+        target_id = alias_map[target_id]
+
+    target_expected = expected_plan if expected_plan is not None else new_plan
+    has_discrepancy = (new_plan != target_expected)
+    note = f"Payment confirmed, but plan is '{new_plan}' instead of '{target_expected}'!" if has_discrepancy else None
+
+    client = get_supabase_admin()
+    if client:
+        try:
+            client.table("customers").update({
+                "plan": new_plan,
+                "expected_plan": target_expected,
+                "discrepancy_detected": has_discrepancy,
+                "discrepancy_note": note
+            }).eq("customer_id", target_id).execute()
+        except Exception:
+            pass
+
+    if not DATA_FILE.exists():
+        raise FileNotFoundError(f"Customer data file {DATA_FILE} not found")
+
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    updated_record = None
+    for item in data:
+        if item["customer_id"].upper() == target_id:
+            item["plan"] = new_plan
+            item["expected_plan"] = target_expected
+            item["payment_status"] = "paid"
+            item["discrepancy_detected"] = has_discrepancy
+            item["discrepancy_note"] = note
+            updated_record = item
+            break
+
+    if not updated_record:
+        raise ValueError(f"Customer {customer_id} not found")
+
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+    root_file = Path(__file__).resolve().parent.parent.parent.parent / "data" / "customers.json"
+    if root_file.exists() and root_file != DATA_FILE:
+        try:
+            with open(root_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+        except Exception:
+            pass
+
+    return _build_customer_from_dict(updated_record)

@@ -29,6 +29,10 @@ interface DashboardLayoutProps {
   onSendOperatorMessage: (text: string, isInternal: boolean) => void;
   onResyncCustomer?: () => void;
   compact?: boolean;
+  backendConnected?: boolean;
+  wsConnected?: boolean;
+  backendError?: string | null;
+  onRetryConnection?: () => void;
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
@@ -48,6 +52,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   onSendOperatorMessage,
   onResyncCustomer,
   compact = false,
+  backendConnected = true,
+  wsConnected = true,
+  backendError = null,
+  onRetryConnection,
 }) => {
   const [currentTab, setCurrentTab] = useState('inbox');
   const [showProfileDrawer, setShowProfileDrawer] = useState(
@@ -98,9 +106,35 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* 2. Main Content Area */}
       {currentTab === 'inbox' && (
         <div className="flex flex-col flex-1 h-full overflow-hidden min-h-0">
+          {/* Reactive Backend Connection Warning Banner */}
+          {!backendConnected && (
+            <div className="bg-rose-500/10 dark:bg-rose-950/40 border-b border-rose-500/20 px-6 py-2 text-xs text-rose-700 dark:text-rose-300 flex items-center justify-between z-20 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                <span>
+                  <strong>Backend Connection Error:</strong> {backendError || 'Cannot reach FastAPI server at http://localhost:8000. Running in offline demo mode.'}
+                </span>
+              </div>
+              {onRetryConnection && (
+                <button
+                  type="button"
+                  onClick={onRetryConnection}
+                  className="px-2.5 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-900 dark:text-rose-200 rounded text-[11px] font-mono font-medium flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Retry Connection</span>
+                </button>
+              )}
+            </div>
+          )}
+
           {!compact && (
             <div className="hidden md:block">
-              <TopAnalyticsBar />
+              <TopAnalyticsBar
+                backendOnline={backendConnected}
+                wsOnline={wsConnected}
+                onRetryBackend={onRetryConnection}
+              />
             </div>
           )}
           <div className="flex flex-1 h-full overflow-hidden min-h-0 relative">

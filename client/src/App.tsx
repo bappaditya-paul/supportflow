@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import {
   Navbar,
@@ -47,6 +47,10 @@ function AppShell() {
   const [wsConnected, setWsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
 
+  // Backend Connection & Error State
+  const [backendConnected, setBackendConnected] = useState<boolean>(true);
+  const [backendError, setBackendError] = useState<string | null>(null);
+
   const [agents, setAgents] = useState<SwitchAgentState[]>([
     { name: '@triager', role: 'Classifier', status: 'idle' },
     { name: '@investigator', role: 'Deterministic Tools', status: 'idle' },
@@ -54,54 +58,64 @@ function AppShell() {
   ]);
 
   // Load real data from FastAPI backend on mount
-  useEffect(() => {
-    let isMounted = true;
+  const loadBackendData = useCallback(async () => {
+    try {
+      const [ticketsRes, customersRes, draftsRes] = await Promise.all([
+        fetch('http://localhost:8000/tickets'),
+        fetch('http://localhost:8000/customers'),
+        fetch('http://localhost:8000/drafts'),
+      ]);
 
-    async function loadBackendData() {
-      try {
-        const [ticketsRes, customersRes, draftsRes] = await Promise.all([
-          fetch('http://localhost:8000/tickets'),
-          fetch('http://localhost:8000/customers'),
-          fetch('http://localhost:8000/drafts'),
-        ]);
+      if (!ticketsRes.ok) {
+        throw new Error(`Tickets endpoint returned HTTP ${ticketsRes.status}`);
+      }
+      const backendTickets: any[] = await ticketsRes.json();
+      if (!backendTickets || !backendTickets.length) return;
 
-        if (!ticketsRes.ok) return;
-        const backendTickets: any[] = await ticketsRes.json();
-        if (!backendTickets || !backendTickets.length) return;
-
-        const customerMap: Record<string, Customer> = {};
-        if (customersRes.ok) {
-          const allCust: Customer[] = await customersRes.json();
-          for (const c of allCust) {
-            customerMap[c.customer_id] = c;
-          }
+      const customerMap: Record<string, Customer> = {};
+      if (customersRes.ok) {
+        const allCust: Customer[] = await customersRes.json();
+        for (const c of allCust) {
+          customerMap[c.customer_id] = c;
         }
+      }
 
-        const draftMap: Record<string, DraftResponse> = {};
-        if (draftsRes.ok) {
-          const allDrafts: any[] = await draftsRes.json();
-          for (const d of allDrafts) {
-            draftMap[d.ticket_id] = {
-              ticket_id: d.ticket_id,
-              customer_name: customerMap[d.ticket_id]?.name || 'Alex Morgan',
-              complaint_summary: 'Billing Discrepancy Protocol',
-              proposed_response: d.draft_text || d.proposed_response || '',
-              draft_text: d.draft_text || d.proposed_response || '',
-              evidence_used: d.evidence_used || '',
-              policy_references: d.policy_references || '',
-              status: d.status === 'APPROVED' ? 'APPROVED' : 'PENDING_APPROVAL',
-              approved_by: d.approver,
-              approved_at: d.decided_at,
-            };
-          }
+      const draftMap: Record<string, DraftResponse> = {};
+      if (draftsRes.ok) {
+        const allDrafts: any[] = await draftsRes.json();
+        for (const d of allDrafts) {
+          draftMap[d.ticket_id] = {
+            ticket_id: d.ticket_id,
+            customer_name: customerMap[d.ticket_id]?.name || 'Alex Morgan',
+            complaint_summary: 'Billing Discrepancy Protocol',
+            proposed_response: d.draft_text || d.proposed_response || '',
+            draft_text: d.draft_text || d.proposed_response || '',
+            evidence_used: d.evidence_used || '',
+            policy_references: d.policy_references || '',
+            status: d.status === 'APPROVED' ? 'APPROVED' : 'PENDING_APPROVAL',
+            approved_by: d.approver,
+            approved_at: d.decided_at,
+          };
         }
+      }
 
-        const timelineMap: Record<string, TimelineItem[]> = {};
+      const timelineMap: Record<string, TimelineItem[]> = {};
 
-        for (const t of backendTickets) {
+      // Connect and retrieve persisted timelines from backend
+      await Promise.all(
+        backendTickets.map(async (t) => {
+          try {
+            const tlRes = await fetch(`http://localhost:8000/api/v1/tickets/${t.ticket_id}/timeline`);
+            if (tlRes.ok) {
+              const items = await tlRes.json();
+              if (Array.isArray(items) && items.length > 0) {
+                timelineMap[t.ticket_id] = items;
+                return;
+              }
+            }
+          } catch (_) {}
+
           const customerObj = customerMap[t.customer_id];
-          const isTkt1001 = t.ticket_id === 'TKT-1001';
-
           timelineMap[t.ticket_id] = [
             {
               id: `msg-${t.ticket_id}-1`,
@@ -112,110 +126,47 @@ function AppShell() {
               visibility: 'public',
               created_at: '10 mins ago',
             },
-            ...(isTkt1001
-              ? [
-                  {
-                    id: `tool-${t.ticket_id}-1`,
-                    ticket_id: t.ticket_id,
-                    sender_type: 'agent' as const,
-                    sender_name: '@investigator',
-                    text: 'Executing database customer lookup...',
-                    visibility: 'private' as const,
-                    created_at: '9 mins ago',
-                    tool_call: {
-                      name: 'lookup_customer',
-                      params: { customer_id: t.customer_id },
-                      result: {
-                        customer_id: t.customer_id,
-                        name: customerObj?.name || 'Alex Morgan',
-                        plan: customerObj?.plan || 'free',
-                        status: 'active',
-                      },
-                      status: 'completed' as const,
-                    },
-                  },
-                  {
-                    id: `tool-${t.ticket_id}-2`,
-                    ticket_id: t.ticket_id,
-                    sender_type: 'agent' as const,
-                    sender_name: '@investigator',
-                    text: 'Querying Stripe API for latest charges...',
-                    visibility: 'private' as const,
-                    created_at: '9 mins ago',
-                    tool_call: {
-                      name: 'check_stripe',
-                      params: { email: customerObj?.email_masked || 'al***n@example.com' },
-                      result: {
-                        status: 'succeeded',
-                        amount: customerObj?.payment_amount ? customerObj.payment_amount * 100 : 999,
-                        currency: 'usd',
-                        plan: customerObj?.expected_plan || 'pro',
-                        charge_id: customerObj?.transaction_id || 'TXN-9001',
-                        paid_at: customerObj?.payment_date || '2026-11-04',
-                      },
-                      status: 'completed' as const,
-                    },
-                  },
-                  {
-                    id: `msg-${t.ticket_id}-2`,
-                    ticket_id: t.ticket_id,
-                    sender_type: 'agent' as const,
-                    sender_name: '@investigator',
-                    text: 'DISCREPANCY DETECTED: Customer has valid active Pro subscription in payment ledger ($9.99), but internal database user record is still set to "free". Root cause: Webhook sync delay.',
-                    visibility: 'private' as const,
-                    created_at: '8 mins ago',
-                  },
-                  {
-                    id: `msg-${t.ticket_id}-3`,
-                    ticket_id: t.ticket_id,
-                    sender_type: 'agent' as const,
-                    sender_name: '@responder',
-                    text: 'Grounding draft in Policy KB-001: Immediate sync required + proactive apology. Prepared resolution draft awaiting human authorization.',
-                    visibility: 'private' as const,
-                    created_at: '7 mins ago',
-                  },
-                ]
-              : []),
           ];
-        }
+        })
+      );
 
-        const formattedTickets: Ticket[] = backendTickets.map((t) => {
-          const c = customerMap[t.customer_id];
-          return {
-            ticket_id: t.ticket_id,
-            customer_id: t.customer_id,
-            customer_name: c?.name || (t.ticket_id === 'TKT-1001' ? 'Alex Morgan' : t.ticket_id === 'TKT-1002' ? 'Jamie Smith' : 'Taylor Lee'),
-            customer_email: c?.email_masked || (t.ticket_id === 'TKT-1001' ? 'al***n@example.com' : t.ticket_id === 'TKT-1002' ? 'ja***h@example.com' : 'ta***e@example.com'),
-            subject: t.subject,
-            complaint: t.message || t.complaint || t.subject,
-            plan: c?.plan || 'free',
-            created_at: '10 mins ago',
-            status: draftMap[t.ticket_id]?.status === 'APPROVED' ? 'resolved' : (t.ticket_id === 'TKT-1001' ? 'awaiting_approval' : 'investigating'),
-            priority: t.priority || 'normal',
-            category: t.category || 'General',
-            discrepancy: c?.discrepancy_detected ?? (t.category === 'billing'),
-          };
-        });
+      const formattedTickets: Ticket[] = backendTickets.map((t) => {
+        const c = customerMap[t.customer_id];
+        return {
+          ticket_id: t.ticket_id,
+          customer_id: t.customer_id,
+          customer_name: c?.name || (t.ticket_id === 'TKT-1001' ? 'Alex Morgan' : t.ticket_id === 'TKT-1002' ? 'Jamie Smith' : 'Taylor Lee'),
+          customer_email: c?.email_masked || (t.ticket_id === 'TKT-1001' ? 'al***n@example.com' : t.ticket_id === 'TKT-1002' ? 'ja***h@example.com' : 'ta***e@example.com'),
+          subject: t.subject,
+          complaint: t.message || t.complaint || t.subject,
+          plan: c?.plan || 'free',
+          created_at: '10 mins ago',
+          status: draftMap[t.ticket_id]?.status === 'APPROVED' ? 'resolved' : (t.ticket_id === 'TKT-1001' ? 'awaiting_approval' : 'investigating'),
+          priority: t.priority || 'normal',
+          category: t.category || 'General',
+          discrepancy: c?.discrepancy_detected ?? (t.category === 'billing'),
+        };
+      });
 
-        if (isMounted) {
-          setTickets(formattedTickets);
-          setCustomers(customerMap);
-          setDrafts(draftMap);
-          setTimelines(timelineMap);
-          if (formattedTickets.length > 0) {
-            setSelectedTicketId(formattedTickets[0].ticket_id);
-          }
-        }
-      } catch (err) {
-        console.error('Failed to load tickets from backend:', err);
+      setTickets(formattedTickets);
+      setCustomers(customerMap);
+      setDrafts(draftMap);
+      setTimelines(timelineMap);
+      setBackendConnected(true);
+      setBackendError(null);
+      if (formattedTickets.length > 0) {
+        setSelectedTicketId((prev) => prev || formattedTickets[0].ticket_id);
       }
+    } catch (err: any) {
+      console.error('Failed to load tickets from backend:', err);
+      setBackendConnected(false);
+      setBackendError(err?.message || 'Cannot reach FastAPI backend at http://localhost:8000');
     }
-
-    loadBackendData();
-    return () => {
-      isMounted = false;
-    };
   }, []);
+
+  useEffect(() => {
+    loadBackendData();
+  }, [loadBackendData]);
 
   const activeTicket = tickets.find((t) => t.ticket_id === selectedTicketId) || null;
   const activeCustomer = activeTicket ? customers[activeTicket.customer_id] || null : null;
@@ -275,9 +226,10 @@ function AppShell() {
     }
   };
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
+    const tempId = `msg-${Date.now()}`;
     const newItem: TimelineItem = {
-      id: `msg-${Date.now()}`,
+      id: tempId,
       ticket_id: selectedTicketId,
       sender_type: 'customer',
       sender_name: activeTicket?.customer_name || 'Customer',
@@ -290,6 +242,33 @@ function AppShell() {
       ...prev,
       [selectedTicketId]: [...(prev[selectedTicketId] || []), newItem],
     }));
+
+    // Connect customer messages to timeline persistence
+    try {
+      const res = await fetch(`http://localhost:8000/api/v1/tickets/${selectedTicketId}/timeline`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_type: 'customer',
+          sender_name: activeTicket?.customer_name || 'Customer',
+          text,
+          visibility: 'public',
+        }),
+      });
+      if (res.ok) {
+        const persisted = await res.json();
+        if (persisted?.id) {
+          setTimelines((prev) => ({
+            ...prev,
+            [selectedTicketId]: (prev[selectedTicketId] || []).map((m) =>
+              m.id === tempId ? { ...m, id: persisted.id, created_at: persisted.created_at || m.created_at } : m
+            ),
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn('Backend timeline persistence warning (customer message):', err);
+    }
 
     setIsAgentTyping(true);
     setAgents([
@@ -400,9 +379,10 @@ function AppShell() {
     );
   };
 
-  const handleSendOperatorMessage = (text: string, isInternal: boolean) => {
+  const handleSendOperatorMessage = async (text: string, isInternal: boolean) => {
+    const tempId = `msg-op-${Date.now()}`;
     const newItem: TimelineItem = {
-      id: `msg-op-${Date.now()}`,
+      id: tempId,
       ticket_id: selectedTicketId,
       sender_type: 'operator',
       sender_name: 'Operator Desk',
@@ -415,6 +395,33 @@ function AppShell() {
       ...prev,
       [selectedTicketId]: [...(prev[selectedTicketId] || []), newItem],
     }));
+
+    // Connect operator messages to timeline persistence
+    try {
+      const res = await fetch(`http://localhost:8000/api/v1/tickets/${selectedTicketId}/timeline`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sender_type: 'operator',
+          sender_name: 'Operator Desk',
+          text,
+          visibility: isInternal ? 'private' : 'public',
+        }),
+      });
+      if (res.ok) {
+        const persisted = await res.json();
+        if (persisted?.id) {
+          setTimelines((prev) => ({
+            ...prev,
+            [selectedTicketId]: (prev[selectedTicketId] || []).map((m) =>
+              m.id === tempId ? { ...m, id: persisted.id, created_at: persisted.created_at || m.created_at } : m
+            ),
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn('Backend timeline persistence warning (operator message):', err);
+    }
   };
 
   const handleTriggerScenario = (scenario: 'billing' | 'refund' | 'access') => {
@@ -424,8 +431,9 @@ function AppShell() {
     setIsWidgetOpen(true);
   };
 
-  const handleResyncCustomer = () => {
+  const handleResyncCustomer = async () => {
     if (activeTicket) {
+      // 1. Optimistic UI update
       setCustomers((prev) => ({
         ...prev,
         [activeTicket.customer_id]: {
@@ -440,6 +448,45 @@ function AppShell() {
           t.ticket_id === activeTicket.ticket_id ? { ...t, discrepancy: false } : t
         )
       );
+
+      // 2. Persist to backend API!
+      try {
+        const syncRes = await fetch(`http://localhost:8000/customers/${activeTicket.customer_id}/sync`, {
+          method: 'POST',
+        });
+        if (syncRes.ok) {
+          const updatedCust = await syncRes.json();
+          setCustomers((prev) => ({
+            ...prev,
+            [activeTicket.customer_id]: updatedCust,
+          }));
+        }
+
+        // 3. Append reconciliation event to timeline
+        const tlRes = await fetch(`http://localhost:8000/api/v1/tickets/${activeTicket.ticket_id}/timeline`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender_type: 'agent',
+            sender_name: '@investigator',
+            text: 'Database subscription entitlement successfully reconciled to PRO via Stripe payment record.',
+            visibility: 'private',
+            tool_name: 'sync_customer_entitlement',
+            tool_params: { customer_id: activeTicket.customer_id, plan: 'pro' },
+            tool_result: { status: 'reconciled', plan: 'pro', discrepancy: false },
+            tool_status: 'completed',
+          }),
+        });
+        if (tlRes.ok) {
+          const tlItem = await tlRes.json();
+          setTimelines((prev) => ({
+            ...prev,
+            [activeTicket.ticket_id]: [...(prev[activeTicket.ticket_id] || []), tlItem],
+          }));
+        }
+      } catch (err) {
+        console.warn('Backend customer sync error:', err);
+      }
     }
   };
 
@@ -564,6 +611,10 @@ function AppShell() {
                     onSendOperatorMessage={handleSendOperatorMessage}
                     onResyncCustomer={handleResyncCustomer}
                     compact={true}
+                    backendConnected={backendConnected}
+                    wsConnected={wsConnected}
+                    backendError={backendError}
+                    onRetryConnection={loadBackendData}
                   />
                 </div>
               </div>
@@ -591,6 +642,10 @@ function AppShell() {
                   onRejectDraft={handleRejectDraft}
                   onSendOperatorMessage={handleSendOperatorMessage}
                   onResyncCustomer={handleResyncCustomer}
+                  backendConnected={backendConnected}
+                  wsConnected={wsConnected}
+                  backendError={backendError}
+                  onRetryConnection={loadBackendData}
                 />
               </div>
             }

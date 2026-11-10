@@ -12,9 +12,17 @@ interface AnalyticsData {
 
 interface TopAnalyticsBarProps {
   onOpenLiveOverlay?: () => void;
+  backendOnline?: boolean;
+  wsOnline?: boolean;
+  onRetryBackend?: () => void;
 }
 
-export const TopAnalyticsBar: React.FC<TopAnalyticsBarProps> = ({ onOpenLiveOverlay }) => {
+export const TopAnalyticsBar: React.FC<TopAnalyticsBarProps> = ({
+  onOpenLiveOverlay,
+  backendOnline = true,
+  wsOnline = true,
+  onRetryBackend,
+}) => {
   const [dateRange, setDateRange] = useState<'7d' | '14d' | '30d'>('7d');
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     live_visitors: 3,
@@ -56,6 +64,27 @@ export const TopAnalyticsBar: React.FC<TopAnalyticsBarProps> = ({ onOpenLiveOver
           <span>Operations Cockpit</span>
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse motion-reduce:animate-none" aria-hidden="true" />
         </h2>
+
+        {/* Backend & WebSocket Status Pill */}
+        <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono px-2 py-0.5 rounded border bg-neutral-100 dark:bg-white/[0.04] border-neutral-200 dark:border-white/[0.08]">
+          <span className={`w-1.5 h-1.5 rounded-full ${backendOnline ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
+          <span className={backendOnline ? 'text-neutral-600 dark:text-neutral-300' : 'text-rose-600 dark:text-rose-400 font-semibold'}>
+            API {backendOnline ? ':8000' : 'OFFLINE'}
+          </span>
+          <span className="text-neutral-300 dark:text-neutral-700">·</span>
+          <span className={`w-1.5 h-1.5 rounded-full ${wsOnline ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+          <span className="text-neutral-500 dark:text-neutral-400">
+            WS {wsOnline ? 'Live' : 'Off'}
+          </span>
+          {!backendOnline && onRetryBackend && (
+            <button
+              onClick={onRetryBackend}
+              className="ml-1 text-[9px] underline text-rose-500 hover:text-rose-400 cursor-pointer"
+            >
+              Retry
+            </button>
+          )}
+        </div>
 
         <button
           type="button"

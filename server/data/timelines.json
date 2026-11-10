@@ -89,6 +89,123 @@
       "text": "Automated verification message.",
       "visibility": "public",
       "created_at": "2026-11-10T13:59:28.974337+00:00"
+    },
+    {
+      "id": "msg-9a8b4475",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:15:55.511089+00:00"
+    },
+    {
+      "id": "msg-e0b41a14",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:15:55.808042+00:00"
+    },
+    {
+      "id": "msg-005ad152",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:17:00.472434+00:00"
+    },
+    {
+      "id": "msg-4ff5a1ed",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:17:00.757507+00:00"
+    },
+    {
+      "id": "msg-cc2fd412",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:17:24.020824+00:00"
+    },
+    {
+      "id": "msg-b3a647ad",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:17:24.289412+00:00"
+    },
+    {
+      "id": "msg-289cc09e",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:17:28.837335+00:00"
+    },
+    {
+      "id": "msg-9570dbdd",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:18:05.821955+00:00"
+    },
+    {
+      "id": "msg-b7816337",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:18:06.062068+00:00"
+    },
+    {
+      "id": "msg-dbae82f8",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:18:11.148317+00:00"
+    },
+    {
+      "id": "msg-63f50786",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:18:21.034076+00:00"
+    },
+    {
+      "id": "msg-02ef0195",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:18:21.581099+00:00"
+    },
+    {
+      "id": "msg-f47a42c9",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:18:26.552501+00:00"
     }
   ]
 }

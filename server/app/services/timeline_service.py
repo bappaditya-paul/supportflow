@@ -144,8 +144,11 @@ def add_timeline_message(
                 db_payload["tool_params"] = tool_params or {}
                 db_payload["tool_result"] = tool_result or {}
                 db_payload["tool_status"] = tool_status or "completed"
-            client.table("ticket_timeline").insert(db_payload).execute()
+            insert_res = client.table("ticket_timeline").insert(db_payload).execute()
+            if insert_res.data and len(insert_res.data) > 0 and "id" in insert_res.data[0]:
+                item["id"] = str(insert_res.data[0]["id"])
         except Exception:
+            pass
             pass
 
     return item

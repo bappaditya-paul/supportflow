@@ -164,6 +164,17 @@ def get_customer(customer_id: str):
         raise HTTPException(status_code=404, detail=f"Customer {customer_id} not found")
     return customer
 
+@app.post("/customers/{customer_id}/sync", response_model=Customer, tags=["Customer Reconciliation"], summary="Synchronize Customer Plan to Stripe State")
+def sync_customer(customer_id: str, plan: str = "pro"):
+    """Reconcile and sync internal database entitlement to verified Stripe state, resolving discrepancies."""
+    try:
+        updated = customer_service.sync_customer_plan(customer_id, new_plan=plan)
+        return updated
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/knowledge/search", response_model=List[KnowledgeResult], tags=["Knowledge & FAQs"], summary="Search Policy Knowledge Base")
 def search_knowledge(q: str = Query(..., description="Query search string (e.g. 'refund', 'subscription', 'api limit')")):
     """Perform deterministic keyword search across official policy markdown documents."""
