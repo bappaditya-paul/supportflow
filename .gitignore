@@ -42,6 +42,14 @@ server/.env
 *.webp
 *.gif
 *.mp4
+!logo.png
+!screenshot.png
+!proof_e2e_workflow.png
+!client/public/logo.png
+!client/public/favicon.png
+!client/public/favicon.ico
+!client/public/logo-banner.png
+!client/src/assets/logo.png
 .playwright-mcp/
 client/docs/audit_screenshots/
 reverse-engineering/screenshots/

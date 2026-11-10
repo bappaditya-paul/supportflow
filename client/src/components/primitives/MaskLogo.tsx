@@ -1,4 +1,5 @@
 import React from 'react';
+import logoUrl from '../../assets/logo.png';
 
 interface MaskLogoProps {
   size?: number;
@@ -15,32 +16,16 @@ export const MaskLogo: React.FC<MaskLogoProps> = ({
 }) => {
   return (
     <div className={`inline-flex items-center gap-2 select-none ${className}`}>
-      {/* Signature Dual-Eye Mask Shape */}
-      <svg
+      {/* Official SupportFlow Mascot Logo */}
+      <img
+        src={logoUrl}
+        alt="SupportFlow Logo"
         width={size}
         height={size}
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="shrink-0"
-      >
-        {/* Mask Base Rounded Contour */}
-        <rect width="32" height="32" rx="7" fill="currentColor" />
-        {/* Left Eye Cutout Arch */}
-        <path
-          d="M8.5 15C8.5 12.5 10.5 10.5 13 10.5C15.5 10.5 17.5 12.5 17.5 15"
-          stroke="#FCFCFC"
-          strokeWidth="2.75"
-          strokeLinecap="round"
-        />
-        {/* Right Eye Cutout Arch */}
-        <path
-          d="M14.5 15C14.5 12.5 16.5 10.5 19 10.5C21.5 10.5 23.5 12.5 23.5 15"
-          stroke="#FCFCFC"
-          strokeWidth="2.75"
-          strokeLinecap="round"
-        />
-      </svg>
+        style={{ width: `${size}px`, height: `${size}px` }}
+        className="shrink-0 object-contain drop-shadow-sm transition-transform"
+        draggable={false}
+      />
 
       {withText && (
         <span
