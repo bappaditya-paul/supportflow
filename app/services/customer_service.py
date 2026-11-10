@@ -65,10 +65,15 @@ def get_all_customers() -> List[Customer]:
 
 def get_customer_by_id(customer_id: str) -> Optional[Customer]:
     """Retrieve customer by ID from Supabase if online, falling back to local JSON data."""
+    target_id = customer_id.strip().upper()
+    alias_map = {"CUST-001": "CUS-501", "CUST-002": "CUS-502", "CUST-003": "CUS-503"}
+    if target_id in alias_map:
+        target_id = alias_map[target_id]
+
     client = get_supabase_admin()
     if client:
         try:
-            res = client.table("customers").select("*").eq("customer_id", customer_id.upper()).execute()
+            res = client.table("customers").select("*").eq("customer_id", target_id).execute()
             if res.data and len(res.data) > 0:
                 return _build_customer_from_dict(res.data[0])
         except Exception:
@@ -79,7 +84,7 @@ def get_customer_by_id(customer_id: str) -> Optional[Customer]:
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    match = next((c for c in data if c["customer_id"].upper() == customer_id.upper()), None)
+    match = next((c for c in data if c["customer_id"].upper() == target_id), None)
     if not match:
         return None
 

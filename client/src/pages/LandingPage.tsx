@@ -68,7 +68,7 @@ const DEMO_TICKETS: DemoTicket[] = [
     customerQuery:
       "I paid for Pro yesterday via Stripe ($49), but my account dashboard still says Free tier and my API rate limit is locked at 60 req/min. Can someone fix this ASAP? We have a product launch tomorrow.",
     toolCall: {
-      fn: 'lookup_customer("CUST-001") & check_stripe("pieter@levels.io")',
+      fn: 'lookup_customer("CUS-501") & check_stripe("pieter@levels.io")',
       output: 'Stripe: charge_3P7a9 $49.00 SUCCEEDED · DB: plan="free"',
       finding: 'Discrepancy confirmed: Webhook delivery delayed by 42 mins. Payment is valid.',
     },
@@ -184,7 +184,7 @@ export const LandingPage: React.FC = () => {
     {
       agent: '@investigator',
       role: 'Deterministic Verification',
-      message: 'Executed: lookup_customer(CUST-001) & check_stripe(alex@example.com). Finding: Stripe reports $49.00 payment SUCCEEDED (ch_3P7a9), but Postgres database has plan="free". Root cause: Webhook sync delay.',
+      message: 'Executed: lookup_customer(CUS-501) & check_stripe(alex@example.com). Finding: Stripe reports $49.00 payment SUCCEEDED (ch_3P7a9), but Postgres database has plan="free". Root cause: Webhook sync delay.',
       badge: 'Discrepancy Verified',
       badgeColor: 'bg-amber-500/10 text-amber-500 border-amber-500/30',
       faceSeed: 'investigator-agent',

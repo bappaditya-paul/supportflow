@@ -43,8 +43,8 @@ class DraftResponse(BaseModel):
     created_at: str
 
 class ApprovalAction(BaseModel):
-    ticket_id: str
-    decision: str  # approve or reject
+    ticket_id: Optional[str] = None
+    decision: str = "approve"  # approve or reject
     approver: str = "Support Lead"
 
 # --- Elevated Cossistant/SupportFlow Models ---

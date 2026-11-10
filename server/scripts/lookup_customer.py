@@ -27,7 +27,12 @@ def lookup_customer(customer_id: str):
     with open(DATA_PATH, "r") as f:
         customers = json.load(f)
 
-    match = next((c for c in customers if c["customer_id"].upper() == customer_id.upper()), None)
+    target_id = customer_id.strip().upper()
+    alias_map = {"CUST-001": "CUS-501", "CUST-002": "CUS-502", "CUST-003": "CUS-503"}
+    if target_id in alias_map:
+        target_id = alias_map[target_id]
+
+    match = next((c for c in customers if c["customer_id"].upper() == target_id), None)
     if not match:
         print(f"[NOT_FOUND] No customer found matching ID '{customer_id}'")
         sys.exit(1)

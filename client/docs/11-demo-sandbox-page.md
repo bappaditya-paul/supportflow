@@ -12,7 +12,7 @@ The Demonstration Portal simulates a realistic customer B2B SaaS platform (*Clou
 │ TOP BAR: [Mode: Split Demo View | Customer SaaS App | Operator Full]   │
 ├────────────────────────────────────────────────────────────────────────┤
 │ CLOUDDESK SAAS APPLICATION                                             │
-│ Welcome back, Alex Rivera (Account CUST-001) · Cluster: us-east-1a     │
+│ Welcome back, Alex Rivera (Account CUS-501) · Cluster: us-east-1a     │
 │ Plan Status: FREE TIER (BILLING MISMATCH DETECTED)                     │
 │                                                                        │
 │ ┌────────────────────────────────────────────────────────────────────┐ │

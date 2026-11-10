@@ -458,7 +458,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="space-y-3 font-mono text-xs">
                 <div className="p-3.5 bg-white dark:bg-[#111218] border border-dashed border-neutral-300 dark:border-neutral-800 rounded-[2px]">
                   <span className="text-[#DF3E03] dark:text-[#FF7744] font-bold">
-                    $ python scripts/lookup_customer.py --id CUST-001
+                    $ python scripts/lookup_customer.py --id CUS-501
                   </span>
                   <p className="text-xs text-neutral-500 mt-1 font-sans">
                     Returns verified subscription tier, masking email and PII.

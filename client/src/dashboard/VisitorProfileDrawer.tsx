@@ -78,7 +78,7 @@ export const VisitorProfileDrawer: React.FC<VisitorProfileDrawerProps> = ({
               {email}
             </div>
             <div className="mt-1.5 flex items-center gap-1.5 text-[10px] font-mono text-neutral-500">
-              <span className="tabular-nums">ID: {customer?.customer_id || ticket?.customer_id || 'CUST-001'}</span>
+              <span className="tabular-nums">ID: {customer?.customer_id || ticket?.customer_id || 'CUS-501'}</span>
               <span>·</span>
               <span className="text-neutral-400 font-medium">Verified Customer</span>
             </div>

@@ -15,12 +15,12 @@ The Customer Directory provides support leads and operators with a complete audi
 │ [Search by name, email, or customer ID...                        ]     │
 ├────────────────────────────────────────────────────────────────────────┤
 │ CUSTOMER ID  NAME          EMAIL                  DB PLAN  STRIPE  SYNC│
-│ CUST-001     Alex Rivera   alex@example.com       free     pro     [!] │
+│ CUS-501      Alex Rivera   alex@example.com       free     pro     [!] │
 │ CUST-002     Sarah Chen    sarah.chen@techcorp.io enterpr. enterpr. [✓]│
 │ CUST-003     Marcus Vance  m.vance@startup.co     free     free    [✓]│
 │ CUST-004     Elena Rostova elena@acmelabs.ai      pro      pro     [✓]│
 ├────────────────────────────────────────────────────────────────────────┤
-│ DRAWER (When CUST-001 is clicked):                                     │
+│ DRAWER (When CUS-501 is clicked):                                      │
 │ ┌────────────────────────────────────────────────────────────────────┐ │
 │ │ Customer: Alex Rivera (alex@example.com)                           │ │
 │ │ Status: BILLING DISCREPANCY DETECTED                               │ │

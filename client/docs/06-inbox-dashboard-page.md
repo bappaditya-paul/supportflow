@@ -19,7 +19,7 @@ The flagship operational cockpit of SupportFlow. This page coordinates real-time
 │ • Contacts │                      │ Initial Ticket:                          │ Plan Discrepancy:  │
 │ • Swarm    │ TKT-1001 [DISCREP]   │ "Paid for Pro, still Free"               │ Stripe: PRO ($49)  │
 │ • KB Docs  │ Alex Rivera          ├──────────────────────────────────────────┤ DB:     FREE       │
-│ • Settings │ "Paid for Pro..."    │ > Tool: lookup_customer("CUST-001")      │ [Sync DB Now]      │
+│ • Settings │ "Paid for Pro..."    │ > Tool: lookup_customer("CUS-501")       │ [Sync DB Now]      │
 │            │                      │   Result: { plan: "free", status: "ok" } ├────────────────────┤
 │ Switch:    │ TKT-1002             ├──────────────────────────────────────────┤ Charge ID:         │
 │ localhost: │ Sarah Chen           │ > Tool: check_stripe("alex@example.com") │ ch_3P7a9xK201LMN7  │

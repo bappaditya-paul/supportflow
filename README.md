@@ -38,7 +38,7 @@ sequenceDiagram
     WS->>Room: Delivers event to Switch AI Room (:34079)
     Room->>Triager: Analyzes ticket (Category: Billing, Priority: High)
     Triager->>Inv: Delegates customer & Stripe audit
-    Inv->>Engine: python scripts/lookup_customer.py --id CUST-001
+    Inv->>Engine: python scripts/lookup_customer.py --id CUS-501
     Engine-->>Inv: Discrepancy Found! Stripe: Pro ($49), DB: Free
     Inv->>Room: Posts verified evidence (PII Masked)
     Triager->>Resp: Instructs response preparation

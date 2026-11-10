@@ -64,7 +64,7 @@ export const CloudDeskDemo: React.FC<CloudDeskDemoProps> = ({
               <span>Production Cluster: us-east-1a</span>
             </div>
             <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-              Welcome back, Alex Rivera (Account: CUST-001)
+              Welcome back, Alex Rivera (Account: CUS-501)
             </h1>
             <p className="text-xs text-neutral-400 mt-1 max-w-xl font-sans">
               CloudDesk container orchestration is currently running 18 distributed microservices across 3 Kubernetes nodes.

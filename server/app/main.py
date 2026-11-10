@@ -185,10 +185,11 @@ def get_draft(ticket_id: str):
 @app.post("/drafts/{ticket_id}/approve", tags=["Human Governance & Drafts"], summary="Approve or Reject AI Draft")
 def approve_ticket_draft(ticket_id: str, action: Optional[ApprovalAction] = None):
     """Human-in-the-Loop decision gate: Sign off on agent draft, moving it to audit-verified storage."""
-    decision = action.decision if action else "approve"
-    approver = action.approver if action else "Support Lead"
+    decision = action.decision if (action and action.decision) else "approve"
+    approver = action.approver if (action and action.approver) else "Support Lead"
+    target_ticket_id = action.ticket_id if (action and action.ticket_id) else ticket_id
     try:
-        updated = draft_service.approve_draft(ticket_id, decision, approver)
+        updated = draft_service.approve_draft(target_ticket_id, decision, approver)
         return updated
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
