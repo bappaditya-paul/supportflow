@@ -206,6 +206,60 @@
       "text": "Automated verification message.",
       "visibility": "public",
       "created_at": "2026-11-10T14:18:26.552501+00:00"
+    },
+    {
+      "id": "msg-bc210c80",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:38:25.329555+00:00"
+    },
+    {
+      "id": "msg-117a5822",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:41:21.488992+00:00"
+    },
+    {
+      "id": "msg-d12bc3ed",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:42:11.620075+00:00"
+    },
+    {
+      "id": "msg-220ee4ad",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "I was charged $9.99 on Nov 4 but cannot access Pro features.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:42:29.712630+00:00"
+    },
+    {
+      "id": "msg-494659ce",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Lead Operator",
+      "text": "Stripe charge TXN-9001 verified. Reconciling database entitlement.",
+      "visibility": "private",
+      "created_at": "2026-11-10T14:42:30.299336+00:00"
+    },
+    {
+      "id": "msg-f4cd219a",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T14:42:34.826497+00:00"
     }
   ]
 }

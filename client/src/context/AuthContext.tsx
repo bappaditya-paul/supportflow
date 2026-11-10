@@ -214,6 +214,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     email: string,
     workspace: string
   ): Promise<AuthUser> => {
+    // 1. Register business workspace with FastAPI backend
+    try {
+      const cleanDomain = (workspace || 'company')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '') + '.io';
+      await fetch('http://localhost:8000/api/v1/onboarding/website', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          website_name: workspace || 'Acme Cloud Platform',
+          domain: cleanDomain,
+          framework: 'nextjs',
+        }),
+      });
+    } catch (err) {
+      console.warn('Backend website onboarding sync warning:', err);
+    }
+
+    // 2. Register with Supabase if online
     try {
       await supabase.auth.signUp({
         email,
