@@ -41,7 +41,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </button>
       </div>
 
-      {/* Quick Test Scenarios (Cossistant/Hackathon Demo Showcase) */}
+      {/* Quick Test Scenarios (Demo Showcase) */}
       <div className="space-y-1.5">
         <div className="flex items-center gap-1.5 text-[11px] font-medium text-neutral-400 uppercase tracking-wider">
           <Zap className="w-3 h-3 text-[#DF3E03]" />

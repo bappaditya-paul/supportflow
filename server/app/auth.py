@@ -36,8 +36,15 @@ DEMO_USERS = {
     },
     "mock-jwt-hackathon-judge": {
         "id": "usr-demo-003",
-        "email": "judge@switch-hackathon.ai",
-        "name": "Hackathon Judge (Guest Operator)",
+        "email": "evaluator@supportflow.ai",
+        "name": "Guest Auditor (Governance Evaluator)",
+        "role": "Auditor & Governance Evaluator",
+        "is_demo": True,
+    },
+    "mock-jwt-guest-auditor": {
+        "id": "usr-demo-003",
+        "email": "evaluator@supportflow.ai",
+        "name": "Guest Auditor (Governance Evaluator)",
         "role": "Auditor & Governance Evaluator",
         "is_demo": True,
     },

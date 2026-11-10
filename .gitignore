@@ -49,6 +49,14 @@ reverse-engineering/screenshots/
 # AI Agent Skills Local Cache (Dependencies defined in skills-lock.json)
 .agents/
 
+# Devcontainer, Reverse-Engineering & Research Documents
+.devcontainer/
+reverse-engineering/
+*decagon*
+*DECAGON*
+DECAGON_REVERSE_ENGINEERING_REPORT.md
+client/docs/hackathon_*
+
 # OS & Editor Files
 .DS_Store
 Thumbs.db

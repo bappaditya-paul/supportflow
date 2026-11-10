@@ -1,6 +1,6 @@
 """
-SupportFlow — FastAPI Backend & Live Operations Operations API
-Flip the Switch Hackathon 2026 | Powered by Switch AI
+SupportFlow — FastAPI Backend & Live Operations API
+Enterprise Multi-Agent Swarm | Powered by Switch AI
 """
 
 from fastapi import FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect, Depends
@@ -342,7 +342,7 @@ def live_dashboard():
             <span>SupportFlow API Documentation</span>
             <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60 font-semibold">v1.0.0 LIVE</span>
           </h1>
-          <p class="text-xs text-neutral-400 font-mono">Flip the Switch Hackathon 2026 · Multi-Agent Swarm with Human-in-the-Loop Gate</p>
+          <p class="text-xs text-neutral-400 font-mono">Enterprise Multi-Agent Swarm with Human-in-the-Loop Governance · Powered by Switch AI</p>
         </div>
       </div>
 

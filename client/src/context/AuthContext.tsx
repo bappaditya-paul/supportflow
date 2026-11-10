@@ -26,10 +26,10 @@ export const DEMO_FOUNDER: AuthUser = {
 
 export const DEMO_JUDGE: AuthUser = {
   id: 'usr-jdg-03',
-  name: 'Hackathon Judge',
-  email: 'judge@fliptheswitch.dev',
+  name: 'Guest Auditor & Evaluator',
+  email: 'evaluator@supportflow.ai',
   role: 'judge',
-  roleTitle: 'Guest Evaluator · Track 1',
+  roleTitle: 'Guest Evaluator · Governance Audit',
   workspace: 'Evaluation Sandbox',
   avatarSeed: 'judge',
   token: 'sf_demo_tok_judge_34079',

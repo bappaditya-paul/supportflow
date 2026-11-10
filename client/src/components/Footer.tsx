@@ -34,7 +34,7 @@ export const Footer: React.FC = () => {
       />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 pt-14 pb-12">
-        {/* Top Hackathon Banner Callout with clean hairline border */}
+        {/* Top Product Banner Callout with clean hairline border */}
         <div className="mb-12 p-4 sm:p-5 rounded-[4px] border border-white/[0.08] bg-[#121319]/80 backdrop-blur-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-[4px] bg-[#DF3E03]/10 border border-[#DF3E03]/30 flex items-center justify-center shrink-0">
@@ -43,10 +43,10 @@ export const Footer: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-white text-xs">
-                  Flip the Switch Hackathon 2026
+                  SupportFlow Enterprise Swarm
                 </span>
                 <span className="px-1.5 py-0.5 bg-[#DF3E03]/10 text-[#DF3E03] text-[10px] font-mono rounded-[3px] border border-[#DF3E03]/25">
-                  Track 1: Business Workflow
+                  Powered by Switch AI
                 </span>
               </div>
               <p className="text-[11px] text-neutral-400 mt-0.5">

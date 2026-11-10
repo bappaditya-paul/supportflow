@@ -1,7 +1,7 @@
 # Page Specification: 11 — Interactive Demo Sandbox (`/demo`)
 
 ## 1. Overview
-The Demonstration Portal simulates a realistic customer B2B SaaS platform (*CloudDesk*) embedding SupportFlow's customer widget. Designed specifically for hackathon judges, walkthrough videos, and live demonstrations.
+The Demonstration Portal simulates a realistic customer B2B SaaS platform (*CloudDesk*) embedding SupportFlow's customer widget. Designed specifically for interactive testing, walkthrough videos, and live demonstrations.
 
 ---
 
@@ -16,7 +16,7 @@ The Demonstration Portal simulates a realistic customer B2B SaaS platform (*Clou
 │ Plan Status: FREE TIER (BILLING MISMATCH DETECTED)                     │
 │                                                                        │
 │ ┌────────────────────────────────────────────────────────────────────┐ │
-│ │ ONE-CLICK HACKATHON TEST SCENARIOS FOR JUDGES                      │ │
+│ │ ONE-CLICK LIVE TEST SCENARIOS FOR OPERATORS & EVALUATORS         │ │
 │ │ [⚡ 1. Billing Desync: Paid Pro, Still Free (TKT-1001)]            │ │
 │ │ [⚡ 2. Emergency Concurrency Limit Increase (TKT-1002)]             │ │
 │ │ [⚡ 3. Enterprise Okta SAML 2.0 Setup (TKT-1003)]                   │ │

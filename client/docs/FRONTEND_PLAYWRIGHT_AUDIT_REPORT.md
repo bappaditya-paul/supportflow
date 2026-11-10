@@ -1,6 +1,6 @@
 # 🏆 Cossistant-Grade Frontend Transformation & Playwright Audit Report
 
-> **Project:** SupportFlow — AI Support Desk (Flip the Switch Hackathon 2026, Track 1: Best Business Workflow)  
+> **Project:** SupportFlow — AI Support Desk (Powered by Switch AI)  
 > **Target Framework:** React 19 + TypeScript + Vite + Tailwind CSS v4 + `motion/react`  
 > **Design Target:** Cossistant (`cossistant.com`) High-Density Utilitarian Developer Interface  
 > **Audit Tool:** Playwright Automated Headless Chromium Engine  
@@ -29,13 +29,13 @@ flowchart LR
 ```
 
 ### Step 1: Core Visual Primitives & Design System (`components/primitives/`)
-- [`MaskLogo.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/primitives/MaskLogo.tsx): Signature Cossistant eye-mask geometry rendered in scalable SVG.
-- [`FacehashAvatar.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/primitives/FacehashAvatar.tsx): Deterministic generative SVG avatar generator supporting 6 authentic pastel palettes (Yellow, Terracotta, Sky Blue, Lime, Mint, Peach), randomized eye pairs (`- -`, `+ +`, `• •`, `^ ^`), mouths, and online/waiting status indicators.
-- [`MacBrowserFrame.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/primitives/MacBrowserFrame.tsx): Utilitarian macOS window preview frame with traffic lights (`#FF5F56`, `#FFBD2E`, `#27C93F`), lock icon, and center address bar pill (`https://supportflow.ai/shadcn/inbox`).
-- [`AsciiMatrixBackground.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/primitives/AsciiMatrixBackground.tsx): Subtle technical ASCII character density watermark for login and hero backgrounds.
-- [`FrameworkPills.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/primitives/FrameworkPills.tsx): Ecosystem compatibility row (React, Next.js, Mattermost, Switch AI) with spring-physics pill toggles (`[Support inbox]` vs `[Real-time conversation]`).
-- [`HeatmapCalendar.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/primitives/HeatmapCalendar.tsx): 52-week × 7-day commit activity heatmap in Cossistant orange accents (`1,157 commits and 159 PRs`).
-- [`Navbar.tsx`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/src/components/Navbar.tsx): Upgraded with dashed search box `[Search...] ⌘K`, links to `Docs`, `Blog`, `Pricing`, `Changelog`, and split actions.
+- [`MaskLogo.tsx`](client/src/components/primitives/MaskLogo.tsx): Signature Cossistant eye-mask geometry rendered in scalable SVG.
+- [`FacehashAvatar.tsx`](client/src/components/primitives/FacehashAvatar.tsx): Deterministic generative SVG avatar generator supporting 6 authentic pastel palettes (Yellow, Terracotta, Sky Blue, Lime, Mint, Peach), randomized eye pairs (`- -`, `+ +`, `• •`, `^ ^`), mouths, and online/waiting status indicators.
+- [`MacBrowserFrame.tsx`](client/src/components/primitives/MacBrowserFrame.tsx): Utilitarian macOS window preview frame with traffic lights (`#FF5F56`, `#FFBD2E`, `#27C93F`), lock icon, and center address bar pill (`https://supportflow.ai/shadcn/inbox`).
+- [`AsciiMatrixBackground.tsx`](client/src/components/primitives/AsciiMatrixBackground.tsx): Subtle technical ASCII character density watermark for login and hero backgrounds.
+- [`FrameworkPills.tsx`](client/src/components/primitives/FrameworkPills.tsx): Ecosystem compatibility row (React, Next.js, Mattermost, Switch AI) with spring-physics pill toggles (`[Support inbox]` vs `[Real-time conversation]`).
+- [`HeatmapCalendar.tsx`](client/src/components/primitives/HeatmapCalendar.tsx): 52-week × 7-day commit activity heatmap in Cossistant orange accents (`1,157 commits and 159 PRs`).
+- [`Navbar.tsx`](client/src/components/Navbar.tsx): Upgraded with dashed search box `[Search...] ⌘K`, links to `Docs`, `Blog`, `Pricing`, `Changelog`, and split actions.
 
 ### Step 2: Reconstructed Homepage (`LandingPage.tsx`)
 - **Top Badge:** `[AI agent team member that learns from you, not a chatbot]` in Cossistant orange `#DF3E03`.
@@ -73,23 +73,23 @@ flowchart LR
 
 ## 3. Playwright Automated Verification Gallery
 
-All 12 high-resolution screenshots were captured on the live Vite dev server (`http://localhost:5173`) using the Playwright browser automation protocol and saved to [`client/docs/audit_screenshots/`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/):
+All 12 high-resolution screenshots were captured on the live Vite dev server (`http://localhost:5173`) using the Playwright browser automation protocol and saved to [`client/docs/audit_screenshots/`](client/docs/audit_screenshots/):
 
 | # | Filename | Page / Route | Viewport | Verified State |
 | :-: | :--- | :--- | :-: | :--- |
-| **01** | [`01-cossistant-homepage.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/01-cossistant-homepage.png) | `/` (Homepage) | 1280 × 800 | Full hero, Mac browser frame, swarm stepper, and bento grid. |
-| **02** | [`02-cossistant-code-tab.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/02-cossistant-code-tab.png) | `/` (Homepage) | 1280 × 800 | Active `[Code]` tab inside Mac window showing `<Support />` snippet. |
-| **03** | [`03-cossistant-pricing.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/03-cossistant-pricing.png) | `/pricing` | 1280 × 800 | Launch offer tag, 3-column dashed matrix, and comparison table. |
-| **04** | [`04-cossistant-login.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/04-cossistant-login.png) | `/login` | 1280 × 800 | Split screen: form on left, ASCII matrix with floating widget on right. |
-| **05** | [`05-cossistant-login-email-expanded.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/05-cossistant-login-email-expanded.png) | `/login` | 1280 × 800 | Progressive disclosure un-collapsed email & password inputs. |
-| **06** | [`06-cossistant-signup-email-expanded.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/06-cossistant-signup-email-expanded.png) | `/signup` | 1280 × 800 | Full registration form with plan badge and workspace input. |
-| **07** | [`07-cossistant-changelog.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/07-cossistant-changelog.png) | `/changelog` | 1280 × 800 | 52-week orange activity heatmap and v0.3.0 release card. |
-| **08** | [`08-cossistant-blog.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/08-cossistant-blog.png) | `/blog` | 1280 × 800 | Category pills, featured Facehash post, and 3-column article cards. |
-| **09** | [`09-cossistant-docs.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/09-cossistant-docs.png) | `/docs` | 1280 × 800 | 3-column Fumadocs shell, registry cards, and TOC anchor links. |
-| **10** | [`10-cossistant-split-view.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/10-cossistant-split-view.png) | `/split` | 1280 × 800 | Live customer widget side-by-side with operator desk. |
-| **11** | [`11-cossistant-dashboard.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/11-cossistant-dashboard.png) | `/dashboard` | 1280 × 800 | Full-screen operator cockpit with live ticket triage and CRM. |
-| **12** | [`12-cossistant-mobile-landing.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/12-cossistant-mobile-landing.png) | `/` (Mobile) | 375 × 667 | Fully responsive layout at mobile viewport width. |
-| **13** | [`13-originkit-premium-landing.png`](file:///home/bappaditya/coding/Flip%20the%20Switch%20Hackathon/client/docs/audit_screenshots/13-originkit-premium-landing.png) | `/` (Homepage) | 1280 × 800 | OriginKit premium upgrade: atmospheric optical glow, rolling counter telemetry bar (85s, 0%, 1,157, 100%), laser border-beam dispatch button, and mouse-following spotlight bento cards. |
+| **01** | [`01-cossistant-homepage.png`](client/docs/audit_screenshots/01-cossistant-homepage.png) | `/` (Homepage) | 1280 × 800 | Full hero, Mac browser frame, swarm stepper, and bento grid. |
+| **02** | [`02-cossistant-code-tab.png`](client/docs/audit_screenshots/02-cossistant-code-tab.png) | `/` (Homepage) | 1280 × 800 | Active `[Code]` tab inside Mac window showing `<Support />` snippet. |
+| **03** | [`03-cossistant-pricing.png`](client/docs/audit_screenshots/03-cossistant-pricing.png) | `/pricing` | 1280 × 800 | Launch offer tag, 3-column dashed matrix, and comparison table. |
+| **04** | [`04-cossistant-login.png`](client/docs/audit_screenshots/04-cossistant-login.png) | `/login` | 1280 × 800 | Split screen: form on left, ASCII matrix with floating widget on right. |
+| **05** | [`05-cossistant-login-email-expanded.png`](client/docs/audit_screenshots/05-cossistant-login-email-expanded.png) | `/login` | 1280 × 800 | Progressive disclosure un-collapsed email & password inputs. |
+| **06** | [`06-cossistant-signup-email-expanded.png`](client/docs/audit_screenshots/06-cossistant-signup-email-expanded.png) | `/signup` | 1280 × 800 | Full registration form with plan badge and workspace input. |
+| **07** | [`07-cossistant-changelog.png`](client/docs/audit_screenshots/07-cossistant-changelog.png) | `/changelog` | 1280 × 800 | 52-week orange activity heatmap and v0.3.0 release card. |
+| **08** | [`08-cossistant-blog.png`](client/docs/audit_screenshots/08-cossistant-blog.png) | `/blog` | 1280 × 800 | Category pills, featured Facehash post, and 3-column article cards. |
+| **09** | [`09-cossistant-docs.png`](client/docs/audit_screenshots/09-cossistant-docs.png) | `/docs` | 1280 × 800 | 3-column Fumadocs shell, registry cards, and TOC anchor links. |
+| **10** | [`10-cossistant-split-view.png`](client/docs/audit_screenshots/10-cossistant-split-view.png) | `/split` | 1280 × 800 | Live customer widget side-by-side with operator desk. |
+| **11** | [`11-cossistant-dashboard.png`](client/docs/audit_screenshots/11-cossistant-dashboard.png) | `/dashboard` | 1280 × 800 | Full-screen operator cockpit with live ticket triage and CRM. |
+| **12** | [`12-cossistant-mobile-landing.png`](client/docs/audit_screenshots/12-cossistant-mobile-landing.png) | `/` (Mobile) | 375 × 667 | Fully responsive layout at mobile viewport width. |
+| **13** | [`13-originkit-premium-landing.png`](client/docs/audit_screenshots/13-originkit-premium-landing.png) | `/` (Homepage) | 1280 × 800 | OriginKit premium upgrade: atmospheric optical glow, rolling counter telemetry bar (85s, 0%, 1,157, 100%), laser border-beam dispatch button, and mouse-following spotlight bento cards. |
 
 ---
 

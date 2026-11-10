@@ -111,7 +111,7 @@ export const PricingPage: React.FC = () => {
     },
     {
       q: 'Why do you use strikethrough prices for launch?',
-      a: 'During the Flip the Switch Hackathon launch, all early adopters lock in lifetime discounted rates (up to 56% off) for as long as their subscription remains active.',
+      a: 'During the early access launch, all early adopters lock in lifetime discounted rates (up to 56% off) for as long as their subscription remains active.',
     },
     {
       q: 'What prevents AI agents from hallucinating customer data?',

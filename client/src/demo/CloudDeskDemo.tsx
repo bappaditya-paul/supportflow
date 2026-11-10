@@ -130,7 +130,7 @@ export const CloudDeskDemo: React.FC<CloudDeskDemoProps> = ({
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-neutral-200 uppercase tracking-wider font-mono flex items-center gap-2">
               <Zap className="w-4 h-4 text-amber-400" />
-              <span>Flip the Switch Hackathon Test Scenarios</span>
+              <span>Live Interactive Swarm Scenarios</span>
             </h2>
             <span className="text-[11px] font-mono text-neutral-400">
               Click any scenario to inject into SupportFlow
@@ -237,7 +237,7 @@ export const CloudDeskDemo: React.FC<CloudDeskDemoProps> = ({
 
       {/* Footer */}
       <footer className="p-6 border-t border-white/[0.08] text-center text-xs text-neutral-500 font-mono">
-        Flip the Switch Hackathon · Built with Switch AI, Mattermost, FastAPI & Cossistant Design System
+        SupportFlow · Powered by Switch AI, Mattermost & FastAPI Swarm Engine
       </footer>
     </div>
   );

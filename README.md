@@ -1,12 +1,11 @@
 # 🎧 SupportFlow — Collaborative AI Customer Support Swarm
-> **Flip the Switch Hackathon 2026** | Powered by [Switch AI](https://github.com/sandbox-quantum/switch) & [WeMakeDevs](https://www.wemakedevs.org/hackathons/switch)  
-> *Target Track: Track 1 — Best Business Workflow ($2,000 Cash)*
+> **Autonomous Enterprise Support with Human-in-the-Loop Governance** | Powered by [Switch AI](https://github.com/sandbox-quantum/switch)
 
 ---
 
 ## 📌 Executive Summary
 
-SupportFlow transforms reactive customer support into an autonomous, evidence-backed operations room inside team chat (**Mattermost**, Slack, or Discord) using **Switch AI**, paired with a modern, high-speed **Cossistant-inspired customer widget and operator cockpit**.
+SupportFlow transforms reactive customer support into an autonomous, evidence-backed operations room inside team chat (**Mattermost**, Slack, or Discord) using **Switch AI**, paired with a modern, high-speed **customer widget and operator cockpit**.
 
 When a customer complaint or billing ticket arrives:
 1. **`@supportflow-triager`** classifies the issue, calculates urgency, evaluates sentiment, and delegates investigation.
@@ -24,7 +23,7 @@ sequenceDiagram
     autonumber
     actor Customer as Customer (CloudDesk SaaS)
     actor Lead as Human Operator Desk
-    participant Widget as SupportFlow Widget (Cossistant Tokens)
+    participant Widget as SupportFlow Widget
     participant WS as WebSocket & API Gateway (:8000)
     participant Room as Switch AI Room (#SupportFlow in Mattermost)
     participant Triager as @supportflow-triager
@@ -66,7 +65,7 @@ sequenceDiagram
 
 ## 🎨 Frontend & Design Architecture
 
-Built using **React 19, TypeScript, Vite, and Tailwind CSS v4**, the frontend incorporates the utilitarian design language reverse-engineered from **Cossistant**:
+Built using **React 19, TypeScript, Vite, and Tailwind CSS v4**, the frontend features a brutalist, high-performance UI:
 - **Brutalist Tokens:** `--radius: 2px`, OKLCH neutral palettes, Geist Mono data typography, dashed hairline borders.
 - **Three Interactive View Modes:**
   1. **Split Demo View:** Side-by-side view featuring the customer experience on the left and the operator multi-agent cockpit on the right.
@@ -86,7 +85,7 @@ Built using **React 19, TypeScript, Vite, and Tailwind CSS v4**, the frontend in
 
 ### 2. Run Test Suites
 ```bash
-# Backend pytest suite (11/11 tests passing in 0.15s)
+# Backend pytest suite (24/24 tests passing)
 cd server
 python3 -m pytest -v
 
@@ -121,17 +120,21 @@ Open **`http://localhost:5173`** in your browser to experience the complete live
 ## 📂 Repository Structure
 
 ```text
-Flip the Switch Hackathon/
+SupportFlow/
 ├── client/                               # Modern React 19 + Vite Frontend
 │   ├── src/
 │   │   ├── dashboard/                    # Operator Cockpit Components
+│   │   │   ├── AgentStudio.tsx           # Multi-agent swarm runtime studio
 │   │   │   ├── ApprovalDispatchGate.tsx  # Human-in-the-loop sign-off card
 │   │   │   ├── ConversationDetailPane.tsx# Chat thread with tool logs & notes
 │   │   │   ├── ConversationListPane.tsx  # Virtualized ticket queue with filters
+│   │   │   ├── DeveloperSettings.tsx     # Domain allowlist & widget tokens
 │   │   │   ├── GhostTypingPreview.tsx    # Live keystroke preview
 │   │   │   ├── InternalNoteComposer.tsx  # Team chat & Switch prompt composer
+│   │   │   ├── KnowledgeHub.tsx          # Policy editor & web vector sources
 │   │   │   ├── SidebarNav.tsx            # Navigation & Switch status
 │   │   │   ├── SwitchRoomBadge.tsx       # Live agent swarm telemetry
+│   │   │   ├── TopAnalyticsBar.tsx       # Live velocity & CSAT telemetry
 │   │   │   └── VisitorProfileDrawer.tsx  # DB vs Stripe entitlement drawer
 │   │   ├── demo/
 │   │   │   └── CloudDeskDemo.tsx         # B2B SaaS demo application
@@ -141,19 +144,22 @@ Flip the Switch Hackathon/
 │   │   │   ├── WidgetTrigger.tsx         # Floating button with unread count
 │   │   │   └── views/                    # HomeView & ConversationView
 │   │   ├── App.tsx                       # Master view switcher & state manager
-│   │   ├── index.css                     # Cossistant OKLCH design tokens
+│   │   ├── index.css                     # OKLCH design tokens
 │   │   └── types.ts                      # Strict TypeScript definitions
 │   ├── package.json
 │   ├── tsconfig.json
 │   └── vite.config.ts
 ├── server/                               # FastAPI Backend & Orchestration
 │   ├── app/
+│   │   ├── auth.py                       # Supabase JWT & Fast-Track RBAC
+│   │   ├── db/                           # Supabase admin client connector
 │   │   ├── main.py                       # REST APIs + WebSocket Ghost Typing
 │   │   ├── models.py                     # Pydantic schemas
-│   │   └── services/                     # Ticket, Customer, KB & Draft services
+│   │   └── services/                     # Ticket, Customer, KB, Draft & Timeline
 │   ├── data/
 │   │   ├── tickets.json                  # Sample tickets
 │   │   ├── customers.json                # Customer ledger
+│   │   ├── timelines.json                # Thread conversation histories
 │   │   └── knowledge_base/               # Markdown policy documents
 │   ├── scripts/                          # Deterministic CLI tools
 │   │   ├── lookup_ticket.py
@@ -164,21 +170,18 @@ Flip the Switch Hackathon/
 │   ├── switch/
 │   │   ├── supportflow-room.template.yaml# Switch room specification
 │   │   └── agent-prompts/                # Agent system instructions
-│   ├── tests/                            # 11 Pytest suites (100% passing)
+│   ├── tests/                            # 24 Pytest suites (100% passing)
 │   ├── Dockerfile
 │   └── docker-compose.yml
-└── reverse-engineering/                  # 19 Teardown Reports & Screenshots
-    ├── architecture.mmd                  # System flowchart diagram
-    ├── database-erd.mmd                  # Database ERD
-    ├── DIAGRAMS_VIEWER.html              # Pan/zoom interactive diagram viewer
-    └── screenshots/                      # Full-page high-resolution audits
+└── supabase/
+    └── migrations/                       # PostgreSQL schema & RLS policies
 ```
 
 ---
 
-## 🏆 Hackathon Alignment: Track 1 (Best Business Workflow)
+## 🌟 Enterprise Workflow & Core Architectural Guarantees
 
 1. **Why Switch AI is Essential:** Customer support is fundamentally collaborative. By embedding agents (`@triager`, `@investigator`, `@responder`) directly inside team chat, human leads and AI agents share the exact same context room, preventing disconnected silos.
 2. **Zero Hallucination Guarantee:** The investigator agent only accesses customer data via deterministic read-only CLI scripts (`lookup_customer.py`, `check_stripe`), preventing unauthorized data mutations and masking customer PII.
 3. **Mandatory Human Sign-off:** No customer receives an automated response to complex billing or subscription issues without human approval through the **Approval Dispatch Gate**.
-4. **Instant ROI:** Reduces average handle time from 4 hours to under 3 minutes while maintaining 100% human oversight.
+4. **Instant ROI:** Reduces average handle time from hours to under 3 minutes while maintaining 100% human oversight.

@@ -144,7 +144,7 @@ export const SignupPage: React.FC = () => {
               <div className="mb-6 space-y-2">
                 <div className="text-[11px] font-mono uppercase tracking-wider text-neutral-400 font-semibold mb-1.5 flex items-center gap-1.5">
                   <Zap className="w-3 h-3 text-[#DF3E03]" />
-                  <span>Fast Track for Hackathon Judges</span>
+                  <span>Fast Track Demo Sandboxes</span>
                 </div>
 
                 <button
@@ -184,13 +184,13 @@ export const SignupPage: React.FC = () => {
                     <FacehashAvatar seed="judge" size="sm" showStatus status="online" />
                     <div>
                       <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                        Hackathon Judge Sandbox
+                        Governance Auditor Sandbox
                         <span className="px-1.5 py-0.2 text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-[2px]">
                           EVALUATOR
                         </span>
                       </div>
                       <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
-                        Instant reviewer access for Flip the Switch Track 1
+                        Instant evaluator sandbox with live agent telemetry
                       </div>
                     </div>
                   </div>

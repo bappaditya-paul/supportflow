@@ -62,6 +62,15 @@
       "text": "Automated verification message.",
       "visibility": "public",
       "created_at": "2026-11-10T12:57:02.527890+00:00"
+    },
+    {
+      "id": "msg-8dded5d7",
+      "ticket_id": "TKT-1001",
+      "sender_type": "operator",
+      "sender_name": "Test Operator",
+      "text": "Automated verification message.",
+      "visibility": "public",
+      "created_at": "2026-11-10T13:08:58.122512+00:00"
     }
   ]
 }

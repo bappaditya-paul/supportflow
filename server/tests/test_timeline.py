@@ -26,3 +26,4 @@ def test_add_ticket_timeline_message():
     assert data["sender_name"] == "Test Operator"
     assert data["text"] == "Automated verification message."
     assert data["ticket_id"] == "TKT-1001"
+

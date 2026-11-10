@@ -108,7 +108,7 @@ export const LoginPage: React.FC = () => {
             <div className="max-w-md">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-[#DF3E03] mb-3 border border-white/[0.08] rounded-[3px] bg-white/[0.03]">
                 <Sparkles className="w-3 h-3 text-[#DF3E03]" />
-                <span>Flip the Switch Hackathon 2026 · Demo Auth</span>
+                <span>Enterprise Support Swarm · Powered by Switch AI</span>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white mb-2">
@@ -194,7 +194,7 @@ export const LoginPage: React.FC = () => {
                   </span>
                 </button>
 
-                {/* Hackathon Judge Persona */}
+                {/* Guest Auditor Persona */}
                 <button
                   type="button"
                   data-testid="btn-demo-judge"
@@ -206,13 +206,13 @@ export const LoginPage: React.FC = () => {
                     <FacehashAvatar seed="judge" size="sm" showStatus status="online" />
                     <div>
                       <div className="text-xs font-bold text-neutral-900 dark:text-white flex items-center gap-2">
-                        <span>Hackathon Judge</span>
+                        <span>Guest Auditor</span>
                         <span className="px-1.5 py-0.2 text-[9px] font-mono bg-emerald-950/60 text-emerald-300 border border-emerald-800/40 rounded-[3px]">
                           EVALUATOR
                         </span>
                       </div>
                       <div className="text-[11px] font-mono text-neutral-400">
-                        judge@fliptheswitch.dev · Track 1 Reviewer
+                        evaluator@supportflow.ai · Security & Governance
                       </div>
                     </div>
                   </div>

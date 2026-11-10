@@ -1,8 +1,9 @@
 import asyncio
 from playwright.async_api import async_playwright
+from pathlib import Path
 import os
 
-SCREENSHOTS_DIR = "/home/bappaditya/coding/Flip the Switch Hackathon/client/docs/audit_screenshots"
+SCREENSHOTS_DIR = str(Path(__file__).resolve().parent.parent / "client" / "docs" / "audit_screenshots")
 os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 
 async def run():
