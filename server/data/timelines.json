@@ -350,6 +350,51 @@
       "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
       "visibility": "public",
       "created_at": "2026-11-10T15:07:58.026135+00:00"
+    },
+    {
+      "id": "msg-0a767387",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:14:21.558958+00:00"
+    },
+    {
+      "id": "msg-722340d3",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:17:07.185617+00:00"
+    },
+    {
+      "id": "msg-6ca3cca7",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent test",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:17:26.220367+00:00"
+    },
+    {
+      "id": "msg-04dbf034",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:19:04.514999+00:00"
+    },
+    {
+      "id": "msg-5387d7eb",
+      "ticket_id": "TKT-1001",
+      "sender_type": "customer",
+      "sender_name": "Alex Morgan",
+      "text": "Urgent: I paid $9.99 for Pro on Nov 4 (TXN-9001) but my account still shows Free tier. Please upgrade my access immediately.",
+      "visibility": "public",
+      "created_at": "2026-11-10T15:20:59.110596+00:00"
     }
   ]
 }
